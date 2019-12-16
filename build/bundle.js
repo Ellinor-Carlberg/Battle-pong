@@ -1,11 +1,11 @@
 "use strict";
 var Ball = (function () {
     function Ball(ballXPostion, ballYPostion, ballSpeedX, ballSpeedY, ballDiameter) {
-        this.ballXPostion = width / 2;
-        this.ballYPostion = height / 2;
-        this.ballSpeedX = random(ballSpeedX * -1, ballSpeedX);
-        this.ballSpeedY = random(ballSpeedY * -1, ballSpeedY);
-        this.ballDiameter = 30;
+        this.ballXPostion = ballXPostion;
+        this.ballYPostion = ballYPostion;
+        this.ballSpeedX = ballSpeedX;
+        this.ballSpeedY = ballSpeedY;
+        this.ballDiameter = ballDiameter;
     }
     return Ball;
 }());
