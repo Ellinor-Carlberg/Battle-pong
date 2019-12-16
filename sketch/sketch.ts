@@ -34,7 +34,7 @@ function draw() {
     } else {
         circleSize = windowWidth - 40;
     }
-    let ballRadius = circleSize/40;;
+    let ballRadius = circleSize/40;
 
     //background
     background(119, 123, 126);

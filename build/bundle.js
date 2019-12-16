@@ -29,7 +29,6 @@ function draw() {
         circleSize = windowWidth - 40;
     }
     var ballRadius = circleSize / 40;
-    ;
     background(119, 123, 126);
     fill(255, 255, 255);
     stroke(0, 0, 0);
