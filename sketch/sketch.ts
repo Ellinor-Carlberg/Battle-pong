@@ -34,7 +34,7 @@ function draw() {
     } else {
         circleSize = windowWidth - 40;
     }
-    let ballDiameter = circleSize/30;;
+    let ballRadius = circleSize/40;;
 
     //background
     background(119, 123, 126);
@@ -43,7 +43,7 @@ function draw() {
     fill(255, 255, 255);
     stroke(0, 0, 0);
     strokeWeight(2);
-    ellipse(ballXPosition, ballYPosition, ballDiameter, ballDiameter);
+    ellipse(ballXPosition, ballYPosition, ballRadius*2, ballRadius*2);
 
     //mainGameArea
     noFill();
@@ -73,7 +73,6 @@ function draw() {
 }
 
 function handlePads() {
-
     let player1Velocity = 0;
     let player2Velocity = 0;
 
@@ -129,13 +128,18 @@ function handleBall(player1Position: number, player2Position: number) {
     ballSpeedX *= -1; 
   }
 
-  console.log(player1Position);
+  /*console.log(player1Position);
+  console.log(player2Position);
+  console.log(ballYPosition);
+  console.log(ballXPosition);*/
+
 
     for(let i = player1Position; i < (player1Position+padLength); i++){
         if(i == ballYPosition || i == ballXPosition){
             console.log('pad - player 1');
         }
     }
+
     for(let i = player2Position; i < (player2Position + padLength); i++){
         if(i == ballYPosition || i == ballXPosition){
             console.log('pad - player 2');

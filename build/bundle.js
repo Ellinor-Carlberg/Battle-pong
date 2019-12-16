@@ -1,14 +1,4 @@
 "use strict";
-var Ball = (function () {
-    function Ball(ballXPostion, ballYPostion, ballSpeedX, ballSpeedY, ballDiameter) {
-        this.ballXPostion = ballXPostion;
-        this.ballYPostion = ballYPostion;
-        this.ballSpeedX = ballSpeedX;
-        this.ballSpeedY = ballSpeedY;
-        this.ballDiameter = ballDiameter;
-    }
-    return Ball;
-}());
 var player1Position = 0;
 var player2Position = 180;
 var ballSpeedX = 5;
@@ -38,13 +28,13 @@ function draw() {
     else {
         circleSize = windowWidth - 40;
     }
-    var ballDiameter = circleSize / 30;
+    var ballRadius = circleSize / 40;
     ;
     background(119, 123, 126);
     fill(255, 255, 255);
     stroke(0, 0, 0);
     strokeWeight(2);
-    ellipse(ballXPosition, ballYPosition, ballDiameter, ballDiameter);
+    ellipse(ballXPosition, ballYPosition, ballRadius * 2, ballRadius * 2);
     noFill();
     stroke(0, 0, 0);
     strokeWeight(1);
@@ -96,7 +86,6 @@ function handleBall(player1Position, player2Position) {
     else if (ballXPosition > width || ballXPosition < 0) {
         ballSpeedX *= -1;
     }
-    console.log(player1Position);
     for (var i = player1Position; i < (player1Position + padLength); i++) {
         if (i == ballYPosition || i == ballXPosition) {
             console.log('pad - player 1');
