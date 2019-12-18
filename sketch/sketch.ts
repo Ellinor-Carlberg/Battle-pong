@@ -21,7 +21,6 @@ function setup() {
 }
 
 
-
 function draw() {
     background('#777b7e');
     let circleSize;
