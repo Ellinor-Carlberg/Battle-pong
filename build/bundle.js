@@ -92,7 +92,7 @@ function handleBall(player1XCoordinates, player1YCoordinates) {
     }
     for (var i = 0; i <= padLength; i++) {
         for (var j = 0; j <= padLength; j++) {
-            stroke('purple');
+            fill('purple');
             strokeWeight(2);
             ellipse(player1XCoordinates[i], player1YCoordinates[i], 7, 7);
         }
