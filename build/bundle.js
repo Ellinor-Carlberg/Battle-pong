@@ -6,6 +6,7 @@ var ballSpeedY = 5;
 var ballXPosition = innerWidth / 2;
 var ballYPosition = innerHeight / 2;
 var padLength = 20;
+var hitboxRadius = 7;
 function preload() {
 }
 function setup() {
@@ -19,9 +20,9 @@ function setup() {
 }
 function draw() {
     background('#777b7e');
-    var circleSize;
     ballXPosition += ballSpeedX;
     ballYPosition += ballSpeedY;
+    var circleSize;
     if (windowWidth >= windowHeight) {
         circleSize = windowHeight - 40;
     }
@@ -36,6 +37,16 @@ function draw() {
     }
     for (var i = 0; i <= padLength; i++) {
         player1YCoordinates[i] = (circleSize / 2) * Math.sin(((player1Position + i) * Math.PI / 180)) + (height / 2);
+    }
+    for (var i = 0; i <= padLength; i++) {
+        if (dist(ballXPosition, ballYPosition, player1XCoordinates[i], player1YCoordinates[i]) < ballRadius + hitboxRadius) {
+            console.log('träff på player 1');
+        }
+    }
+    if (dist(ballXPosition, ballYPosition, width / 2, height / 2) < ballRadius + circleSize / 2) {
+    }
+    else {
+        console.log('du dog');
     }
     background(119, 123, 126);
     fill(255, 255, 255);
