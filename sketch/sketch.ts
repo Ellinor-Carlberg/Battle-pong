@@ -21,11 +21,9 @@ function setup() {
 }
 
 
-
 function draw() {
     background('#777b7e');
     let circleSize;
-
     ballXPosition += ballSpeedX;
     ballYPosition += ballSpeedY;
   
@@ -34,7 +32,19 @@ function draw() {
     } else {
         circleSize = windowWidth - 40;
     }
-    let ballRadius = circleSize/40;;
+    let ballRadius = circleSize/40;
+
+    let player1XCoordinates = [];
+    let player1YCoordinates = [];
+    
+    for(let i = 0; i <= padLength; i++){
+      player1XCoordinates[i] = (circleSize/2) * Math.cos(((player1Position + i) * Math.PI / 180)) + (width/2);
+    }
+
+    for(let i = 0; i <= padLength; i++){
+      player1YCoordinates[i] = (circleSize/2) * Math.sin(((player1Position + i) * Math.PI / 180)) + (height/2);
+    }
+    
 
     //background
     background(119, 123, 126);
@@ -59,7 +69,8 @@ function draw() {
     stroke(255, 204, 0);
     strokeWeight(5);
     arc(width/2, height/2, circleSize, circleSize, player1Position, player1Position + padLength);
-        
+
+
     //player2
     stroke(0, 0, 0);
     strokeWeight(9);
@@ -69,8 +80,10 @@ function draw() {
     arc(width/2, height/2, circleSize, circleSize, player2Position, player2Position + padLength); 
 
     handlePads();
-    handleBall(player1Position, player1Position);
+    handleBall(player1XCoordinates, player1YCoordinates);
 }
+
+
 
 function handlePads() {
     let player1Velocity = 0;
@@ -113,14 +126,9 @@ function handlePads() {
 
 
 
-/**
- *  Built in windowResize listener function in P5
- */
-function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
-}
+//test - ska vara array|number
+function handleBall(player1XCoordinates: any, player1YCoordinates: any) {
 
-function handleBall(player1Position: number, player2Position: number) {
   // wall bounce 
   if (ballYPosition > height || ballYPosition < 0){
     ballSpeedY *= -1; 
@@ -128,21 +136,19 @@ function handleBall(player1Position: number, player2Position: number) {
     ballSpeedX *= -1; 
   }
 
-  /*console.log(player1Position);
-  console.log(player2Position);
-  console.log(ballYPosition);
-  console.log(ballXPosition);*/
+  for (let i = 0; i <= padLength; i++){
+    for (let j = 0; j <= padLength; j++){
 
-
-    for(let i = player1Position; i < (player1Position+padLength); i++){
-        if(i == ballYPosition || i == ballXPosition){
-            console.log('pad - player 1');
-        }
+      fill('purple');
+      strokeWeight(2);
+      ellipse(player1XCoordinates[i], player1YCoordinates[i], 7, 7);
     }
+  }
+}
 
-    for(let i = player2Position; i < (player2Position + padLength); i++){
-        if(i == ballYPosition || i == ballXPosition){
-            console.log('pad - player 2');
-        }
-    }
+/**
+ *  Built in windowResize listener function in P5
+ */
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
