@@ -29,6 +29,14 @@ function draw() {
         circleSize = windowWidth - 40;
     }
     var ballRadius = circleSize / 40;
+    var player1XCoordinates = [];
+    var player1YCoordinates = [];
+    for (var i = 0; i <= padLength; i++) {
+        player1XCoordinates[i] = (circleSize / 2) * Math.cos(((player1Position + i) * Math.PI / 180)) + (width / 2);
+    }
+    for (var i = 0; i <= padLength; i++) {
+        player1YCoordinates[i] = (circleSize / 2) * Math.sin(((player1Position + i) * Math.PI / 180)) + (height / 2);
+    }
     background(119, 123, 126);
     fill(255, 255, 255);
     stroke(0, 0, 0);
@@ -51,7 +59,7 @@ function draw() {
     strokeWeight(5);
     arc(width / 2, height / 2, circleSize, circleSize, player2Position, player2Position + padLength);
     handlePads();
-    handleBall(player1Position, player1Position);
+    handleBall(player1XCoordinates, player1YCoordinates);
 }
 function handlePads() {
     var player1Velocity = 0;
@@ -75,25 +83,22 @@ function handlePads() {
     player1Position = constrain(player1Position, 0, 159);
     player2Position = constrain(player2Position, 180, 339);
 }
-function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
-}
-function handleBall(player1Position, player2Position) {
+function handleBall(player1XCoordinates, player1YCoordinates) {
     if (ballYPosition > height || ballYPosition < 0) {
         ballSpeedY *= -1;
     }
     else if (ballXPosition > width || ballXPosition < 0) {
         ballSpeedX *= -1;
     }
-    for (var i = player1Position; i < (player1Position + padLength); i++) {
-        if (i == ballYPosition || i == ballXPosition) {
-            console.log('pad - player 1');
+    for (var i = 0; i <= padLength; i++) {
+        for (var j = 0; j <= padLength; j++) {
+            stroke('purple');
+            strokeWeight(2);
+            ellipse(player1XCoordinates[i], player1YCoordinates[i], 7, 7);
         }
     }
-    for (var i = player2Position; i < (player2Position + padLength); i++) {
-        if (i == ballYPosition || i == ballXPosition) {
-            console.log('pad - player 2');
-        }
-    }
+}
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
 }
 //# sourceMappingURL=bundle.js.map
