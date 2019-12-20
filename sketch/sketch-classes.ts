@@ -1,41 +1,53 @@
-/* Add these to beginning of .js file?
-function setup(): void {
-    createCanvas(windowWidth, windowHeight);
-    frameRate(60);
-    noCursor();
-    fullscreen();
-    angleMode(DEGREES);
-    Where do we put these? VVV
-    // ballSpeedX = random(ballSpeedX * -1, ballSpeedX);
-    // ballSpeedY = random(ballSpeedY * -1, ballSpeedY);
-} 
-function draw() { background('#777b7e'); } */
+
+let gameManager: GameManager;
+let gameSettings: GameSettings;
+let gameArea: GameArea;
+let gameMenu: GameMenu;
+let players: Player[];
+let pads: Pad[];
+let balls: Ball[];
+let menu;
+
+let circleSize: number;
+let nrOfPlayers: number;
+let player1Position: number = 0;
+let player2Position: number = 180;
+let ballSpeedX: number = 5;
+let ballSpeedY: number = 5;
+let ballXPosition: number = innerWidth / 2;
+let ballYPosition: number = innerHeight / 2;
+let padLength: number = 20;
+
 // Make Canvas class instead of interface?
+/** interface Canvas */
 interface Canvas {
     width: number;
     height: number;
 
     resizeCanvas(width: number, height: number): void;
 }
+/** interface GameStatus */
 interface GameStatus {
     startGame(): void;
     quitGame(): void;
 }
+/** interface GameSize */
 interface GameSize {
     gameRadius: number;
 }
+/** class GameManager */
 class GameManager implements GameStatus {
-    public gameSettings: GameSettings;
-    public gameArea: GameArea;
+    private gameSettings: GameSettings;
+    private gameArea: GameArea;
     public events: Events[]
     public players: Player[];
-    public balls: Ball[];
-    public pads: Pad[];
+    private balls: Ball[];
+    private pads: Pad[];
     public isGameRunning: boolean;
 
     constructor() {
         this.gameSettings = new GameSettings();
-        this.gameArea = new GameArea();
+        this.gameArea = GameArea.prototype;
         this.events = [];
         this.players = [];
         this.balls = [];
@@ -44,72 +56,111 @@ class GameManager implements GameStatus {
     }
 
     update(): void { }
-    draw(): void { }
+    draw(radius: number): void {
+
+    }
     // Start/Quit
-    startGame(): void { }
-    quitGame(): void { }
+    public startGame(): void {
+        this.isGameRunning = true;
+    }
+    public quitGame(): void { }
     // New game
     createGameArea(): void { }
-    createPlayer(): void { }
+    public createPlayer(): void {
+
+    }
     createBall(): void { }
-    rebuildGameArea(): void { }
+    private rebuildGameArea(): void { }
 }
+/** class Menu */
+class GameMenu {
+    public draw(): void {
+        rectMode(CENTER)
+        background('red');
+
+        // menu title
+        strokeWeight(2)
+        fill('yellow');
+        textSize(50);
+        textFont("COMIC SANS MS");
+        textAlign(CENTER, TOP);
+        text('Battle Pong', width / 2, 50);
+
+        // add player button
+        text('+', width / 2 * 1.5, height - 50);
+
+        // start button
+        stroke(0);
+        strokeWeight(5);
+        rect(width - 100, height - 50, 150, 50).
+            text('Start', width - 100, height - 75);
+
+    }
+}
+
+/** class GameSettings */
 class GameSettings {
     // Create instance of GameManager to call for start/quit methods
     public gameManager: GameManager;
     public soundVolume: number;
     public gameEvents: number[];
-    public nrOfPlayers: number;
 
     constructor() {
-        this.gameManager = new GameManager();
+        this.gameManager = GameManager.prototype;
         this.soundVolume = 5;
         this.gameEvents = [];
-        this.nrOfPlayers = this.gameManager.players.length;
     }
-
-    controlEvents(): void { }
+    gameStatus(): void {
+        if (1) {
+            this.gameManager.startGame();
+        }
+        else if (2) {
+            this.gameManager.quitGame();
+        }
+    }
+    controlEvents(): void { this.gameManager.events; }
     controlSound(): void { }
 }
+/** class GameArea */
 class GameArea implements GameSize {
-    public gameAreaXPosition: number;
-    public gameAreaYPosition: number;
+    // public gameAreaXPosition: number;
+    // public gameAreaYPosition: number;
     public gameRadius: number;
-    public circleSize: number;
+    // public circleSize: number;
 
-    constructor(gameAreaXPosition: number, gameAreaYPosition: number) {
-        this.gameAreaXPosition = gameAreaXPosition; // Do we need this?
-        this.gameAreaYPosition = gameAreaYPosition; // Do we need this?
-        this.gameRadius = this.calculateGameRadius(); 
-        this.circleSize = this.calculateGameArea();
+    constructor() {
+        // this.gameAreaXPosition = gameAreaXPosition; // Do we need this?
+        // this.gameAreaYPosition = gameAreaYPosition; // Do we need this?
+        this.gameRadius = this.calculateGameArea();
+        // this.circleSize = this.calculateGameArea();
     }
     update(): void { }
     draw(): void { }
-    calculateGameRadius() {
-        return this.circleSize / 2;
-    }
+
     calculateGameArea(): number {
         if (windowWidth >= windowHeight) {
-            this.circleSize = windowHeight - 40;
+            circleSize = windowHeight - 40;
         } else {
-            this.circleSize = windowWidth - 40;
+            circleSize = windowWidth - 40;
         }
         // let ballRadius = this.circleSize/40; Move to Ball
-        return this.circleSize;
+        return circleSize;
     }
 }
+/** class Pad */
 class Pad {
     public padXPosition: number;
     public playerVelocity: number;
-    public padLength: number;
+    public padLength: number = 20;
 
     constructor() {
         this.padXPosition = this.calculatePadXPosition();
         this.playerVelocity = this.calculatePlayerVelocity();
-        this.padLength = this.calculatePadSize();
     }
     update(): void { }
-    draw(radius: number): void { }
+    draw(radius: number): void {
+        radius;
+    }
 
     handlePad(): void {
         if (keyIsDown(UP_ARROW)) {
@@ -139,6 +190,7 @@ class Pad {
     calculatePadXPosition(): number { return 10 /* number */ } // Added method for pad x position calculation
     deflectBall(): void { }
 }
+/** class Player */
 class Player {
     private playerID: number;
     private playerColor: string;
@@ -151,21 +203,28 @@ class Player {
         this.playerColor = playerColor;
         this.playerButtonLeft = playerButtonLeft;
         this.playerButtonRight = playerButtonRight;
-        this.startPosition = this.calculateStartPosition(); // should not recieve input? instead calculate startPosition in method
+        this.startPosition = this.calculateStartPosition(circleSize / 2); // should not recieve input? instead calculate startPosition in method
     }
     update(): void { }
     draw(radius: number): void {
-        // draw pad, move to class Pad?
         stroke(0, 0, 0);
         strokeWeight(9);
-        // need to reach padLength variable somehow
-        arc(width / 2, height / 2, this.circleSize, this.circleSize, this.startPosition, this.startPosition + padLength);
+        arc(width / 2, height / 2, circleSize, circleSize, player1Position, player1Position + padLength);
+        stroke(255, 204, 0);
+        strokeWeight(5);
+        arc(width / 2, height / 2, circleSize, circleSize, player1Position, player1Position + padLength);
         stroke(253, 188, 180);
     }
-    calculateStartPosition(): number { return 10 /* number */ } // 10 = x
+    calculateStartPosition(radius: number): number {
+        this.startPosition = PI * (radius * radius);
+        console.log(this.startPosition);
+
+        return this.startPosition;
+    }
     calculatePlayerArea(): number { return 10 /* number */ }
     hitPlayer(): void { }
 }
+/** class Ball */
 class Ball {
     protected ballXPosition: number;
     protected ballYPosition: number;
@@ -179,7 +238,12 @@ class Ball {
         this.ballRadius = ballRadius;
     }
     update(): void { }
-    draw(): void { }
+    draw(): void {
+        fill(255, 255, 255);
+        stroke(0, 0, 0);
+        strokeWeight(2);
+        ellipse(this.ballXPosition, this.ballYPosition, this.ballRadius * 2, this.ballRadius * 2);
+    }
     handleBall(): void {
         if (this.ballYPosition > height || this.ballYPosition < 0) {
             this.ballSpeed *= -1;
@@ -190,6 +254,7 @@ class Ball {
     ballSize(): void { }
     bounceBackFromPad(): void { }
 }
+/** class Events */
 class Events {
     protected eventsList: Array<number>; // Number array of index nrs, or strings, or objects...
 
@@ -208,4 +273,38 @@ class Events {
     fasterBall(): void { }
     hideBall(): void { }
     moreBalls(): void { }
+}
+function preload(): void { }
+
+
+// function draw() {
+
+//     gameManager.isGameRunning = true;
+//     let playerColor = "red";
+//     let leftButton = int(UP_ARROW);
+//     let rightButton = int(DOWN_ARROW);
+
+//     gameManager.createPlayer()
+//     gameManager.players.forEach(player => {
+//         let playerID = players.indexOf(player);
+//         player = new Player(playerID, playerColor, leftButton, rightButton);
+//     });
+// }
+
+
+window.onload = function () {
+    gameArea = new GameArea;
+    gameManager = new GameManager
+    gameSettings = new GameSettings;
+    console.log(gameArea.gameRadius, circleSize, windowWidth);
+    
+    
+    let player = new Player(2, 'red', 87, 88);
+    gameManager.players.push(player)
+    gameManager.players.push(player)
+    nrOfPlayers = gameManager.players.length
+    
+    let startpos = player.calculateStartPosition((circleSize / 2) / nrOfPlayers);
+    console.log(gameManager.players);
+    
 }
