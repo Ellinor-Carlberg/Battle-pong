@@ -8,8 +8,6 @@ let padLength = 20;
 let isGameRunning: number;
 let img: any;
 let music: any;
-let button: any;
-let fontAwsome: any;
 
  function preload() {
   img = loadImage('./assets/images/battle_pong.svg');
