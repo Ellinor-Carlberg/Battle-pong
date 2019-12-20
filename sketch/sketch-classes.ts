@@ -11,6 +11,7 @@ let menu;
 let circleSize: number;
 let nrOfPlayers: number;
 let player1Position: number = 0;
+let playerPosition: number;
 let player2Position: number = 180;
 let ballSpeedX: number = 5;
 let ballSpeedY: number = 5;
@@ -66,8 +67,8 @@ class GameManager implements GameStatus {
     public quitGame(): void { }
     // New game
     createGameArea(): void { }
-    public createPlayer(): void {
-
+    public createPlayer(newPlayer: Player): void {
+        this.players.push(newPlayer);
     }
     createBall(): void { }
     private rebuildGameArea(): void { }
@@ -75,8 +76,7 @@ class GameManager implements GameStatus {
 /** class Menu */
 class GameMenu {
     public draw(): void {
-        rectMode(CENTER)
-        background('red');
+        rectMode(CENTER);
 
         // menu title
         strokeWeight(2)
@@ -192,34 +192,44 @@ class Pad {
 }
 /** class Player */
 class Player {
-    private playerID: number;
+    // private playerID: number;
     private playerColor: string;
     protected playerButtonLeft: number;
     protected playerButtonRight: number;
-    private startPosition: number;
 
-    constructor(playerID: number, playerColor: string, playerButtonLeft: number, playerButtonRight: number) {
-        this.playerID = playerID;
+    constructor(playerColor: string, playerButtonLeft: number, playerButtonRight: number) {
+        // this.playerID = this.getID;
         this.playerColor = playerColor;
         this.playerButtonLeft = playerButtonLeft;
         this.playerButtonRight = playerButtonRight;
-        this.startPosition = this.calculateStartPosition(circleSize / 2); // should not recieve input? instead calculate startPosition in method
     }
     update(): void { }
     draw(radius: number): void {
         stroke(0, 0, 0);
         strokeWeight(9);
+
         arc(width / 2, height / 2, circleSize, circleSize, player1Position, player1Position + padLength);
         stroke(255, 204, 0);
         strokeWeight(5);
         arc(width / 2, height / 2, circleSize, circleSize, player1Position, player1Position + padLength);
-        stroke(253, 188, 180);
+        stroke(50, 188, 180);
     }
-    calculateStartPosition(radius: number): number {
-        this.startPosition = PI * (radius * radius);
-        console.log(this.startPosition);
+    public calculateStartPosition(index: number): number {
 
-        return this.startPosition;
+        if (index === 0) {
+            let position: number;
+            position = 360 / gameManager.players.length;
+            arc(width / 2, height / 2, circleSize, circleSize, position, position + padLength);
+            return position;
+        }
+        else {
+            let position: number;
+            position = 360 / gameManager.players.length;
+            position = position * (index + 1);
+            stroke(random(10, 100), random(50, 200), random(2, 255))
+            arc(width / 2, height / 2, circleSize, circleSize, position, position + padLength);
+            return position;
+        }
     }
     calculatePlayerArea(): number { return 10 /* number */ }
     hitPlayer(): void { }
@@ -292,19 +302,70 @@ function preload(): void { }
 // }
 
 
-window.onload = function () {
+window.onload = function (): any {
     gameArea = new GameArea;
     gameManager = new GameManager
     gameSettings = new GameSettings;
-    console.log(gameArea.gameRadius, circleSize, windowWidth);
+    console.log(circleSize);
+    let veloc: number = 0;
+
+    if (keyIsDown(87)) {
+        // move up
+
+        veloc -= 5;
+    } else if (keyIsDown(83)) {
+        // move down
+
+        veloc += 5;
+    }
+
+    // player two controls
+    if (keyIsDown(UP_ARROW)) {
+        // move up
+
+        veloc -= 5;
+    } else if (keyIsDown(DOWN_ARROW)) {
+        // move down
+
+        veloc += 5;
+    }
+
+
+    let player = new Player('blue', 87, 88);
+    gameManager.createPlayer(player)
+    player = new Player('red', 87, 88);
+    gameManager.createPlayer(player)
+
+
+    if (gameManager.players.length) {
+        for (let i = 0; i < gameManager.players.length; i++) {
+            if (player.calculateStartPosition(i) == -1) {
+                return false;
+            } else {
+                playerPosition = gameManager.players[i].calculateStartPosition(i)
+            
+                let x: number
+                x = 360 / gameManager.players.length
+                let y: number
+                y = x
+                let min: number
+                min = x - (y / 2)
+                let max: number
+                max = x + (y / 2)
+                playerPosition = constrain(playerPosition, min, max)
+            }
+        }
+    }
+    playerPosition += veloc;
     
+    // change position
     
-    let player = new Player(2, 'red', 87, 88);
-    gameManager.players.push(player)
-    gameManager.players.push(player)
-    nrOfPlayers = gameManager.players.length
-    
-    let startpos = player.calculateStartPosition((circleSize / 2) / nrOfPlayers);
-    console.log(gameManager.players);
-    
+    // friction
+    veloc *= 0.4;
+
+    // constrain pads
+    playerPosition = constrain(playerPosition, 0, 159);
+
+
+
 }
