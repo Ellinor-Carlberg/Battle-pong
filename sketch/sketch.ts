@@ -32,16 +32,13 @@ function draw() {
 
     let ballXPositionOld = ballXPosition;
     let ballYPositionOld = ballYPosition;
-    let ballVectorOld = createVector(ballXPositionOld, ballYPositionOld);
 
 
     //Pushes the ball in its direction by adding the "speed" every frame
     ballXPosition += ballSpeedX;
     ballYPosition += ballSpeedY;
     
-    let ballVectorNew = createVector(ballXPosition, ballYPosition);
     let angleDeg = Math.atan2(ballYPositionOld - ballYPosition, ballXPositionOld- ballXPosition) * 180 / Math.PI;
-    let angleBetween = ballVectorNew.angleBetween(ballVectorOld);
 
     console.log(angleDeg);
 
@@ -74,26 +71,33 @@ function draw() {
     for(let i = 0; i <= padLength; i++){
       if(dist(ballXPosition, ballYPosition, player1XCoordinates[i], player1YCoordinates[i])
               < ballRadius + hitboxRadius) {
-            if (angleDeg < 0){
-            ballSpeedY *= -1; 
-            }
-            if (angleDeg > 0 && angleDeg < 90 || 0 > angleDeg && -90 < angleDeg ){
+                
 
-            }
       }
     }
 
 
-      // wall bounce - [will be removed but this is basicly how bounce works]
-  if (ballYPosition > height || ballYPosition < 0){
-    ballSpeedY *= -1; 
-  } else if (ballXPosition > width || ballXPosition < 0){
-    ballSpeedX *= -1; 
-  }
+    
+    var dx = ballXPosition - circleSize/2;
+    var dy = ballYPosition - circleSize/2;
 
     //Detects if the ball is outside the GameArea [Have to be limited by the players Area somehow so not all players lose at the same time]
-    if(dist(ballXPosition, ballYPosition, width/2, height/2) > ballRadius + circleSize/2){
-      console.log('du dog');
+    //if (Math.sqrt(dx * dx + dy * dy) >= circleSize/2 - ballRadius) {
+
+
+    if(dist(ballXPosition, ballYPosition, width/2, height/2) > -ballRadius + circleSize/2){
+
+
+      const velocity = Math.sqrt(ballSpeedX * ballSpeedX + ballSpeedY * ballSpeedY);
+      
+      let angleToCollisionPoint = Math.atan2(-dy, dx);
+      console.log("v",angleToCollisionPoint);
+      var oldAngle = Math.atan2(-ballSpeedY, ballSpeedX);
+      var newAngle = 2 * angleToCollisionPoint - oldAngle;
+
+      ballSpeedX = -velocity * Math.cos(newAngle);
+      ballSpeedY = velocity * Math.sin(newAngle);
+
     } 
 
 

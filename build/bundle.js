@@ -22,12 +22,9 @@ function draw() {
     background('#777b7e');
     var ballXPositionOld = ballXPosition;
     var ballYPositionOld = ballYPosition;
-    var ballVectorOld = createVector(ballXPositionOld, ballYPositionOld);
     ballXPosition += ballSpeedX;
     ballYPosition += ballSpeedY;
-    var ballVectorNew = createVector(ballXPosition, ballYPosition);
     var angleDeg = Math.atan2(ballYPositionOld - ballYPosition, ballXPositionOld - ballXPosition) * 180 / Math.PI;
-    var angleBetween = ballVectorNew.angleBetween(ballVectorOld);
     console.log(angleDeg);
     var circleSize;
     if (windowWidth >= windowHeight) {
@@ -48,21 +45,18 @@ function draw() {
     for (var i = 0; i <= padLength; i++) {
         if (dist(ballXPosition, ballYPosition, player1XCoordinates[i], player1YCoordinates[i])
             < ballRadius + hitboxRadius) {
-            if (angleDeg < 0) {
-                ballSpeedY *= -1;
-            }
-            if (angleDeg > 0 && angleDeg < 90 || 0 > angleDeg && -90 < angleDeg) {
-            }
         }
     }
-    if (ballYPosition > height || ballYPosition < 0) {
-        ballSpeedY *= -1;
-    }
-    else if (ballXPosition > width || ballXPosition < 0) {
-        ballSpeedX *= -1;
-    }
-    if (dist(ballXPosition, ballYPosition, width / 2, height / 2) > ballRadius + circleSize / 2) {
-        console.log('du dog');
+    var dx = ballXPosition - circleSize / 2;
+    var dy = ballYPosition - circleSize / 2;
+    if (dist(ballXPosition, ballYPosition, width / 2, height / 2) > -ballRadius + circleSize / 2) {
+        var velocity = Math.sqrt(ballSpeedX * ballSpeedX + ballSpeedY * ballSpeedY);
+        var angleToCollisionPoint = Math.atan2(-dy, dx);
+        console.log("v", angleToCollisionPoint);
+        var oldAngle = Math.atan2(-ballSpeedY, ballSpeedX);
+        var newAngle = 2 * angleToCollisionPoint - oldAngle;
+        ballSpeedX = -velocity * Math.cos(newAngle);
+        ballSpeedY = velocity * Math.sin(newAngle);
     }
     background(119, 123, 126);
     fill(255, 255, 255);
