@@ -30,10 +30,20 @@ function setup() {
 function draw() {
     background('#777b7e');
 
+    let ballXPositionOld = ballXPosition;
+    let ballYPositionOld = ballYPosition;
+    let ballVectorOld = createVector(ballXPositionOld, ballYPositionOld);
+
+
     //Pushes the ball in its direction by adding the "speed" every frame
     ballXPosition += ballSpeedX;
     ballYPosition += ballSpeedY;
+    
+    let ballVectorNew = createVector(ballXPosition, ballYPosition);
+    let angleDeg = Math.atan2(ballYPositionOld - ballYPosition, ballXPositionOld- ballXPosition) * 180 / Math.PI;
+    let angleBetween = ballVectorNew.angleBetween(ballVectorOld);
 
+    console.log(angleDeg);
 
     // Makes the gameArea-circle(dont remeber the name) by checking so its always 40 less than width/height
     let circleSize;
@@ -60,17 +70,33 @@ function draw() {
     //Detects if the ball touches the player 1 pad [FEAL FREE TO EXPERIMENT WITH COLLISION]
     //The reason for padLength is that it starts with position an goes all the way through the pads length
 
+
     for(let i = 0; i <= padLength; i++){
-      if(dist(ballXPosition, ballYPosition, player1XCoordinates[i], player1YCoordinates[i]) < ballRadius + hitboxRadius){
-        console.log('träff på player 1');    
+      if(dist(ballXPosition, ballYPosition, player1XCoordinates[i], player1YCoordinates[i])
+              < ballRadius + hitboxRadius) {
+            if (angleDeg < 0){
+            ballSpeedY *= -1; 
+            }
+            if (angleDeg > 0 && angleDeg < 90 || 0 > angleDeg && -90 < angleDeg ){
+
+            }
       }
     }
 
+
+      // wall bounce - [will be removed but this is basicly how bounce works]
+  if (ballYPosition > height || ballYPosition < 0){
+    ballSpeedY *= -1; 
+  } else if (ballXPosition > width || ballXPosition < 0){
+    ballSpeedX *= -1; 
+  }
+
     //Detects if the ball is outside the GameArea [Have to be limited by the players Area somehow so not all players lose at the same time]
-    if(dist(ballXPosition, ballYPosition, width/2, height/2) < ballRadius + circleSize/2){
-    } else {
-      console.log('du dog'); 
-    }
+    if(dist(ballXPosition, ballYPosition, width/2, height/2) > ballRadius + circleSize/2){
+      console.log('du dog');
+    } 
+
+
 
     //background
     background(119, 123, 126);
@@ -80,6 +106,7 @@ function draw() {
     stroke(0, 0, 0);
     strokeWeight(2);
     ellipse(ballXPosition, ballYPosition, ballRadius*2, ballRadius*2);
+
 
     //mainGameArea
     noFill();
@@ -178,3 +205,5 @@ function handleBall(player1XCoordinates: Array<number>, player1YCoordinates: Arr
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
+
+
