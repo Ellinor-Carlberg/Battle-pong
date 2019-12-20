@@ -3,6 +3,7 @@
  * This is a good place to load assets such as
  * sound files, images etc...
  */
+
 let img: any;
 function preload() {
     img = loadImage('./assets/images/battle_pong.svg')
