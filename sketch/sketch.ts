@@ -5,13 +5,22 @@ let ballSpeedY = 5;
 let ballXPosition = innerWidth/2;
 let ballYPosition = innerHeight/2;
 let padLength = 20;
+let isGameRunning: number;
+let img: any;
+let music: any;
+let button: any;
+let fontAwsome: any;
 
  function preload() {
+  img = loadImage('./assets/images/battle_pong.svg');
 }
 
 function setup() {
+    isGameRunning = 0;
+
     createCanvas(windowWidth, windowHeight);
-    textSize(21);
+    
+    textSize(15);
     frameRate(60);
     //noCursor();
     fullscreen();
@@ -23,8 +32,60 @@ function setup() {
 
 
 function draw() {
-    background(50);
-    
+    clear();
+    if(isGameRunning == 0){
+      background('#777b7e')
+
+ 
+  stroke('#999966');
+  fill('#999966');
+  rect((width * .5) -350, 0, 700, height)
+ 
+  strokeWeight(60)
+  stroke('#999966');
+  line(0, height * .2, width, height * 0.6);
+ 
+  strokeWeight(140)
+  stroke('#999966');
+  line(0, height * .4, width, height * 0.8);
+ 
+  strokeWeight(40)
+  stroke('#999966');
+  line(0, height * .55, width, height * 0.95);
+ 
+  strokeWeight(80)
+  stroke('#F4ed47');
+  line(0, height * .08, width, height * 0.08);
+ 
+  strokeWeight(1)
+  stroke('#000000');
+  line(0, height * .1, width, height * 0.1);
+ 
+  strokeWeight(1)
+  stroke('#000000');
+  line(0, height * .04, width, height * 0.04);
+ 
+  strokeWeight(3)
+  stroke('#000000');
+  line(0, height * .08, width, height * 0.08);
+ 
+  strokeWeight(1)
+  stroke('#000000');
+  line(0, height * .03, width, height * 0.03);
+ 
+  strokeWeight(2)
+  stroke('#000000');
+  line(0, height * .13, width, height * 0.13);
+ 
+  image (img, width * .5 -(img.width * 0.5), height * .02);
+  fill('#F4ed47');
+  rect(1250, 765, 140, 40, 20);
+  text('Press enter to start', 1255, 790)
+ 
+ 
+
+}
+    if(isGameRunning == 1) {
       let circleSize;
 
     ballXPosition += ballSpeedX;
@@ -72,8 +133,17 @@ function draw() {
 
     handlePads();
     handleBall(player1Position, player1Position);
+  }
+}
+function keyPressed(){
+  if(keyCode === ENTER){
+      isGameRunning = 1;
+  }
 }
 
+// function isMusicPlaying() {
+
+// }
 
 function handlePads() {
     let player1Velocity = 0;
