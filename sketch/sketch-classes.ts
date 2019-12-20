@@ -10,14 +10,7 @@ let menu;
 
 let circleSize: number;
 let nrOfPlayers: number;
-let player1Position: number = 0;
 let playerPosition: number;
-let player2Position: number = 180;
-let ballSpeedX: number = 5;
-let ballSpeedY: number = 5;
-let ballXPosition: number = innerWidth / 2;
-let ballYPosition: number = innerHeight / 2;
-let padLength: number = 20;
 
 // Make Canvas class instead of interface?
 /** interface Canvas */
@@ -73,32 +66,11 @@ class GameManager implements GameStatus {
     createBall(): void { }
     private rebuildGameArea(): void { }
 }
-/** class Menu */
-class GameMenu {
-    public draw(): void {
-        rectMode(CENTER);
 
-        // menu title
-        strokeWeight(2)
-        fill('yellow');
-        textSize(50);
-        textFont("COMIC SANS MS");
-        textAlign(CENTER, TOP);
-        text('Battle Pong', width / 2, 50);
-
-        // add player button
-        text('+', width / 2 * 1.5, height - 50);
-
-        // start button
-        stroke(0);
-        strokeWeight(5);
-        rect(width - 100, height - 50, 150, 50).
-            text('Start', width - 100, height - 75);
-
-    }
-}
-
-/** class GameSettings */
+/** class GameSettings 
+ * 
+ * Put hit Enter to Start in here?
+*/
 class GameSettings {
     // Create instance of GameManager to call for start/quit methods
     public gameManager: GameManager;
@@ -121,18 +93,14 @@ class GameSettings {
     controlEvents(): void { this.gameManager.events; }
     controlSound(): void { }
 }
-/** class GameArea */
+/** class GameArea 
+ * not sure what to do here
+*/
 class GameArea implements GameSize {
-    // public gameAreaXPosition: number;
-    // public gameAreaYPosition: number;
     public gameRadius: number;
-    // public circleSize: number;
 
     constructor() {
-        // this.gameAreaXPosition = gameAreaXPosition; // Do we need this?
-        // this.gameAreaYPosition = gameAreaYPosition; // Do we need this?
         this.gameRadius = this.calculateGameArea();
-        // this.circleSize = this.calculateGameArea();
     }
     update(): void { }
     draw(): void { }
@@ -179,11 +147,9 @@ class Pad {
         // friction
         this.playerVelocity *= 0.4;
 
-        // constrain pads
+        // constrain pads. Constrain in createPlayer instead?
         this.padXPosition = constrain(this.padXPosition, 0, 159);
         // if two players
-        // Vad är ekvationen? this.padXPosition, x, y ?
-        // player2Position = constrain(player2Position, 180, 339);
     }
     calculatePadSize(): number { return 10 /* number */ } // return void?
     calculatePlayerVelocity(): number { return 10 /* number */ } // Added method for velocity calculation, do we need it?
@@ -192,18 +158,18 @@ class Pad {
 }
 /** class Player */
 class Player {
-    // private playerID: number;
+    // private playerID: number; You can access playerID from array index +1
     private playerColor: string;
     protected playerButtonLeft: number;
     protected playerButtonRight: number;
 
     constructor(playerColor: string, playerButtonLeft: number, playerButtonRight: number) {
-        // this.playerID = this.getID;
         this.playerColor = playerColor;
         this.playerButtonLeft = playerButtonLeft;
         this.playerButtonRight = playerButtonRight;
     }
     update(): void { }
+    // draw each player, Oskars code
     draw(radius: number): void {
         stroke(0, 0, 0);
         strokeWeight(9);
@@ -214,6 +180,7 @@ class Player {
         arc(width / 2, height / 2, circleSize, circleSize, player1Position, player1Position + padLength);
         stroke(50, 188, 180);
     }
+    // draw out each player equally
     public calculateStartPosition(index: number): number {
 
         if (index === 0) {
@@ -245,7 +212,10 @@ class Player {
     calculatePlayerArea(): number { return 10 /* number */ }
     hitPlayer(): void { }
 }
-/** class Ball */
+/** class Ball
+ * 
+ * ball stuff ...
+ */
 class Ball {
     protected ballXPosition: number;
     protected ballYPosition: number;
@@ -295,24 +265,7 @@ class Events {
     hideBall(): void { }
     moreBalls(): void { }
 }
-function preload(): void { }
-
-
-// function draw() {
-
-//     gameManager.isGameRunning = true;
-//     let playerColor = "red";
-//     let leftButton = int(UP_ARROW);
-//     let rightButton = int(DOWN_ARROW);
-
-//     gameManager.createPlayer()
-//     gameManager.players.forEach(player => {
-//         let playerID = players.indexOf(player);
-//         player = new Player(playerID, playerColor, leftButton, rightButton);
-//     });
-// }
-
-
+// random testing VVV
 function loads(): any {
     gameArea = new GameArea;
     gameManager = new GameManager
