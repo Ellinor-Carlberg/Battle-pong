@@ -6,6 +6,7 @@ var ballSpeedY = 5;
 var ballXPosition = innerWidth / 2;
 var ballYPosition = innerHeight / 2;
 var padLength = 20;
+var hitboxRadius = 7;
 function preload() {
 }
 function setup() {
@@ -19,9 +20,13 @@ function setup() {
 }
 function draw() {
     background('#777b7e');
-    var circleSize;
+    var ballXPositionOld = ballXPosition;
+    var ballYPositionOld = ballYPosition;
     ballXPosition += ballSpeedX;
     ballYPosition += ballSpeedY;
+    var angleDeg = Math.atan2(ballYPositionOld - ballYPosition, ballXPositionOld - ballXPosition) * 180 / Math.PI;
+    console.log(angleDeg);
+    var circleSize;
     if (windowWidth >= windowHeight) {
         circleSize = windowHeight - 40;
     }
@@ -36,6 +41,23 @@ function draw() {
     }
     for (var i = 0; i <= padLength; i++) {
         player1YCoordinates[i] = (circleSize / 2) * Math.sin(((player1Position + i) * Math.PI / 180)) + (height / 2);
+    }
+    for (var i = 0; i <= padLength; i++) {
+        if (dist(ballXPosition, ballYPosition, player1XCoordinates[i], player1YCoordinates[i])
+            < ballRadius + hitboxRadius) {
+            console.log('lé boing');
+        }
+    }
+    var dx = ballXPosition - circleSize / 2;
+    var dy = ballYPosition - circleSize / 2;
+    if (dist(ballXPosition, ballYPosition, width / 2, height / 2) > -ballRadius + circleSize / 2) {
+        var velocity = Math.sqrt(ballSpeedX * ballSpeedX + ballSpeedY * ballSpeedY);
+        var angleToCollisionPoint = Math.atan2(-dy, dx);
+        console.log("v", angleToCollisionPoint);
+        var oldAngle = Math.atan2(-ballSpeedY, ballSpeedX);
+        var newAngle = 2 * angleToCollisionPoint - oldAngle;
+        ballSpeedX = -velocity * Math.cos(newAngle);
+        ballSpeedY = velocity * Math.sin(newAngle);
     }
     background(119, 123, 126);
     fill(255, 255, 255);
