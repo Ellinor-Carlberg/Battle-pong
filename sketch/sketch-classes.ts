@@ -219,6 +219,12 @@ class Player {
         if (index === 0) {
             let position: number;
             position = 360 / gameManager.players.length;
+            noFill();
+            stroke(0);
+            strokeWeight(9);
+            arc(width / 2, height / 2, circleSize, circleSize, position, position + padLength);
+            stroke(150, 75, 23);
+            strokeWeight(5);
             arc(width / 2, height / 2, circleSize, circleSize, position, position + padLength);
             return position;
         }
@@ -226,7 +232,12 @@ class Player {
             let position: number;
             position = 360 / gameManager.players.length;
             position = position * (index + 1);
-            stroke(random(10, 100), random(50, 200), random(2, 255))
+            noFill();
+            stroke(0);
+            strokeWeight(9);
+            arc(width / 2, height / 2, circleSize, circleSize, position, position + padLength);
+            stroke(20, 49, 150);
+            strokeWeight(5);
             arc(width / 2, height / 2, circleSize, circleSize, position, position + padLength);
             return position;
         }
@@ -302,11 +313,10 @@ function preload(): void { }
 // }
 
 
-window.onload = function (): any {
+function loads(): any {
     gameArea = new GameArea;
     gameManager = new GameManager
     gameSettings = new GameSettings;
-    console.log(circleSize);
     let veloc: number = 0;
 
     if (keyIsDown(87)) {
@@ -331,6 +341,14 @@ window.onload = function (): any {
     }
 
 
+    let player = new Player('blue', 87, 88);
+    gameManager.createPlayer(player)
+    player = new Player('red', 87, 88);
+    gameManager.createPlayer(player)
+    let player = new Player('blue', 87, 88);
+    gameManager.createPlayer(player)
+    player = new Player('red', 87, 88);
+    gameManager.createPlayer(player)
     let player = new Player('blue', 87, 88);
     gameManager.createPlayer(player)
     player = new Player('red', 87, 88);
@@ -365,7 +383,4 @@ window.onload = function (): any {
 
     // constrain pads
     playerPosition = constrain(playerPosition, 0, 159);
-
-
-
 }

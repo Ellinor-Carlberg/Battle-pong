@@ -148,6 +148,7 @@ function handleBall(player1XCoordinates: any, player1YCoordinates: any) {
       ellipse(player1XCoordinates[i], player1YCoordinates[i], 7, 7);
     }
   }
+  loads();
 }
 
 /**
