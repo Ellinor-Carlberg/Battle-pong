@@ -76,14 +76,8 @@ function draw() {
       }
     }
 
-
-    
-    var dx = ballXPosition - circleSize/2;
-    var dy = ballYPosition - circleSize/2;
-
-    //Detects if the ball is outside the GameArea [Have to be limited by the players Area somehow so not all players lose at the same time]
-    //if (Math.sqrt(dx * dx + dy * dy) >= circleSize/2 - ballRadius) {
-
+    let dx = ballXPosition - circleSize/2;
+    let dy = ballYPosition - circleSize/2;
 
     if(dist(ballXPosition, ballYPosition, width/2, height/2) > -ballRadius + circleSize/2){
 
