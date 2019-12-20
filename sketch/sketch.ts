@@ -71,7 +71,7 @@ function draw() {
     for(let i = 0; i <= padLength; i++){
       if(dist(ballXPosition, ballYPosition, player1XCoordinates[i], player1YCoordinates[i])
               < ballRadius + hitboxRadius) {
-                
+                console.log('lé boing');
 
       }
     }

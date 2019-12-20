@@ -45,6 +45,7 @@ function draw() {
     for (var i = 0; i <= padLength; i++) {
         if (dist(ballXPosition, ballYPosition, player1XCoordinates[i], player1YCoordinates[i])
             < ballRadius + hitboxRadius) {
+            console.log('lé boing');
         }
     }
     var dx = ballXPosition - circleSize / 2;
