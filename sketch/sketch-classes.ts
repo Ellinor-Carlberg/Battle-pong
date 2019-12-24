@@ -1,22 +1,8 @@
-<<<<<<< Updated upstream
-/* Add these to beginning of .js file?
-function setup(): void {
-    createCanvas(windowWidth, windowHeight);
-    frameRate(60);
-    noCursor();
-    fullscreen();
-    angleMode(DEGREES);
-    Where do we put these? VVV
-    // ballSpeedX = random(ballSpeedX * -1, ballSpeedX);
-    // ballSpeedY = random(ballSpeedY * -1, ballSpeedY);
-} 
-function draw() { background('#777b7e'); } */
-=======
 
 let gameManager: GameManager;
 let gameSettings: GameSettings;
 let gameArea: GameArea;
-let gameMenu: GameMenu;
+// let gameMenu: GameMenu;
 let players: Player[];
 let pads: Pad[];
 let balls: Ball[];
@@ -27,7 +13,6 @@ let nrOfPlayers: number;
 let nrOfPlayers2: Player[];
 let playerPosition: number;
 
->>>>>>> Stashed changes
 // Make Canvas class instead of interface?
 interface Canvas {
     width: number;
@@ -43,29 +28,16 @@ interface GameSize {
     gameRadius: number;
 }
 class GameManager implements GameStatus {
-<<<<<<< Updated upstream
-    public gameSettings: GameSettings;
-    public gameArea: GameArea;
-    public events: Events[]
-    public players: Player[];
-    public balls: Ball[];
-=======
     // private gameSettings: GameSettings;
     private gameArea: GameArea;
     public events: Events[]
     public players: Player[];
     private balls: Ball[];
->>>>>>> Stashed changes
     public pads: Pad[];
     public isGameRunning: boolean;
 
     constructor() {
-<<<<<<< Updated upstream
-        this.gameSettings = new GameSettings();
-        this.gameArea = new GameArea();
-=======
         this.gameArea = GameArea.prototype;
->>>>>>> Stashed changes
         this.events = [];
         this.players = [];
         this.balls = [];
@@ -73,10 +45,6 @@ class GameManager implements GameStatus {
         this.isGameRunning = true;
     }
 
-<<<<<<< Updated upstream
-    update(): void { }
-    draw(): void { }
-=======
     update(): void {
         for (const player of this.players) {
             player.update();
@@ -85,15 +53,11 @@ class GameManager implements GameStatus {
     draw(radius: number): void {
 
     }
->>>>>>> Stashed changes
     // Start/Quit
     startGame(): void { }
     quitGame(): void { }
     // New game
     createGameArea(): void { }
-<<<<<<< Updated upstream
-    createPlayer(): void { }
-=======
     public createPlayer(newPlayer: Player): void {
         this.players.push(newPlayer);
     }
@@ -106,39 +70,28 @@ class GameManager implements GameStatus {
     public get getActivePlayers(): Player[] {
         return gameManager.players;
     }
->>>>>>> Stashed changes
     createBall(): void { }
     rebuildGameArea(): void { }
 }
-<<<<<<< Updated upstream
-class GameSettings {
-=======
 
 /** class GameSettings 
  * 
  * Put hit Enter to Start in here?
 */
 class GameSettings extends GameManager {
->>>>>>> Stashed changes
     // Create instance of GameManager to call for start/quit methods
     public soundVolume: number;
     public gameEvents: number[];
     public nrOfPlayers: number;
 
     constructor() {
-<<<<<<< Updated upstream
-        this.gameManager = new GameManager();
-=======
         super();
->>>>>>> Stashed changes
         this.soundVolume = 5;
         this.gameEvents = [];
-        this.nrOfPlayers = this.gameManager.players.length;
+        this.nrOfPlayers = gameManager.players.length;
     }
-<<<<<<< Updated upstream
 
     controlEvents(): void { }
-=======
     gameStatus(): void {
         if (1) {
             this.startGame();
@@ -147,9 +100,6 @@ class GameSettings extends GameManager {
             this.quitGame();
         }
     }
-    controlEvents(): void { this.events; }
->>>>>>> Stashed changes
-    controlSound(): void { }
 }
 class GameArea implements GameSize {
     public gameAreaXPosition: number;
@@ -178,20 +128,6 @@ class GameArea implements GameSize {
         return this.circleSize;
     }
 }
-<<<<<<< Updated upstream
-class Pad {
-    public padXPosition: number;
-    public playerVelocity: number;
-    public padLength: number;
-
-    constructor() {
-        this.padXPosition = this.calculatePadXPosition();
-        this.playerVelocity = this.calculatePlayerVelocity();
-        this.padLength = this.calculatePadSize();
-    }
-    update(): void { }
-    draw(radius: number): void { }
-=======
 interface PlayerPosition {
     currentPosition: number;
 }
@@ -211,80 +147,14 @@ class Player extends GameManager implements PlayerPosition {
     update(): void {
         this.currentPosition = this.pad.calculatePlayerVelocity(this.getCurrentPosition);
         console.log(this.currentPosition);
->>>>>>> Stashed changes
-
     }
     draw(): void { }
     hitPlayer(): void { }
 
-<<<<<<< Updated upstream
-        // constrain pads
-        this.padXPosition = constrain(this.padXPosition, 0, 159);
-        // if two players
-        // Vad är ekvationen? this.padXPosition, x, y ?
-        // player2Position = constrain(player2Position, 180, 339);
-=======
-    // calculate current position for player
     public get getCurrentPosition(): number {
         return (360 / nrOfPlayers) * (1 + this.playerID);
->>>>>>> Stashed changes
     }
 }
-<<<<<<< Updated upstream
-class Player {
-    private playerID: number;
-    private playerColor: string;
-    protected playerButtonLeft: number;
-    protected playerButtonRight: number;
-    private startPosition: number;
-
-    constructor(playerID: number, playerColor: string, playerButtonLeft: number, playerButtonRight: number) {
-        this.playerID = playerID;
-        this.playerColor = playerColor;
-        this.playerButtonLeft = playerButtonLeft;
-        this.playerButtonRight = playerButtonRight;
-        this.startPosition = this.calculateStartPosition(); // should not recieve input? instead calculate startPosition in method
-    }
-    update(): void { }
-    draw(radius: number): void {
-        // draw pad, move to class Pad?
-        stroke(0, 0, 0);
-        strokeWeight(9);
-        // need to reach padLength variable somehow
-        arc(width / 2, height / 2, this.circleSize, this.circleSize, this.startPosition, this.startPosition + padLength);
-        stroke(253, 188, 180);
-    }
-    calculateStartPosition(): number { return 10 /* number */ } // 10 = x
-    calculatePlayerArea(): number { return 10 /* number */ }
-    hitPlayer(): void { }
-}
-class Ball {
-    protected ballXPosition: number;
-    protected ballYPosition: number;
-    protected ballSpeed: number;
-    protected ballRadius: number;
-
-    constructor(ballXPosition: number, ballYPosition: number, ballSpeed: number, ballRadius: number) {
-        this.ballXPosition = ballXPosition; // Recieve ball x,y coordinates from method?
-        this.ballYPosition = ballYPosition;
-        this.ballSpeed = ballSpeed;
-        this.ballRadius = ballRadius;
-    }
-    update(): void { }
-    draw(): void { }
-    handleBall(): void {
-        if (this.ballYPosition > height || this.ballYPosition < 0) {
-            this.ballSpeed *= -1;
-        } else if (this.ballXPosition > width || this.ballXPosition < 0) {
-            this.ballSpeed *= -1;
-        }
-    }
-    ballSize(): void { }
-    bounceBackFromPad(): void { }
-}
-class Events {
-    protected eventsList: Array<number>; // Number array of index nrs, or strings, or objects...
-=======
 /** class Pad */
 class Pad implements PlayerPosition {
     private velocity!: number;
@@ -304,7 +174,6 @@ class Pad implements PlayerPosition {
     update(): any {
         this.draw()
         console.log(this.padLength);
-        
     }
     draw(): void {
         noFill();
@@ -348,12 +217,9 @@ class Pad implements PlayerPosition {
     public setVelocity() {
         this.velocity = 0;
     }
->>>>>>> Stashed changes
 
 
 }
-<<<<<<< Updated upstream
-=======
 
 // random testing
 function loads(): any {
@@ -390,4 +256,3 @@ class Spelare {
 }
 
 */
->>>>>>> Stashed changes
