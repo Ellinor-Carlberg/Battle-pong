@@ -37,7 +37,7 @@ class GameManager implements GameStatus {
     public isGameRunning: boolean;
 
     constructor() {
-        this.gameArea = GameArea.prototype;
+        this.gameArea = new GameArea();
         this.events = [];
         this.players = [];
         this.balls = [];
@@ -49,6 +49,7 @@ class GameManager implements GameStatus {
         for (const player of this.players) {
             player.update();
         }
+        this.createGameArea()
     }
     draw(radius: number): void {
 
@@ -57,7 +58,9 @@ class GameManager implements GameStatus {
     startGame(): void { }
     quitGame(): void { }
     // New game
-    createGameArea(): void { }
+    createGameArea(): void {
+        this.gameArea.calculateCircleSize();
+    }
     public createPlayer(newPlayer: Player): void {
         this.players.push(newPlayer);
     }
@@ -102,30 +105,26 @@ class GameSettings extends GameManager {
     }
 }
 class GameArea implements GameSize {
-    public gameAreaXPosition: number;
-    public gameAreaYPosition: number;
     public gameRadius: number;
     public circleSize: number;
 
-    constructor(gameAreaXPosition: number, gameAreaYPosition: number) {
-        this.gameAreaXPosition = gameAreaXPosition; // Do we need this?
-        this.gameAreaYPosition = gameAreaYPosition; // Do we need this?
-        this.gameRadius = this.calculateGameRadius(); 
-        this.circleSize = this.calculateGameArea();
+    constructor() {
+        this.gameRadius = (this.calculateCircleSize()) / 2; 
+        this.circleSize = this.calculateCircleSize();
     }
     update(): void { }
     draw(): void { }
     calculateGameRadius() {
         return this.circleSize / 2;
     }
-    calculateGameArea(): number {
+    calculateCircleSize(): number {
         if (windowWidth >= windowHeight) {
             this.circleSize = windowHeight - 40;
         } else {
             this.circleSize = windowWidth - 40;
         }
         // let ballRadius = this.circleSize/40; Move to Ball
-        return this.circleSize;
+        return circleSize = this.circleSize;
     }
 }
 interface PlayerPosition {
@@ -145,13 +144,14 @@ class Player extends GameManager implements PlayerPosition {
         this.playerID = (gameManager.players.length + 1);
     }
     update(): void {
+        // update current position
         this.currentPosition = this.pad.calculatePlayerVelocity(this.getCurrentPosition);
-        console.log(this.currentPosition);
     }
     draw(): void { }
     hitPlayer(): void { }
 
     public get getCurrentPosition(): number {
+        // get current position
         return (360 / nrOfPlayers) * (1 + this.playerID);
     }
 }
@@ -173,7 +173,6 @@ class Pad implements PlayerPosition {
     }
     update(): any {
         this.draw()
-        console.log(this.padLength);
     }
     draw(): void {
         noFill();
@@ -217,8 +216,6 @@ class Pad implements PlayerPosition {
     public setVelocity() {
         this.velocity = 0;
     }
-
-
 }
 
 // random testing
@@ -243,16 +240,3 @@ function loads(): any {
 
     gameManager.update()
 }
-
-/*
-
-class Spelare {
-    public pad: Pad;
-
-    constructor (color, left, right) {
-
-    }
-
-}
-
-*/
