@@ -1,4 +1,3 @@
-
 let player1Position = 0;
 let player2Position = 180;
 let ballSpeedX = 5;
@@ -12,7 +11,6 @@ let img: any;
 
  function preload() {
   img = loadImage('./assets/images/battle_pong.svg')
-
 }
 
 function setup() {
@@ -381,7 +379,7 @@ function draw() {
     
     let angleDeg = Math.atan2(ballYPositionOld - ballYPosition, ballXPositionOld- ballXPosition) * 180 / Math.PI;
 
-    console.log(angleDeg);
+    // console.log(angleDeg);
 
     // Makes the gameArea-circle(dont remeber the name) by checking so its always 40 less than width/height
     let circleSize;
@@ -412,7 +410,7 @@ function draw() {
     for(let i = 0; i <= padLength; i++){
       if(dist(ballXPosition, ballYPosition, player1XCoordinates[i], player1YCoordinates[i])
               < ballRadius + hitboxRadius) {
-                console.log('lé boing');
+                // console.log('lé boing');
 
       }
     }
@@ -426,7 +424,7 @@ function draw() {
       const velocity = Math.sqrt(ballSpeedX * ballSpeedX + ballSpeedY * ballSpeedY);
       
       let angleToCollisionPoint = Math.atan2(-dy, dx);
-      console.log("v",angleToCollisionPoint);
+      // console.log("v",angleToCollisionPoint);
       var oldAngle = Math.atan2(-ballSpeedY, ballSpeedX);
       var newAngle = 2 * angleToCollisionPoint - oldAngle;
 
@@ -519,6 +517,7 @@ function handlePads() {
     // constrain pads
     player1Position = constrain(player1Position, 0, 159 );
     player2Position = constrain(player2Position, 180, 339 );
+    loads()
 }
 
 
