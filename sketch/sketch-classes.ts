@@ -7,10 +7,10 @@ let players: Player[];
 let pads: Pad[];
 let balls: Ball[];
 let menu;
+let isGameRunning: number;
 
 let circleSize: number;
 let nrOfPlayers: number;
-let nrOfPlayers2: Player[];
 let playerPosition: number;
 
 // Make Canvas class instead of interface?
@@ -43,16 +43,18 @@ class GameManager implements GameStatus {
         this.balls = [];
         this.pads = [];
         this.isGameRunning = true;
+        this.createGameArea();
     }
 
     update(): void {
         for (const player of this.players) {
             player.update();
         }
-        this.createGameArea()
     }
-    draw(radius: number): void {
-
+    draw(): void {
+        for (const player of this.players) {
+            player.draw()
+        }
     }
     // Start/Quit
     startGame(): void { }
@@ -63,15 +65,6 @@ class GameManager implements GameStatus {
     }
     public createPlayer(newPlayer: Player): void {
         this.players.push(newPlayer);
-    }
-    public set setNrOfPlayers(activePlayers: number) {
-        nrOfPlayers = activePlayers;
-    }
-    public get setNrOfPlayers(): number {
-        return nrOfPlayers;
-    }
-    public get getActivePlayers(): Player[] {
-        return gameManager.players;
     }
     createBall(): void { }
     rebuildGameArea(): void { }
@@ -85,15 +78,12 @@ class GameSettings extends GameManager {
     // Create instance of GameManager to call for start/quit methods
     public soundVolume: number;
     public gameEvents: number[];
-    public nrOfPlayers: number;
 
     constructor() {
         super();
         this.soundVolume = 5;
         this.gameEvents = [];
-        this.nrOfPlayers = gameManager.players.length;
     }
-
     controlEvents(): void { }
     gameStatus(): void {
         if (1) {
@@ -109,7 +99,7 @@ class GameArea implements GameSize {
     public circleSize: number;
 
     constructor() {
-        this.gameRadius = (this.calculateCircleSize()) / 2; 
+        this.gameRadius = (this.calculateCircleSize()) / 2;
         this.circleSize = this.calculateCircleSize();
     }
     update(): void { }
@@ -128,65 +118,89 @@ class GameArea implements GameSize {
     }
 }
 interface PlayerPosition {
-    currentPosition: number;
+    _startPosition: number;
 }
 /** class Player */
-class Player extends GameManager implements PlayerPosition {
+class Player extends GameManager {
     public playerID: number;
     protected activePlayer: boolean;
-    protected pad: Pad;
-    public currentPosition!: number;
+    public pad: Pad;
+    public _startPosition!: number;
 
     constructor(playerColor: string, playerButtonLeft: number, playerButtonRight: number) {
         super();
         this.activePlayer = true;
-        this.pad = new Pad(playerColor, playerButtonLeft, playerButtonRight);
         this.playerID = (gameManager.players.length + 1);
+        this.setStartPosition = this.getStartPosition;
+        this.pad = new Pad(playerColor, playerButtonLeft, playerButtonRight, this.getStartPosition);
     }
     update(): void {
         // update current position
-        this.currentPosition = this.pad.calculatePlayerVelocity(this.getCurrentPosition);
+        this.pad.update();
     }
-    draw(): void { }
+    draw(): void {
+        this.pad.draw()
+    }
     hitPlayer(): void { }
-
-    public get getCurrentPosition(): number {
-        // get current position
-        return (360 / nrOfPlayers) * (1 + this.playerID);
+    // gets start position
+    public get getStartPosition(): number {
+        return (360 / nrOfPlayers) * this.playerID;
+    }
+    // sets start position
+    public set setStartPosition(value: number) {
+        this._startPosition = value;
     }
 }
 /** class Pad */
-class Pad implements PlayerPosition {
+class Pad {
     private velocity!: number;
+    private playerColor: string;
     private leftKey: number;
     private rightKey: number;
-    private playerColor: string;
     public padLength: number;
-    public currentPosition!: number;
+    public _currentPosition!: number;
+    public _newPosition!: number;
 
-    constructor(color: string, leftKey: number, rightKey: number) {
+    constructor(playerColor: string, leftKey: number, rightKey: number, previousPosition: number) {
+        this.playerColor = playerColor;
         this.leftKey = leftKey;
         this.rightKey = rightKey;
-        this.playerColor = color;
-        this.setVelocity();
         this.padLength = this.getPadLength;
+        this.velocity = 0;
+        this._currentPosition = previousPosition;
     }
     update(): any {
-        this.draw()
+        this.calculatePlayerVelocity();
     }
     draw(): void {
+        this.drawPlayer();
+    }
+    public drawPlayer(): void {
+        console.log(this.velocity, this._currentPosition);
+
         noFill();
         stroke(0);
         strokeWeight(9);
-        arc(width / 2, height / 2, circleSize, circleSize, this.currentPosition, this.currentPosition + this.padLength);
+        arc(width / 2, height / 2, circleSize, circleSize, this._currentPosition, this._currentPosition + this.padLength);
         stroke(this.playerColor);
         strokeWeight(5);
-        arc(width / 2, height / 2, circleSize, circleSize, this.currentPosition, this.currentPosition + this.padLength);
+        arc(width / 2, height / 2, circleSize, circleSize, this.getCurrentPosition, this.getCurrentPosition + this.padLength);
     }
-    calculatePlayerVelocity(currentPosition: number): number {
-        // save in Pad property
-        this.currentPosition = currentPosition;
-
+    constrainValues(): void {
+        this._currentPosition = constrain(this._currentPosition,
+            (360 / nrOfPlayers) + ((360 / nrOfPlayers) * 0.5),
+            (360 / nrOfPlayers) + ((360 / nrOfPlayers) * 1.5));
+    }
+    // get current position
+    public get getCurrentPosition(): number {
+        return this._currentPosition;
+    }
+    // set current position
+    public set setCurrentPosition(value: number) {
+        this._currentPosition = value;
+    }
+    // calculate velocity
+    private calculatePlayerVelocity(): void {
         // check if key is down
         if (keyIsDown(this.leftKey)) {
             this.velocity += 5;
@@ -194,17 +208,9 @@ class Pad implements PlayerPosition {
         if (keyIsDown(this.rightKey)) {
             this.velocity -= 5;
         }
-
-        // update Pad position
-        this.currentPosition += this.velocity;
-
-        // add friction
         this.velocity *= 0.4;
-
-        this.update();
-
-        // return current position to Player
-        return this.currentPosition;
+        this._currentPosition += this.velocity;
+        this.constrainValues();
     }
     deflectBall(): void { }
 
@@ -212,31 +218,34 @@ class Pad implements PlayerPosition {
     public get getPadLength(): number {
         return ((circleSize / 2) / nrOfPlayers) / 3;
     }
-    // set default velocity
-    public setVelocity() {
-        this.velocity = 0;
-    }
 }
+window.addEventListener('load', () => {
+    isGameRunning = 0;
+})
 
-// random testing
-function loads(): any {
-    gameArea = new GameArea;
-    gameManager = new GameManager
-    gameSettings = new GameSettings;
+function keyPressed() {
+    if (keyCode === ENTER) {
+        isGameRunning = 1;
+        gameArea = new GameArea;
+        gameManager = new GameManager
+        gameSettings = new GameSettings;
 
-    let player = new Player('blue', 65, 90);
-    gameManager.createPlayer(player);
+        nrOfPlayers = 5
 
-    player = new Player('green', 76, 80);
-    gameManager.createPlayer(player);
+        // skicka in ID
+        let player = new Player('blue', 65, 90);
+        gameManager.createPlayer(player);
 
-    player = new Player('yellow', 51, 69);
-    gameManager.createPlayer(player);
+        player = new Player('green', 76, 80);
+        gameManager.createPlayer(player);
 
-    player = new Player('red', 57, 48);
-    gameManager.createPlayer(player);
-    nrOfPlayers = gameManager.players.length
-    nrOfPlayers2 = gameManager.players
+        player = new Player('purple', 35, 36);
+        gameManager.createPlayer(player);
 
-    gameManager.update()
+        player = new Player('yellow', 51, 69);
+        gameManager.createPlayer(player);
+
+        player = new Player('red', 57, 48);
+        gameManager.createPlayer(player);
+    }
 }

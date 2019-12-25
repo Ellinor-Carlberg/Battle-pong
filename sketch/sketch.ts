@@ -6,7 +6,7 @@ let ballXPosition = innerWidth/2;
 let ballYPosition = innerHeight/2;
 let padLength = 20;
 let hitboxRadius = 7;
-let isGameRunning: number;
+
 let img: any;
 
  function preload() {
@@ -26,6 +26,7 @@ function setup() {
     //generate at random way for the ball to go
     ballSpeedX = random(ballSpeedX * -1, ballSpeedX);
     ballSpeedY = random(ballSpeedY * -1, ballSpeedY);
+
 }
 
 //Draws this every 60 frames(see frameRate(60))
@@ -471,14 +472,17 @@ function draw() {
 
     handlePads();
     handleBall(player1XCoordinates, player1YCoordinates);
+
+    gameManager.update();
+    gameManager.draw()
   }
 }
 
-function keyPressed() {
-  if(keyCode === ENTER) {
-    isGameRunning = 1;
-  }
-}
+// function keyPressed() {
+//   if(keyCode === ENTER) {
+//     isGameRunning = 1;
+//   }
+// }
 
 function handlePads() {
     let player1Velocity = 0;
@@ -505,11 +509,10 @@ function handlePads() {
   
       player2Velocity += 5;
     }
-  
-      // change position
+    // change position
     player1Position += player1Velocity;
     player2Position += player2Velocity;
-  
+    
     // friction
     player1Velocity *= 0.4;
     player2Velocity *= 0.4;
@@ -517,9 +520,8 @@ function handlePads() {
     // constrain pads
     player1Position = constrain(player1Position, 0, 159 );
     player2Position = constrain(player2Position, 180, 339 );
-    loads()
-}
-
+  }
+  
 
 
 function handleBall(player1XCoordinates: Array<number>, player1YCoordinates: Array<number>) {
