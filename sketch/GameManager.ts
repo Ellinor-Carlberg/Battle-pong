@@ -5,36 +5,41 @@ interface GameStatus {
 }
 /** class GameManager */
 class GameManager implements GameStatus {
-    private gameSettings: GameSettings;
+    // private gameSettings: GameSettings;
     private gameArea: GameArea;
     public events: Events[]
     public players: Player[];
     private balls: Ball[];
-    private pads: Pad[];
-    public isGameRunning: number;
+    public pads: Pad[];
+    public isGameRunning: boolean;
 
     constructor() {
-        this.gameSettings = new GameSettings();
-        this.gameArea = GameArea.prototype;
+        this.gameArea = new GameArea();
         this.events = [];
         this.players = [];
         this.balls = [];
         this.pads = [];
-        this.isGameRunning = 0;
+        this.isGameRunning = true;
     }
 
-    update(): void { }
-    draw(radius: number): void {
-
+    update(): void {
+        // update each player
+        for (let i = 0; i < nrOfPlayers; i++) {
+            this.players[i].update();
+        }
+        // update variable for game area size
+        circleSize = this.gameArea.calculateCircleSize();
+    }
+    draw(): void {
+        // draw each player
+        for (const player of this.players) {
+            player.draw();
+        }
     }
     // Start/Quit
-    public startGame(): void {
-        this.isGameRunning = 1;
-    }
-    public quitGame(): void { }
-    // New game
-    createGameArea(): void { }
-    // add new player to Player array
+    startGame(): void { }
+    quitGame(): void { }
+    // add player to list of players
     public createPlayer(newPlayer: Player): void {
         this.players.push(newPlayer);
     }
