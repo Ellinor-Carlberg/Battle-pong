@@ -9,7 +9,7 @@ class GameManager implements GameStatus {
     private gameArea: GameArea;
     public events: Events[]
     public players: Player[];
-    private balls: Ball[];
+    public balls: Ball[];
     public pads: Pad[];
     public isGameRunning: boolean;
 

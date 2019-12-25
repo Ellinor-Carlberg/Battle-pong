@@ -11,92 +11,8 @@ let isGameRunning: number;
 
 let circleSize: number;
 let nrOfPlayers: number;
-´
-/** class Player */
 
-/** class Pad */
-class Pad {
-    private playerColor: string;
-    private leftKey: number;
-    private rightKey: number;
-    private velocity: number;
-    public currentPosition!: number;
-    public startPosition!: number; 
-    public minConstrain!: number;
-    public maxConstrain!: number;
-
-    constructor(playerColor: string, leftKey: number, rightKey: number) {
-        this.playerColor = playerColor;
-        this.leftKey = leftKey;
-        this.rightKey = rightKey;
-        this.velocity = 0;
-    }
-    // update player position
-    update(): any {
-        this.calculatePlayerVelocity();
-    }
-    draw(): void {
-        this.drawPlayer();
-    }
-    // draw player
-    private drawPlayer(): void {
-        noFill();
-        stroke(0);
-        strokeWeight(9);
-        arc(width / 2, height / 2, circleSize, circleSize, this.currentPosition, this.currentPosition + this.getPadLength);
-        stroke(this.playerColor);
-        strokeWeight(5);
-        arc(width / 2, height / 2, circleSize, circleSize, this.currentPosition, this.currentPosition + this.getPadLength);
-    }
-    // calculate velocity
-    private calculatePlayerVelocity(): void {
-        // check if key is down
-        if (keyIsDown(this.leftKey)) {
-            this.velocity += 2.5;
-        }
-        if (keyIsDown(this.rightKey)) {
-            this.velocity -= 2.5;
-        }
-
-        // change position
-        this.currentPosition += this.velocity;
-
-        // add friction
-        this.velocity *= 0.4;
-
-        // constrain pad
-        this.currentPosition = constrain(this.currentPosition, this.minConstrain, this.maxConstrain);
-    }
-    // set/get start position
-    set setStartPosition(value: number) {
-        this.startPosition = value;
-    }
-    get getStartPosition(): number {
-        return this.startPosition;
-    }
-    // set/get current position
-    set setCurrentPosition(value: number) {
-        this.currentPosition = value;
-    }
-    get getCurrentPosition(): number {
-        return this.currentPosition;
-    }
-    // set min/max constrain value
-    set setMinValue(value: number) {
-        this.minConstrain = value;
-    }
-    set setMaxValue(value: number) {
-        this.maxConstrain = value;
-    }
-    // calculate default pad length
-    get getPadLength(): number {
-        return (360 / nrOfPlayers) / 3;
-    }
-
-    deflectBall(): void { }
-}
-
-// set on load
+// set on load, for testing (?)
 window.addEventListener('load', () => {
     isGameRunning = 0;
 })
@@ -115,7 +31,7 @@ function keyPressed() {
         nrOfPlayers = 5;
 
         // create players, just for testing
-        // these are supposed to be added dynamically
+        // these are supposed to be added dynamically, not manually like this
         let player = new Player('blue', 65, 90);
         gameManager.createPlayer(player);
 
@@ -132,6 +48,7 @@ function keyPressed() {
         gameManager.createPlayer(player);
         
         // set some values after players are created
+        // this must be fired after all players are created
         for (let i = 0; i < nrOfPlayers; i++) {
             // set playerID for each player
             const player = gameManager.players[i];
