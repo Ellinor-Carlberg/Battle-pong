@@ -1,3 +1,6 @@
+// change order of compilation
+/// <reference path="./Player.ts" />
+
 class Pad {
     private playerColor: string;
     private leftKey: number;

@@ -7,7 +7,6 @@ let ballYPosition = innerHeight/2;
 let padLength = 20;
 let hitboxRadius = 7;
 
-let img: any;
 
  function preload() {
   img = loadImage('./assets/images/battle_pong.svg')
@@ -452,7 +451,7 @@ function draw() {
     strokeWeight(1);
     ellipse(width/2, height/2, circleSize, circleSize);
 
-
+    // Original code for players
     //player1
     stroke(0, 0, 0);
     strokeWeight(9);
@@ -473,6 +472,7 @@ function draw() {
     handlePads();
     handleBall(player1XCoordinates, player1YCoordinates);
 
+    // these two need to be in main draw(), which is this one
     gameManager.update();
     gameManager.draw()
   }

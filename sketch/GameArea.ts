@@ -1,4 +1,5 @@
-class GameArea extends GameManager {
+
+class GameArea {
     update(): void { }
     draw(): void { }
     // calculate game area size
