@@ -5,12 +5,14 @@
  */
 
 let img: any;
-function preload() {
-    img = loadImage('./assets/images/battle_pong.svg')
-    // Tyvärr har jag inte fått till den globala typningen för
-    // inladdningen av ljud men fungerar bra enligt nedan..
-    // sound = (window as any).loadSound('../assets/mySound.wav');
-}
+
+/* commented out because it is a duplicate from sketch.ts */
+// function preload() {
+//     img = loadImage('./assets/images/battle_pong.svg')
+//     // Tyvärr har jag inte fått till den globala typningen för
+//     // inladdningen av ljud men fungerar bra enligt nedan..
+//     // sound = (window as any).loadSound('../assets/mySound.wav');
+// }
 
 /**
  * Built in setup function in P5
@@ -18,12 +20,13 @@ function preload() {
  * and save it as a global variable so it can be used
  * in the draw function below
  */
-function setup() {
-    createCanvas(windowWidth, windowHeight)
-    frameRate(60)
-    fullscreen()
+/* commented out because it is a duplicate from sketch.ts */
+// function setup() {
+//     createCanvas(windowWidth, windowHeight)
+//     frameRate(60)
+//     fullscreen()
 
-}
+// }
 
 /**
  * Built in draw function in P5
@@ -373,6 +376,7 @@ function draw() {
 /**
  *  Built in windowResize listener function in P5
  */
-function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
-}
+/* commented out because it is a duplicate from sketch.ts */
+// function windowResized() {
+//     resizeCanvas(windowWidth, windowHeight);
+// }

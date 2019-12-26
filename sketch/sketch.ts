@@ -1,4 +1,3 @@
-
 let player1Position = 0;
 let player2Position = 180;
 let ballSpeedX = 5;
@@ -7,12 +6,10 @@ let ballXPosition = innerWidth/2;
 let ballYPosition = innerHeight/2;
 let padLength = 20;
 let hitboxRadius = 7;
-let isGameRunning: number;
-let img: any;
+
 
  function preload() {
   img = loadImage('./assets/images/battle_pong.svg')
-
 }
 
 function setup() {
@@ -28,6 +25,7 @@ function setup() {
     //generate at random way for the ball to go
     ballSpeedX = random(ballSpeedX * -1, ballSpeedX);
     ballSpeedY = random(ballSpeedY * -1, ballSpeedY);
+
 }
 
 //Draws this every 60 frames(see frameRate(60))
@@ -381,7 +379,7 @@ function draw() {
     
     let angleDeg = Math.atan2(ballYPositionOld - ballYPosition, ballXPositionOld- ballXPosition) * 180 / Math.PI;
 
-    console.log(angleDeg);
+    // console.log(angleDeg);
 
     // Makes the gameArea-circle(dont remeber the name) by checking so its always 40 less than width/height
     let circleSize;
@@ -412,7 +410,7 @@ function draw() {
     for(let i = 0; i <= padLength; i++){
       if(dist(ballXPosition, ballYPosition, player1XCoordinates[i], player1YCoordinates[i])
               < ballRadius + hitboxRadius) {
-                console.log('lé boing');
+                // console.log('lé boing');
 
       }
     }
@@ -426,7 +424,7 @@ function draw() {
       const velocity = Math.sqrt(ballSpeedX * ballSpeedX + ballSpeedY * ballSpeedY);
       
       let angleToCollisionPoint = Math.atan2(-dy, dx);
-      console.log("v",angleToCollisionPoint);
+      // console.log("v",angleToCollisionPoint);
       var oldAngle = Math.atan2(-ballSpeedY, ballSpeedX);
       var newAngle = 2 * angleToCollisionPoint - oldAngle;
 
@@ -453,7 +451,7 @@ function draw() {
     strokeWeight(1);
     ellipse(width/2, height/2, circleSize, circleSize);
 
-
+    // Original code for players
     //player1
     stroke(0, 0, 0);
     strokeWeight(9);
@@ -473,14 +471,18 @@ function draw() {
 
     handlePads();
     handleBall(player1XCoordinates, player1YCoordinates);
+
+    // these two need to be in main draw(), which is this one
+    gameManager.update();
+    gameManager.draw()
   }
 }
 
-function keyPressed() {
-  if(keyCode === ENTER) {
-    isGameRunning = 1;
-  }
-}
+// function keyPressed() {
+//   if(keyCode === ENTER) {
+//     isGameRunning = 1;
+//   }
+// }
 
 function handlePads() {
     let player1Velocity = 0;
@@ -507,11 +509,10 @@ function handlePads() {
   
       player2Velocity += 5;
     }
-  
-      // change position
+    // change position
     player1Position += player1Velocity;
     player2Position += player2Velocity;
-  
+    
     // friction
     player1Velocity *= 0.4;
     player2Velocity *= 0.4;
@@ -519,8 +520,8 @@ function handlePads() {
     // constrain pads
     player1Position = constrain(player1Position, 0, 159 );
     player2Position = constrain(player2Position, 180, 339 );
-}
-
+  }
+  
 
 
 function handleBall(player1XCoordinates: Array<number>, player1YCoordinates: Array<number>) {

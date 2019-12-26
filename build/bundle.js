@@ -1,4 +1,71 @@
 "use strict";
+var Ball = (function () {
+    function Ball(ballXPosition, ballYPosition, ballSpeed, ballRadius) {
+        this.ballXPosition = ballXPosition;
+        this.ballYPosition = ballYPosition;
+        this.ballSpeed = ballSpeed;
+        this.ballRadius = ballRadius;
+    }
+    Ball.prototype.update = function () { };
+    Ball.prototype.draw = function () {
+        fill(255, 255, 255);
+        stroke(0, 0, 0);
+        strokeWeight(2);
+        ellipse(this.ballXPosition, this.ballYPosition, this.ballRadius * 2, this.ballRadius * 2);
+    };
+    Ball.prototype.handleBall = function () {
+        if (this.ballYPosition > height || this.ballYPosition < 0) {
+            this.ballSpeed *= -1;
+        }
+        else if (this.ballXPosition > width || this.ballXPosition < 0) {
+            this.ballSpeed *= -1;
+        }
+    };
+    Ball.prototype.ballSize = function () { };
+    Ball.prototype.bounceBackFromPad = function () { };
+    return Ball;
+}());
+var Events = (function () {
+    function Events() {
+        this.eventsList = GameSettings.prototype.gameEvents;
+    }
+    Events.prototype.update = function () { };
+    Events.prototype.draw = function () { };
+    Events.prototype.announceEvent = function () { };
+    Events.prototype.activateEvent = function () { };
+    Events.prototype.countDownToEvent = function () { };
+    Events.prototype.reverseButtons = function () { };
+    Events.prototype.shrinkPad = function () { };
+    Events.prototype.fasterBall = function () { };
+    Events.prototype.hideBall = function () { };
+    Events.prototype.moreBalls = function () { };
+    return Events;
+}());
+var GameManager = (function () {
+    function GameManager() {
+        this.gameSettings = new GameSettings();
+        this.gameArea = GameArea.prototype;
+        this.events = [];
+        this.players = [];
+        this.balls = [];
+        this.pads = [];
+        this.isGameRunning = 0;
+    }
+    GameManager.prototype.update = function () { };
+    GameManager.prototype.draw = function (radius) {
+    };
+    GameManager.prototype.startGame = function () {
+        this.isGameRunning = 1;
+    };
+    GameManager.prototype.quitGame = function () { };
+    GameManager.prototype.createGameArea = function () { };
+    GameManager.prototype.createPlayer = function (newPlayer) {
+        this.players.push(newPlayer);
+    };
+    GameManager.prototype.createBall = function () { };
+    GameManager.prototype.rebuildGameArea = function () { };
+    return GameManager;
+}());
 var img;
 function preload() {
     img = loadImage('./assets/images/battle_pong.svg');
@@ -327,26 +394,15 @@ var Pad = (function () {
         this.playerVelocity = this.calculatePlayerVelocity();
     }
     Pad.prototype.update = function () { };
-    Pad.prototype.draw = function (radius) {
-        radius;
-    };
-    Pad.prototype.handlePad = function () {
-        if (keyIsDown(UP_ARROW)) {
-            this.playerVelocity -= 5;
-        }
-        else if (keyIsDown(DOWN_ARROW)) {
-            this.playerVelocity += 5;
-        }
-        this.padXPosition += this.playerVelocity;
-        this.playerVelocity *= 0.4;
-        this.padXPosition = constrain(this.padXPosition, 0, 159);
-    };
-    Pad.prototype.calculatePadSize = function () { return 10; };
-    Pad.prototype.calculatePlayerVelocity = function () { return 10; };
-    Pad.prototype.calculatePadXPosition = function () { return 10; };
-    Pad.prototype.deflectBall = function () { };
+
+    Pad.prototype.draw = function (radius) { };
     return Pad;
 }());
+draw();
+void {};
+hitPlayer();
+void {};
+this.padXPosition = constrain(this.padXPosition, 0, 159);
 var Player = (function () {
     function Player(playerColor, playerButtonLeft, playerButtonRight) {
         this.playerColor = playerColor;
@@ -422,18 +478,7 @@ var Ball = (function () {
 }());
 var Events = (function () {
     function Events() {
-        this.eventsList = GameSettings.prototype.gameEvents;
     }
-    Events.prototype.update = function () { };
-    Events.prototype.draw = function () { };
-    Events.prototype.announceEvent = function () { };
-    Events.prototype.activateEvent = function () { };
-    Events.prototype.countDownToEvent = function () { };
-    Events.prototype.reverseButtons = function () { };
-    Events.prototype.shrinkPad = function () { };
-    Events.prototype.fasterBall = function () { };
-    Events.prototype.hideBall = function () { };
-    Events.prototype.moreBalls = function () { };
     return Events;
 }());
 function preload() { }
@@ -731,8 +776,9 @@ function draw() {
         ballXPosition += ballSpeedX;
         ballYPosition += ballSpeedY;
         var angleDeg = Math.atan2(ballYPositionOld - ballYPosition, ballXPositionOld - ballXPosition) * 180 / Math.PI;
-        console.log(angleDeg);
-        var circleSize_1;
+
+        var circleSize = void 0;
+
         if (windowWidth >= windowHeight) {
             circleSize_1 = windowHeight - 40;
         }
@@ -751,7 +797,6 @@ function draw() {
         for (var i = 0; i <= padLength; i++) {
             if (dist(ballXPosition, ballYPosition, player1XCoordinates[i], player1YCoordinates[i])
                 < ballRadius + hitboxRadius) {
-                console.log('lé boing');
             }
         }
         var dx = ballXPosition - circleSize_1 / 2;
@@ -759,7 +804,6 @@ function draw() {
         if (dist(ballXPosition, ballYPosition, width / 2, height / 2) > -ballRadius + circleSize_1 / 2) {
             var velocity = Math.sqrt(ballSpeedX * ballSpeedX + ballSpeedY * ballSpeedY);
             var angleToCollisionPoint = Math.atan2(-dy, dx);
-            console.log("v", angleToCollisionPoint);
             var oldAngle = Math.atan2(-ballSpeedY, ballSpeedX);
             var newAngle = 2 * angleToCollisionPoint - oldAngle;
             ballSpeedX = -velocity * Math.cos(newAngle);
@@ -816,6 +860,7 @@ function handlePads() {
     player2Velocity *= 0.4;
     player1Position = constrain(player1Position, 0, 159);
     player2Position = constrain(player2Position, 180, 339);
+    loads();
 }
 function handleBall(player1XCoordinates, player1YCoordinates) {
     if (ballYPosition > height || ballYPosition < 0) {
