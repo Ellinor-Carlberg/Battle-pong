@@ -59,12 +59,13 @@ var GameArea = (function () {
 }());
 var GameManager = (function () {
     function GameManager() {
-        this.gameArea = new GameArea();
+        this.gameArea = new GameArea;
+        this.gameMenu = new GameMenu;
         this.events = [];
         this.players = [];
         this.balls = [];
         this.pads = [];
-        this.isGameRunning = true;
+        this.isGameRunning = 0;
     }
     GameManager.prototype.update = function () {
         for (var i = 0; i < nrOfPlayers; i++) {
@@ -87,7 +88,40 @@ var GameManager = (function () {
     GameManager.prototype.rebuildGameArea = function () { };
     return GameManager;
 }());
-var img;
+var GameMenu = (function () {
+    function GameMenu() {
+        this.x = 60;
+        this.y = 60;
+        this.circleDiameter = 80;
+    }
+    GameMenu.prototype.update = function () { };
+    ;
+    GameMenu.prototype.draw = function () {
+        this.drawSoundButton();
+    };
+    ;
+    GameMenu.prototype.drawSoundButton = function () {
+        strokeWeight(3);
+        stroke('#000000');
+        fill('#F4ed47');
+        circle(this.x, this.y, this.circleDiameter);
+        fill('#000000');
+        triangle((this.x * 2.5), this.circleDiameter, (this.x * 2.5), (this.circleDiameter / 2), (this.circleDiameter / 2), this.y);
+        fill('#F4ed47');
+        stroke('#F4ed47');
+        rect(47, 50, 5, 30);
+        fill('#000000');
+        stroke('#000000');
+        rect(38, 54, 8, 13);
+    };
+    GameMenu.prototype.muteMusic = function () {
+        strokeWeight(10);
+        stroke('#000000');
+        line((this.circleDiameter / 2), (this.x * 3), this.circleDiameter, this.y);
+        console.log('clicked');
+    };
+    return GameMenu;
+}());
 function draw() {
     background('#777b7e');
     noStroke();
@@ -271,21 +305,6 @@ function draw() {
     strokeWeight(2);
     stroke('#000000');
     line(0, 90, width, 90);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#F4ed47');
-    circle(60, 60, 80);
-    fill('#000000');
-    triangle(75, 80, 75, 40, 40, 60);
-    fill('#F4ed47');
-    stroke('#F4ed47');
-    rect(47, 50, 5, 30);
-    fill('#000000');
-    stroke('#000000');
-    rect(38, 54, 8, 13);
-    strokeWeight(10);
-    stroke('#000000');
-    line(40, 90, 80, 30);
     image(img, width * .5 - (img.width * 0.5), 20);
     strokeWeight(3);
     stroke('#000000');
@@ -442,18 +461,46 @@ var gameArea;
 var players;
 var pads;
 var balls;
-var menu;
 var isGameRunning;
 var circleSize;
 var nrOfPlayers;
+var menuMusic;
+var img;
 window.addEventListener('load', function () {
     isGameRunning = 0;
 });
+var mySound;
+function onSoundLoadSuccess(e) {
+    console.log("load sound success", e);
+}
+function onSoundLoadError(e) {
+    console.log("load sound error", e);
+}
+function onSoundLoadProgress(e) {
+    console.log("load sound progress", e);
+}
+function preload() {
+    img = loadImage('./assets/images/battle_pong.svg');
+    soundFormats('wav');
+    menuMusic = window.loadSound('./assets/music/menu-music.wav', onSoundLoadSuccess, onSoundLoadError, onSoundLoadProgress);
+}
+function setup() {
+    createCanvas(windowWidth, windowHeight);
+    frameRate(60);
+    fullscreen();
+    menuMusic.setVolume(0.25);
+    menuMusic.play();
+    menuMusic.loop();
+    gameManager = new GameManager;
+    angleMode(DEGREES);
+    ballSpeedX = random(ballSpeedX * -1, ballSpeedX);
+    ballSpeedY = random(ballSpeedY * -1, ballSpeedY);
+}
+function draw() {
+}
 function keyPressed() {
     if (keyCode === ENTER) {
         isGameRunning = 1;
-        gameManager = new GameManager;
-        gameSettings = new GameSettings;
         nrOfPlayers = 5;
         var player = new Player('blue', 65, 90);
         gameManager.createPlayer(player);
@@ -476,8 +523,8 @@ function keyPressed() {
                 player_1.pad.setCurrentPosition = (360 / nrOfPlayers) * i;
                 player_1.pad.setStartPosition = (360 / nrOfPlayers) * i;
             }
-            player_1.pad.setMinValue = player_1.pad.getStartPosition - (player_1.pad.getPadLength * 0.75) - 5;
-            player_1.pad.setMaxValue = player_1.pad.getStartPosition + (player_1.pad.getPadLength * 1.25) - 5;
+            player_1.pad.setMinValue = player_1.pad.getStartPosition - player_1.pad.getPadLength;
+            player_1.pad.setMaxValue = (player_1.pad.getStartPosition + player_1.pad.getPadLength) - 1;
         }
     }
 }
@@ -489,18 +536,6 @@ var ballXPosition = innerWidth / 2;
 var ballYPosition = innerHeight / 2;
 var padLength = 20;
 var hitboxRadius = 7;
-function preload() {
-    img = loadImage('./assets/images/battle_pong.svg');
-}
-function setup() {
-    isGameRunning = 0;
-    createCanvas(windowWidth, windowHeight);
-    frameRate(60);
-    fullscreen();
-    angleMode(DEGREES);
-    ballSpeedX = random(ballSpeedX * -1, ballSpeedX);
-    ballSpeedY = random(ballSpeedY * -1, ballSpeedY);
-}
 function draw() {
     clear();
     if (isGameRunning == 0) {
@@ -686,21 +721,7 @@ function draw() {
         strokeWeight(2);
         stroke('#000000');
         line(0, 90, width, 90);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#F4ed47');
-        circle(60, 60, 80);
-        fill('#000000');
-        triangle(75, 80, 75, 40, 40, 60);
-        fill('#F4ed47');
-        stroke('#F4ed47');
-        rect(47, 50, 5, 30);
-        fill('#000000');
-        stroke('#000000');
-        rect(38, 54, 8, 13);
-        strokeWeight(10);
-        stroke('#000000');
-        line(40, 90, 80, 30);
+        gameManager.gameMenu.drawSoundButton();
         image(img, width * .5 - (img.width * 0.5), 20);
         strokeWeight(3);
         stroke('#000000');
@@ -775,6 +796,7 @@ function draw() {
         arc(width / 2, height / 2, circleSize_1, circleSize_1, player2Position, player2Position + padLength);
         handlePads();
         handleBall(player1XCoordinates, player1YCoordinates);
+        push();
         gameManager.update();
         gameManager.draw();
     }

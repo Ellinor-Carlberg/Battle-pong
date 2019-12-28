@@ -7,27 +7,6 @@ let ballYPosition = innerHeight/2;
 let padLength = 20;
 let hitboxRadius = 7;
 
-
- function preload() {
-  img = loadImage('./assets/images/battle_pong.svg')
-}
-
-function setup() {
-    isGameRunning = 0;
-    //size of the screen
-    createCanvas(windowWidth, windowHeight);
-    frameRate(60);
-    fullscreen();
-
-    //puts the angles inte degrees rather than PI
-    angleMode(DEGREES);
-
-    //generate at random way for the ball to go
-    ballSpeedX = random(ballSpeedX * -1, ballSpeedX);
-    ballSpeedY = random(ballSpeedY * -1, ballSpeedY);
-
-}
-
 //Draws this every 60 frames(see frameRate(60))
 function draw() {
     clear();
@@ -318,31 +297,34 @@ function draw() {
     stroke('#000000');
     line(0, 90, width, 90);
 
-    /** sound button in top left corner, need to have a mouseClicked event 
-     * get it overlined when clicked  */
+    // sound button moved to GameMenu.ts as drawSoundButton()
+    // /** sound button in top left corner, need to have a mouseClicked event 
+    //  * get it overlined when clicked  */
 
-    /** the round button */
-    strokeWeight(3)
-    stroke('#000000')
-    fill('#F4ed47');
-    circle(60, 60, 80)
+    // /** the round button */
+    // strokeWeight(3)
+    // stroke('#000000')
+    // fill('#F4ed47');
+    // circle(60, 60, 80)
 
-    /** speaker sign in button */
-    fill('#000000');
-    triangle(75, 80, 75, 40, 40, 60)
+    // /** speaker sign in button */
+    // fill('#000000');
+    // triangle(75, 80, 75, 40, 40, 60)
 
-    fill('#F4ed47');
-    stroke('#F4ed47')
-    rect(47, 50, 5, 30)
+    // fill('#F4ed47');
+    // stroke('#F4ed47')
+    // rect(47, 50, 5, 30)
 
-    fill('#000000');
-    stroke('#000000')
-    rect(38, 54, 8, 13)
+    // fill('#000000');
+    // stroke('#000000')
+    // rect(38, 54, 8, 13)
 
-    /** overline when clicked */
-    strokeWeight(10)
-    stroke('#000000');
-    line(40, 90, 80, 30);
+    // /** overline when clicked */
+    // strokeWeight(10)
+    // stroke('#000000');
+    // line(40, 90, 80, 30);
+
+    gameManager.gameMenu.drawSoundButton();
 
     /**headline Battle-Pong svg */
     image (img, width * .5 -(img.width * 0.5), 20)
@@ -472,6 +454,7 @@ function draw() {
     handlePads();
     handleBall(player1XCoordinates, player1YCoordinates);
 
+    push()
     // these two need to be in main draw(), which is this one
     gameManager.update();
     gameManager.draw()

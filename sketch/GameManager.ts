@@ -5,21 +5,24 @@ interface GameStatus {
 }
 /** class GameManager */
 class GameManager implements GameStatus {
-    // private gameSettings: GameSettings;
-    private gameArea: GameArea;
+    // public gameSettings: GameSettings;
+    public gameArea: GameArea;
+    public gameMenu: GameMenu;
     public events: Events[]
     public players: Player[];
     public balls: Ball[];
     public pads: Pad[];
-    public isGameRunning: boolean;
+    public isGameRunning: number;
 
     constructor() {
-        this.gameArea = new GameArea();
+        // this.gameSettings = new GameSettings;
+        this.gameArea = new GameArea;
+        this.gameMenu = new GameMenu;
         this.events = [];
         this.players = [];
         this.balls = [];
         this.pads = [];
-        this.isGameRunning = true;
+        this.isGameRunning = 0;
     }
 
     update(): void {

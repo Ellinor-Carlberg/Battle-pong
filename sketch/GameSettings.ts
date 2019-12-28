@@ -1,7 +1,6 @@
 class GameSettings extends GameManager {
-    // Create instance of GameManager to call for start/quit methods
-    public soundVolume: number;
-    public gameEvents: number[];
+    private soundVolume: number;
+    private gameEvents: number[];
 
     constructor() {
         super();
