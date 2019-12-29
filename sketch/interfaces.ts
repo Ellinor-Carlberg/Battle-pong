@@ -8,3 +8,7 @@ interface Canvas {
     height: number;
     resizeCanvas(width: number, height: number): void;
 }
+
+interface GameMusic {
+    menuMusic: p5.SoundFile;
+}

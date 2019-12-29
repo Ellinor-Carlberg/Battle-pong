@@ -8,16 +8,19 @@ class GameManager implements GameStatus {
     // public gameSettings: GameSettings;
     public gameArea: GameArea;
     public gameMenu: GameMenu;
+    public gameMusic: GameMusic;
     public events: Events[]
     public players: Player[];
     public balls: Ball[];
     public pads: Pad[];
     public isGameRunning: number;
 
-    constructor() {
+
+    constructor(gameMusic: GameMusic) {
         // this.gameSettings = new GameSettings;
         this.gameArea = new GameArea;
         this.gameMenu = new GameMenu;
+        this.gameMusic = gameMusic;
         this.events = [];
         this.players = [];
         this.balls = [];

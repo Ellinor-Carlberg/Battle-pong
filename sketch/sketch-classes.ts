@@ -2,7 +2,8 @@
 let gameManager: GameManager;
 let gameSettings: GameSettings;
 let gameArea: GameArea;
-// let gameMenu: GameMenu;
+let gameMenu: GameMenu;
+let gameMusic: GameMusic;
 let players: Player[];
 let pads: Pad[];
 let balls: Ball[];
@@ -10,24 +11,13 @@ let isGameRunning: number;
 let circleSize: number;
 let nrOfPlayers: number;
 
-let menuMusic: p5.SoundFile;
+// let menuMusic: p5.SoundFile;
 let img: p5.Image;
 
 // game not running on load
 window.addEventListener('load', () => {
     isGameRunning = 0;
 })
-
-let mySound;
-function onSoundLoadSuccess(e) {
-    console.log("load sound success", e);
-}
-function onSoundLoadError(e) {
-    console.log("load sound error", e);
-}
-function onSoundLoadProgress(e) {
-    console.log("load sound progress", e);
-}
 
 /**
  * Built in preload function in P5
@@ -38,8 +28,8 @@ function preload() {
     img = loadImage('./assets/images/battle_pong.svg');
     
     soundFormats('wav');
-    menuMusic = (window as any).loadSound('./assets/music/menu-music.wav', onSoundLoadSuccess,onSoundLoadError,onSoundLoadProgress);
-
+    
+    gameMusic = { menuMusic: (window as any).loadSound('./assets/music/menu-music.wav') }
 }
 
 /**
@@ -54,11 +44,11 @@ function setup() {
     frameRate(60);
     fullscreen();
 
-    menuMusic.setVolume(0.25)
-    menuMusic.play();
-    menuMusic.loop();
+    // gameManager.music.menuMusic.setVolume(0.25)
+    // menuMusic.stop();
+    // gameManager.music.menuMusic.play()
 
-    gameManager = new GameManager;
+    gameManager = new GameManager(gameMusic);
 
     //puts the angles inte degrees rather than PI
     angleMode(DEGREES);
@@ -74,7 +64,7 @@ function setup() {
  * you created in the setup function above
  */
 function draw() {
-    
+    gameManager.gameMenu.draw();
 }
 
 
@@ -130,4 +120,7 @@ function keyPressed() {
             player.pad.setMaxValue = (player.pad.getStartPosition + player.pad.getPadLength) - 1;
         }
     }
+}
+function mousePressed(): void {
+    gameManager.gameMenu.update();
 }
