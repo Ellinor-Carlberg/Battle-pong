@@ -41,24 +41,46 @@ var Events = (function () {
     Events.prototype.moreBalls = function () { };
     return Events;
 }());
+var GameArea = (function () {
+    function GameArea() {
+    }
+    GameArea.prototype.update = function () { };
+    GameArea.prototype.draw = function () { };
+    GameArea.prototype.calculateCircleSize = function () {
+        if (windowWidth >= windowHeight) {
+            circleSize = windowHeight - 40;
+        }
+        else {
+            circleSize = windowWidth - 40;
+        }
+        return circleSize;
+    };
+    return GameArea;
+}());
 var GameManager = (function () {
     function GameManager() {
-        this.gameSettings = new GameSettings();
-        this.gameArea = GameArea.prototype;
+        this.gameArea = new GameArea;
+        this.gameMenu = new GameMenu;
         this.events = [];
         this.players = [];
         this.balls = [];
         this.pads = [];
         this.isGameRunning = 0;
     }
-    GameManager.prototype.update = function () { };
-    GameManager.prototype.draw = function (radius) {
+    GameManager.prototype.update = function () {
+        for (var i = 0; i < nrOfPlayers; i++) {
+            this.players[i].update();
+        }
+        circleSize = this.gameArea.calculateCircleSize();
     };
-    GameManager.prototype.startGame = function () {
-        this.isGameRunning = 1;
+    GameManager.prototype.draw = function () {
+        for (var _i = 0, _a = this.players; _i < _a.length; _i++) {
+            var player = _a[_i];
+            player.draw();
+        }
     };
+    GameManager.prototype.startGame = function () { };
     GameManager.prototype.quitGame = function () { };
-    GameManager.prototype.createGameArea = function () { };
     GameManager.prototype.createPlayer = function (newPlayer) {
         this.players.push(newPlayer);
     };
@@ -66,15 +88,40 @@ var GameManager = (function () {
     GameManager.prototype.rebuildGameArea = function () { };
     return GameManager;
 }());
-var img;
-function preload() {
-    img = loadImage('./assets/images/battle_pong.svg');
-}
-function setup() {
-    createCanvas(windowWidth, windowHeight);
-    frameRate(60);
-    fullscreen();
-}
+var GameMenu = (function () {
+    function GameMenu() {
+        this.x = 60;
+        this.y = 60;
+        this.circleDiameter = 80;
+    }
+    GameMenu.prototype.update = function () { };
+    ;
+    GameMenu.prototype.draw = function () {
+        this.drawSoundButton();
+    };
+    ;
+    GameMenu.prototype.drawSoundButton = function () {
+        strokeWeight(3);
+        stroke('#000000');
+        fill('#F4ed47');
+        circle(this.x, this.y, this.circleDiameter);
+        fill('#000000');
+        triangle((this.x * 2.5), this.circleDiameter, (this.x * 2.5), (this.circleDiameter / 2), (this.circleDiameter / 2), this.y);
+        fill('#F4ed47');
+        stroke('#F4ed47');
+        rect(47, 50, 5, 30);
+        fill('#000000');
+        stroke('#000000');
+        rect(38, 54, 8, 13);
+    };
+    GameMenu.prototype.muteMusic = function () {
+        strokeWeight(10);
+        stroke('#000000');
+        line((this.circleDiameter / 2), (this.x * 3), this.circleDiameter, this.y);
+        console.log('clicked');
+    };
+    return GameMenu;
+}());
 function draw() {
     background('#777b7e');
     noStroke();
@@ -258,21 +305,6 @@ function draw() {
     strokeWeight(2);
     stroke('#000000');
     line(0, 90, width, 90);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#F4ed47');
-    circle(60, 60, 80);
-    fill('#000000');
-    triangle(75, 80, 75, 40, 40, 60);
-    fill('#F4ed47');
-    stroke('#F4ed47');
-    rect(47, 50, 5, 30);
-    fill('#000000');
-    stroke('#000000');
-    rect(38, 54, 8, 13);
-    strokeWeight(10);
-    stroke('#000000');
-    line(40, 90, 80, 30);
     image(img, width * .5 - (img.width * 0.5), 20);
     strokeWeight(3);
     stroke('#000000');
@@ -287,252 +319,222 @@ function draw() {
     fill('#000000');
     text(startButton, 1325, 695);
 }
-function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
-}
-var gameManager;
-var gameSettings;
-var gameArea;
-var gameMenu;
-var players;
-var pads;
-var balls;
-var menu;
-var circleSize;
-var nrOfPlayers;
-var player1Position = 0;
-var playerPosition;
-var player2Position = 180;
-var ballSpeedX = 5;
-var ballSpeedY = 5;
-var ballXPosition = innerWidth / 2;
-var ballYPosition = innerHeight / 2;
-var padLength = 20;
-var GameManager = (function () {
-    function GameManager() {
-        this.gameSettings = new GameSettings();
-        this.gameArea = GameArea.prototype;
-        this.events = [];
-        this.players = [];
-        this.balls = [];
-        this.pads = [];
-        this.isGameRunning = true;
-    }
-    GameManager.prototype.update = function () { };
-    GameManager.prototype.draw = function (radius) {
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
     };
-    GameManager.prototype.startGame = function () {
-        this.isGameRunning = true;
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    GameManager.prototype.quitGame = function () { };
-    GameManager.prototype.createGameArea = function () { };
-    GameManager.prototype.createPlayer = function (newPlayer) {
-        this.players.push(newPlayer);
-    };
-    GameManager.prototype.createBall = function () { };
-    GameManager.prototype.rebuildGameArea = function () { };
-    return GameManager;
-}());
-var GameMenu = (function () {
-    function GameMenu() {
-    }
-    GameMenu.prototype.draw = function () {
-        rectMode(CENTER);
-        strokeWeight(2);
-        fill('yellow');
-        textSize(50);
-        textFont("COMIC SANS MS");
-        textAlign(CENTER, TOP);
-        text('Battle Pong', width / 2, 50);
-        text('+', width / 2 * 1.5, height - 50);
-        stroke(0);
-        strokeWeight(5);
-        rect(width - 100, height - 50, 150, 50).
-            text('Start', width - 100, height - 75);
-    };
-    return GameMenu;
-}());
-var GameSettings = (function () {
+})();
+var GameSettings = (function (_super) {
+    __extends(GameSettings, _super);
     function GameSettings() {
-        this.gameManager = GameManager.prototype;
-        this.soundVolume = 5;
-        this.gameEvents = [];
+        var _this = _super.call(this) || this;
+        _this.soundVolume = 5;
+        _this.gameEvents = [];
+        return _this;
     }
+    GameSettings.prototype.controlEvents = function () { };
     GameSettings.prototype.gameStatus = function () {
         if (1) {
-            this.gameManager.startGame();
+            this.startGame();
         }
         else if (2) {
-            this.gameManager.quitGame();
+            this.quitGame();
         }
     };
-    GameSettings.prototype.controlEvents = function () { this.gameManager.events; };
-    GameSettings.prototype.controlSound = function () { };
     return GameSettings;
-}());
-var GameArea = (function () {
-    function GameArea() {
-        this.gameRadius = this.calculateGameArea();
+}(GameManager));
+var Music = (function () {
+    function Music() {
     }
-    GameArea.prototype.update = function () { };
-    GameArea.prototype.draw = function () { };
-    GameArea.prototype.calculateGameArea = function () {
-        if (windowWidth >= windowHeight) {
-            circleSize = windowHeight - 40;
-        }
-        else {
-            circleSize = windowWidth - 40;
-        }
-        return circleSize;
-    };
-    return GameArea;
-}());
-var Pad = (function () {
-    function Pad() {
-        this.padLength = 20;
-        this.padXPosition = this.calculatePadXPosition();
-        this.playerVelocity = this.calculatePlayerVelocity();
-    }
-    Pad.prototype.update = function () { };
+    return Music;
 
-    Pad.prototype.draw = function (radius) { };
-    return Pad;
 }());
-draw();
-void {};
-hitPlayer();
-void {};
-this.padXPosition = constrain(this.padXPosition, 0, 159);
 var Player = (function () {
     function Player(playerColor, playerButtonLeft, playerButtonRight) {
-        this.playerColor = playerColor;
-        this.playerButtonLeft = playerButtonLeft;
-        this.playerButtonRight = playerButtonRight;
+
+        this.activePlayer = true;
+        this.pad = new Pad(playerColor, playerButtonLeft, playerButtonRight);
     }
-    Player.prototype.update = function () { };
-    Player.prototype.draw = function (radius) {
-        stroke(0, 0, 0);
-        strokeWeight(9);
-        arc(width / 2, height / 2, circleSize, circleSize, player1Position, player1Position + padLength);
-        stroke(255, 204, 0);
-        strokeWeight(5);
-        arc(width / 2, height / 2, circleSize, circleSize, player1Position, player1Position + padLength);
-        stroke(50, 188, 180);
+    Player.prototype.update = function () {
+        this.pad.update();
     };
-    Player.prototype.calculateStartPosition = function (index) {
-        if (index === 0) {
-            var position = void 0;
-            position = 360 / gameManager.players.length;
-            noFill();
-            stroke(0);
-            strokeWeight(9);
-            arc(width / 2, height / 2, circleSize, circleSize, position, position + padLength);
-            stroke(150, 75, 23);
-            strokeWeight(5);
-            arc(width / 2, height / 2, circleSize, circleSize, position, position + padLength);
-            return position;
-        }
-        else {
-            var position = void 0;
-            position = 360 / gameManager.players.length;
-            position = position * (index + 1);
-            noFill();
-            stroke(0);
-            strokeWeight(9);
-            arc(width / 2, height / 2, circleSize, circleSize, position, position + padLength);
-            stroke(20, 49, 150);
-            strokeWeight(5);
-            arc(width / 2, height / 2, circleSize, circleSize, position, position + padLength);
-            return position;
-        }
+    Player.prototype.draw = function () {
+        this.pad.draw();
     };
-    Player.prototype.calculatePlayerArea = function () { return 10; };
+
     Player.prototype.hitPlayer = function () { };
     return Player;
 }());
-var Ball = (function () {
-    function Ball(ballXPosition, ballYPosition, ballSpeed, ballRadius) {
-        this.ballXPosition = ballXPosition;
-        this.ballYPosition = ballYPosition;
-        this.ballSpeed = ballSpeed;
-        this.ballRadius = ballRadius;
+var Pad = (function () {
+    function Pad(playerColor, leftKey, rightKey) {
+        this.playerColor = playerColor;
+        this.leftKey = leftKey;
+        this.rightKey = rightKey;
+        this.velocity = 0;
     }
-    Ball.prototype.update = function () { };
-    Ball.prototype.draw = function () {
-        fill(255, 255, 255);
-        stroke(0, 0, 0);
-        strokeWeight(2);
-        ellipse(this.ballXPosition, this.ballYPosition, this.ballRadius * 2, this.ballRadius * 2);
+
+    Pad.prototype.update = function () {
+        this.calculatePlayerVelocity();
     };
-    Ball.prototype.handleBall = function () {
-        if (this.ballYPosition > height || this.ballYPosition < 0) {
-            this.ballSpeed *= -1;
-        }
-        else if (this.ballXPosition > width || this.ballXPosition < 0) {
-            this.ballSpeed *= -1;
-        }
+    Pad.prototype.draw = function () {
+        this.drawPlayer();
     };
-    Ball.prototype.ballSize = function () { };
-    Ball.prototype.bounceBackFromPad = function () { };
-    return Ball;
+    Pad.prototype.drawPlayer = function () {
+        noFill();
+        stroke(0);
+        strokeWeight(9);
+        arc(width / 2, height / 2, circleSize, circleSize, this.currentPosition, this.currentPosition + this.getPadLength);
+        stroke(this.playerColor);
+        strokeWeight(5);
+        arc(width / 2, height / 2, circleSize, circleSize, this.currentPosition, this.currentPosition + this.getPadLength);
+    };
+    Pad.prototype.calculatePlayerVelocity = function () {
+        if (keyIsDown(this.leftKey)) {
+            this.velocity += 2.5;
+
+        }
+        if (keyIsDown(this.rightKey)) {
+            this.velocity -= 2.5;
+        }
+        this.currentPosition += this.velocity;
+        this.velocity *= 0.4;
+        this.currentPosition = constrain(this.currentPosition, this.minConstrain, this.maxConstrain);
+    };
+    Object.defineProperty(Pad.prototype, "setStartPosition", {
+        set: function (value) {
+            this.startPosition = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Pad.prototype, "getStartPosition", {
+        get: function () {
+            return this.startPosition;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Pad.prototype, "setCurrentPosition", {
+        set: function (value) {
+            this.currentPosition = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Pad.prototype, "getCurrentPosition", {
+        get: function () {
+            return this.currentPosition;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Pad.prototype, "setMinValue", {
+        set: function (value) {
+            this.minConstrain = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Pad.prototype, "setMaxValue", {
+        set: function (value) {
+            this.maxConstrain = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Pad.prototype, "getPadLength", {
+        get: function () {
+            return (360 / nrOfPlayers) / 3;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Pad.prototype.deflectBall = function () { };
+    return Pad;
 }());
-var Events = (function () {
-    function Events() {
-    }
-    return Events;
-}());
-function preload() { }
-function loads() {
-    gameArea = new GameArea;
+
+var gameManager;
+var gameSettings;
+var gameArea;
+var players;
+var pads;
+var balls;
+
+var isGameRunning;
+var circleSize;
+var nrOfPlayers;
+var menuMusic;
+var img;
+window.addEventListener('load', function () {
+    isGameRunning = 0;
+});
+var mySound;
+function onSoundLoadSuccess(e) {
+    console.log("load sound success", e);
+}
+function onSoundLoadError(e) {
+    console.log("load sound error", e);
+}
+function onSoundLoadProgress(e) {
+    console.log("load sound progress", e);
+}
+function preload() {
+    img = loadImage('./assets/images/battle_pong.svg');
+    soundFormats('wav');
+    menuMusic = window.loadSound('./assets/music/menu-music.wav', onSoundLoadSuccess, onSoundLoadError, onSoundLoadProgress);
+}
+function setup() {
+    createCanvas(windowWidth, windowHeight);
+    frameRate(60);
+    fullscreen();
+    menuMusic.setVolume(0.25);
+    menuMusic.play();
+    menuMusic.loop();
     gameManager = new GameManager;
-    gameSettings = new GameSettings;
-    var veloc = 0;
-    if (keyIsDown(87)) {
-        veloc -= 5;
-    }
-    else if (keyIsDown(83)) {
-        veloc += 5;
-    }
-    if (keyIsDown(UP_ARROW)) {
-        veloc -= 5;
-    }
-    else if (keyIsDown(DOWN_ARROW)) {
-        veloc += 5;
-    }
-    var player = new Player('blue', 87, 88);
-    gameManager.createPlayer(player);
-    player = new Player('red', 87, 88);
-    gameManager.createPlayer(player);
-    var player = new Player('blue', 87, 88);
-    gameManager.createPlayer(player);
-    player = new Player('red', 87, 88);
-    gameManager.createPlayer(player);
-    var player = new Player('blue', 87, 88);
-    gameManager.createPlayer(player);
-    player = new Player('red', 87, 88);
-    gameManager.createPlayer(player);
-    if (gameManager.players.length) {
-        for (var i = 0; i < gameManager.players.length; i++) {
-            if (player.calculateStartPosition(i) == -1) {
-                return false;
+    angleMode(DEGREES);
+    ballSpeedX = random(ballSpeedX * -1, ballSpeedX);
+    ballSpeedY = random(ballSpeedY * -1, ballSpeedY);
+}
+function draw() {
+}
+function keyPressed() {
+    if (keyCode === ENTER) {
+        isGameRunning = 1;
+        nrOfPlayers = 5;
+        var player = new Player('blue', 65, 90);
+        gameManager.createPlayer(player);
+        player = new Player('green', 76, 80);
+        gameManager.createPlayer(player);
+        player = new Player('purple', 51, 69);
+        gameManager.createPlayer(player);
+        player = new Player('yellow', 53, 54);
+        gameManager.createPlayer(player);
+        player = new Player('red', 57, 48);
+        gameManager.createPlayer(player);
+        for (var i = 0; i < nrOfPlayers; i++) {
+            var player_1 = gameManager.players[i];
+            player_1.playerID = i;
+            if (i === 0) {
+                player_1.pad.setCurrentPosition = 0;
+                player_1.pad.setStartPosition = 0;
             }
             else {
-                playerPosition = gameManager.players[i].calculateStartPosition(i);
-                var x = void 0;
-                x = 360 / gameManager.players.length;
-                var y = void 0;
-                y = x;
-                var min_1 = void 0;
-                min_1 = x - (y / 2);
-                var max_1 = void 0;
-                max_1 = x + (y / 2);
-                playerPosition = constrain(playerPosition, min_1, max_1);
+                player_1.pad.setCurrentPosition = (360 / nrOfPlayers) * i;
+                player_1.pad.setStartPosition = (360 / nrOfPlayers) * i;
             }
+            player_1.pad.setMinValue = player_1.pad.getStartPosition - player_1.pad.getPadLength;
+            player_1.pad.setMaxValue = (player_1.pad.getStartPosition + player_1.pad.getPadLength) - 1;
         }
     }
-    playerPosition += veloc;
-    veloc *= 0.4;
-    playerPosition = constrain(playerPosition, 0, 159);
 }
 var player1Position = 0;
 var player2Position = 180;
@@ -542,20 +544,6 @@ var ballXPosition = innerWidth / 2;
 var ballYPosition = innerHeight / 2;
 var padLength = 20;
 var hitboxRadius = 7;
-var isGameRunning;
-var img;
-function preload() {
-    img = loadImage('./assets/images/battle_pong.svg');
-}
-function setup() {
-    isGameRunning = 0;
-    createCanvas(windowWidth, windowHeight);
-    frameRate(60);
-    fullscreen();
-    angleMode(DEGREES);
-    ballSpeedX = random(ballSpeedX * -1, ballSpeedX);
-    ballSpeedY = random(ballSpeedY * -1, ballSpeedY);
-}
 function draw() {
     clear();
     if (isGameRunning == 0) {
@@ -741,21 +729,7 @@ function draw() {
         strokeWeight(2);
         stroke('#000000');
         line(0, 90, width, 90);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#F4ed47');
-        circle(60, 60, 80);
-        fill('#000000');
-        triangle(75, 80, 75, 40, 40, 60);
-        fill('#F4ed47');
-        stroke('#F4ed47');
-        rect(47, 50, 5, 30);
-        fill('#000000');
-        stroke('#000000');
-        rect(38, 54, 8, 13);
-        strokeWeight(10);
-        stroke('#000000');
-        line(40, 90, 80, 30);
+        gameManager.gameMenu.drawSoundButton();
         image(img, width * .5 - (img.width * 0.5), 20);
         strokeWeight(3);
         stroke('#000000');
@@ -775,9 +749,8 @@ function draw() {
         var ballYPositionOld = ballYPosition;
         ballXPosition += ballSpeedX;
         ballYPosition += ballSpeedY;
-        var angleDeg = Math.atan2(ballYPositionOld - ballYPosition, ballXPositionOld - ballXPosition) * 180 / Math.PI;
-
-        var circleSize = void 0;
+        var angleDeg = Math.atan2(ballYPositionOld - ballYPosition, ballXPositionOld - ballXPosition) * 180 / Math.
+        var circleSize_1;
 
         if (windowWidth >= windowHeight) {
             circleSize_1 = windowHeight - 40;
@@ -832,11 +805,9 @@ function draw() {
         arc(width / 2, height / 2, circleSize_1, circleSize_1, player2Position, player2Position + padLength);
         handlePads();
         handleBall(player1XCoordinates, player1YCoordinates);
-    }
-}
-function keyPressed() {
-    if (keyCode === ENTER) {
-        isGameRunning = 1;
+        push();
+        gameManager.update();
+        gameManager.draw();
     }
 }
 function handlePads() {
@@ -860,7 +831,6 @@ function handlePads() {
     player2Velocity *= 0.4;
     player1Position = constrain(player1Position, 0, 159);
     player2Position = constrain(player2Position, 180, 339);
-    loads();
 }
 function handleBall(player1XCoordinates, player1YCoordinates) {
     if (ballYPosition > height || ballYPosition < 0) {

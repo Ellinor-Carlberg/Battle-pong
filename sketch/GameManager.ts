@@ -5,21 +5,27 @@ interface GameStatus {
 }
 /** class GameManager */
 class GameManager implements GameStatus {
-    // private gameSettings: GameSettings;
-    private gameArea: GameArea;
+    public gameSettings: GameSettings;
+    public gameArea: GameArea;
+    public gameMenu: GameMenu;
+    public gameMusic: GameMusic;
     public events: Events[]
     public players: Player[];
     public balls: Ball[];
     public pads: Pad[];
-    public isGameRunning: boolean;
+    public isGameRunning: number;
 
-    constructor() {
-        this.gameArea = new GameArea();
+
+    constructor(gameMusic: GameMusic) {
+        this.gameSettings = new GameSettings(gameMusic);
+        this.gameArea = new GameArea;
+        this.gameMenu = new GameMenu;
+        this.gameMusic = gameMusic;
         this.events = [];
         this.players = [];
         this.balls = [];
         this.pads = [];
-        this.isGameRunning = true;
+        this.isGameRunning = 0;
     }
 
     update(): void {
@@ -31,9 +37,20 @@ class GameManager implements GameStatus {
         circleSize = this.gameArea.calculateCircleSize();
     }
     draw(): void {
-        // draw each player
-        for (const player of this.players) {
-            player.draw();
+        // draw menu
+        if (isGameRunning == 1) {
+            this.gameArea.draw();
+        }
+
+        this.gameMenu.draw();
+        this.drawPlayers();
+    }
+    // draw each player
+    drawPlayers(): void {
+        if (this.players) {
+            for (const player of this.players) {
+                player.draw();
+            }
         }
     }
     // Start/Quit
