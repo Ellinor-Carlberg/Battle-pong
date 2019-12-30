@@ -66,11 +66,11 @@ function draw() {
 }
 
 
-// start game on click
+// start game on enter key
 function keyPressed() {
-    if (keyCode === ENTER) {
+    if (keyCode === ENTER && isGameRunning == 0) {
         clear();
-        isGameRunning = 1;
+        gameManager.gameSettings.startGame();
 
         // change number of players, just for testing
         // it's supposed to recieve number from user input
@@ -120,10 +120,21 @@ function keyPressed() {
         }
     }
 }
-// on click/press interactions called here
+// mouse on click/press interactions called here
 function mousePressed(): void {
+    // mouse click/press events on game menu
+    if (isGameRunning == 0) {
+        gameManager.gameMenu.update();
+    }
+    // mouse click/press events in game area
+    else if (isGameRunning == 1) {
+        
+    }
+
     // mute music and draw line on click
+    // always looking for mouse click on this one because sound button is always present
     gameManager.gameSettings.update();
+
 }
 
 function windowResized() {

@@ -4,7 +4,7 @@ interface GameStatus {
     quitGame(): void;
 }
 /** class GameManager */
-class GameManager implements GameStatus {
+class GameManager {
     public gameSettings: GameSettings;
     public gameArea: GameArea;
     public gameMenu: GameMenu;
@@ -13,8 +13,6 @@ class GameManager implements GameStatus {
     public players: Player[];
     public balls: Ball[];
     public pads: Pad[];
-    public isGameRunning: number;
-
 
     constructor(gameMusic: GameMusic) {
         this.gameSettings = new GameSettings(gameMusic);
@@ -25,25 +23,27 @@ class GameManager implements GameStatus {
         this.players = [];
         this.balls = [];
         this.pads = [];
-        this.isGameRunning = 0;
     }
 
     update(): void {
-        // update each player
-        for (let i = 0; i < nrOfPlayers; i++) {
-            this.players[i].update();
+        if (isGameRunning == 1) {
+            // update each player
+            for (let i = 0; i < nrOfPlayers; i++) {
+                this.players[i].update();
+            }
+            // update variable for game area size
+            circleSize = this.gameArea.calculateCircleSize();
         }
-        // update variable for game area size
-        circleSize = this.gameArea.calculateCircleSize();
     }
+
     draw(): void {
         // draw menu
         if (isGameRunning == 1) {
             this.gameArea.draw();
+            this.drawPlayers();
         }
-
         this.gameMenu.draw();
-        this.drawPlayers();
+        this.gameSettings.draw();
     }
     // draw each player
     drawPlayers(): void {
@@ -53,13 +53,12 @@ class GameManager implements GameStatus {
             }
         }
     }
-    // Start/Quit
-    startGame(): void { }
-    quitGame(): void { }
+
     // add player to list of players
     public createPlayer(newPlayer: Player): void {
         this.players.push(newPlayer);
     }
+
     createBall(): void { }
     rebuildGameArea(): void { }
 }

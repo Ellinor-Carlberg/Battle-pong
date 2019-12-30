@@ -1,23 +1,51 @@
-// change order of compilation
-// /// <reference path="./sketch.ts" />
-
 class GameMenu {
     update() {
-
+        this.handleAddPlayerButton();
     };
     draw() {
         // draw menu and sound button if game not running
         if (isGameRunning == 0) {
             this.drawMenu();
-            gameManager.gameSettings.drawSoundButton();
+            this.drawAddPlayerButton();
         }
         // clear canvas and draw sound button, might need to change this later?
         else if (isGameRunning == 1) {
-            gameManager.gameSettings.drawSoundButton();
+            this.drawPlayerList();
         }
     };
-    
-    drawMenu() {
+
+    private handleAddPlayerButton() {
+        if (mouseX > (width * .5) + 190 && mouseX < (width * .5) + 290 && 
+            mouseY > height * .9 && mouseY < (height * .9) + 45) {
+            
+        }
+    }
+
+    private drawAddPlayerButton() {
+        /** add more players button, need to have a mouseClicked event */
+        strokeWeight(3)
+        stroke('#000000')
+        fill('#ffffff');
+        rect((width * .5) + 190, height * .9, 100, 45, 15);
+
+        /** "+"-sign in add more player button */
+        let s = '+'
+        textSize(30);
+        fill('#000000');
+        text(s, (width * .5) + 230, (height * .9) + 30);
+    }
+
+    addPlayerOnList() {
+
+    }
+
+    private drawPlayerList() {
+        for (let i = 0; i < nrOfPlayers; i++) {
+
+        }
+    }
+
+    private drawMenu() {
         /** Background, (grey and brown) */
 
         /** grey background */
@@ -262,19 +290,6 @@ class GameMenu {
         fill('#000000');
         text(p6RightKey, (width * .5) + 267, 532)
 
-
-        /** add more players button, need to have a mouseClicked event */
-        strokeWeight(3)
-        stroke('#000000')
-        fill('#ffffff');
-        rect((width * .5) + 190, 700, 100, 45, 15)
-
-        /** "+"-sign in add more player button */
-        let s = '+'
-        textSize(30);
-        fill('#000000');
-        text(s, (width * .5) + 230, 730)
-
         /** line behind headline */
         /** yellow line behind headline */
         strokeWeight(60)
@@ -329,11 +344,3 @@ class GameMenu {
         text(startButton, 1325, 695)
     }
 }
-
-/**
- *  Built in windowResize listener function in P5
- */
-/* commented out because it is a duplicate from sketch.ts */
-// function windowResized() {
-//     resizeCanvas(windowWidth, windowHeight);
-// }

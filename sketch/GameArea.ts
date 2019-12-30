@@ -4,7 +4,7 @@ class GameArea {
     draw(): void {
         this.drawDefaultArea();
     }
-    drawDefaultArea() {
+    private drawDefaultArea() {
         background('#777b7e');
         noFill();
         stroke(0, 0, 0);
