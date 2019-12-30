@@ -2,7 +2,7 @@ class Events {
     protected eventsList: Array<number>; // Number array of index nrs, or strings, or objects...
 
     constructor() {
-        this.eventsList = GameSettings.prototype.gameEvents;
+        this.eventsList = [];
     }
     update(): void { }
     draw(): void { }

@@ -530,8 +530,6 @@ function handleBall(player1XCoordinates: Array<number>, player1YCoordinates: Arr
 /**
  *  Built in windowResize listener function in P5
  */
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}
+
 
 

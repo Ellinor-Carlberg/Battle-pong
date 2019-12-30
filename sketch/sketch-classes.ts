@@ -10,11 +10,8 @@ let balls: Ball[];
 let isGameRunning: number;
 let circleSize: number;
 let nrOfPlayers: number;
-
-// let menuMusic: p5.SoundFile;
 let img: p5.Image;
 
-// game not running on load
 window.addEventListener('load', () => {
     isGameRunning = 0;
 })
@@ -26,9 +23,9 @@ window.addEventListener('load', () => {
  */
 function preload() {
     img = loadImage('./assets/images/battle_pong.svg');
-    
+
     soundFormats('wav');
-    
+    // load music
     gameMusic = { menuMusic: (window as any).loadSound('./assets/music/menu-music.wav') }
 }
 
@@ -44,10 +41,7 @@ function setup() {
     frameRate(60);
     fullscreen();
 
-    // gameManager.music.menuMusic.setVolume(0.25)
-    // menuMusic.stop();
-    // gameManager.music.menuMusic.play()
-
+    gameMusic.menuMusic.play();
     gameManager = new GameManager(gameMusic);
 
     //puts the angles inte degrees rather than PI
@@ -56,6 +50,7 @@ function setup() {
     //generate at random way for the ball to go
     ballSpeedX = random(ballSpeedX * -1, ballSpeedX);
     ballSpeedY = random(ballSpeedY * -1, ballSpeedY);
+
 }
 
 /**
@@ -64,13 +59,15 @@ function setup() {
  * you created in the setup function above
  */
 function draw() {
-    gameManager.gameMenu.draw();
+    gameManager.update();
+    gameManager.draw();
 }
 
 
 // start game on click
 function keyPressed() {
     if (keyCode === ENTER) {
+        clear();
         isGameRunning = 1;
 
         // change number of players, just for testing
@@ -121,6 +118,12 @@ function keyPressed() {
         }
     }
 }
+// on click/press interactions called here
 function mousePressed(): void {
-    gameManager.gameMenu.update();
+    // mute music and draw line on click
+    gameManager.gameSettings.update();
+}
+
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
 }

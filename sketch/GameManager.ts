@@ -5,7 +5,7 @@ interface GameStatus {
 }
 /** class GameManager */
 class GameManager implements GameStatus {
-    // public gameSettings: GameSettings;
+    public gameSettings: GameSettings;
     public gameArea: GameArea;
     public gameMenu: GameMenu;
     public gameMusic: GameMusic;
@@ -17,7 +17,7 @@ class GameManager implements GameStatus {
 
 
     constructor(gameMusic: GameMusic) {
-        // this.gameSettings = new GameSettings;
+        this.gameSettings = new GameSettings(gameMusic);
         this.gameArea = new GameArea;
         this.gameMenu = new GameMenu;
         this.gameMusic = gameMusic;
@@ -37,9 +37,20 @@ class GameManager implements GameStatus {
         circleSize = this.gameArea.calculateCircleSize();
     }
     draw(): void {
-        // draw each player
-        for (const player of this.players) {
-            player.draw();
+        // draw menu
+        if (isGameRunning == 1) {
+            this.gameArea.draw();
+        }
+
+        this.gameMenu.draw();
+        this.drawPlayers();
+    }
+    // draw each player
+    drawPlayers(): void {
+        if (this.players) {
+            for (const player of this.players) {
+                player.draw();
+            }
         }
     }
     // Start/Quit

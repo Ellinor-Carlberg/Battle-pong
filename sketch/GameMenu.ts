@@ -2,66 +2,21 @@
 // /// <reference path="./sketch.ts" />
 
 class GameMenu {
-    private musicMuted: number = 0;
-    private x: number;
-    private y: number;
-    private circleDiameter: number;
-
-    constructor() {
-        this.x = 60;
-        this.y = 60;
-        this.circleDiameter = 80;
-    }
-
     update() {
-        this.handleSoundButton();
+
     };
     draw() {
-        this.drawMenu();
-        this.drawSoundButton();
+        // draw menu and sound button if game not running
+        if (isGameRunning == 0) {
+            this.drawMenu();
+            gameManager.gameSettings.drawSoundButton();
+        }
+        // clear canvas and draw sound button, might need to change this later?
+        else if (isGameRunning == 1) {
+            gameManager.gameSettings.drawSoundButton();
+        }
     };
-
-    private handleSoundButton(): void {
-        if (dist(mouseX, mouseY, this.x, this.y) < (this.circleDiameter / 2)) {
-            if (this.musicMuted === 0) {
-                this.musicMuted = 1;
-            }
-            else if (this.musicMuted === 1) {
-                this.musicMuted = 0;
-            }
-        }
-    }
-
-    drawSoundButton() {
-        /** sound button in top left corner, need to have a mouseClicked event 
-        get it overlined when clicked  */
-
-        /** the round button */
-        strokeWeight(3)
-        stroke('#000000')
-        fill('#F4ed47');
-        circle(this.x, this.y, this.circleDiameter);
-
-        /** speaker sign in button */
-        fill('#000000');
-     triangle(75, 80, 75, 40, 40, 60)
-
- fill('#F4ed47');
- stroke('#F4ed47')
- rect(47, 50, 5, 30)
-
- fill('#000000');
- stroke('#000000')
-rect(38, 54, 8, 13)
-
-        /** overline when clicked */
-        if (this.musicMuted === 0) {
-            strokeWeight(10)
-            stroke('#000000');
-            line((this.circleDiameter / 2), this.x * 1.5, this.circleDiameter, this.y / 2);
-        }
-    }
-
+    
     drawMenu() {
         /** Background, (grey and brown) */
 
