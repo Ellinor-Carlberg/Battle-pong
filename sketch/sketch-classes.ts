@@ -1,3 +1,4 @@
+
 // global variables
 let gameManager: GameManager;
 let gameSettings: GameSettings;
@@ -7,6 +8,7 @@ let gameMusic: GameMusic;
 let players: Player[];
 let pads: Pad[];
 let balls: Ball[];
+
 let isGameRunning: number;
 let circleSize: number;
 let nrOfPlayers: number;

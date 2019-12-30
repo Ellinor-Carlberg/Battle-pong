@@ -319,6 +319,7 @@ function draw() {
     fill('#000000');
     text(startButton, 1325, 695);
 }
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -355,9 +356,11 @@ var Music = (function () {
     function Music() {
     }
     return Music;
+
 }());
 var Player = (function () {
     function Player(playerColor, playerButtonLeft, playerButtonRight) {
+
         this.activePlayer = true;
         this.pad = new Pad(playerColor, playerButtonLeft, playerButtonRight);
     }
@@ -367,6 +370,7 @@ var Player = (function () {
     Player.prototype.draw = function () {
         this.pad.draw();
     };
+
     Player.prototype.hitPlayer = function () { };
     return Player;
 }());
@@ -377,6 +381,7 @@ var Pad = (function () {
         this.rightKey = rightKey;
         this.velocity = 0;
     }
+
     Pad.prototype.update = function () {
         this.calculatePlayerVelocity();
     };
@@ -395,6 +400,7 @@ var Pad = (function () {
     Pad.prototype.calculatePlayerVelocity = function () {
         if (keyIsDown(this.leftKey)) {
             this.velocity += 2.5;
+
         }
         if (keyIsDown(this.rightKey)) {
             this.velocity -= 2.5;
@@ -455,12 +461,14 @@ var Pad = (function () {
     Pad.prototype.deflectBall = function () { };
     return Pad;
 }());
+
 var gameManager;
 var gameSettings;
 var gameArea;
 var players;
 var pads;
 var balls;
+
 var isGameRunning;
 var circleSize;
 var nrOfPlayers;
@@ -741,8 +749,9 @@ function draw() {
         var ballYPositionOld = ballYPosition;
         ballXPosition += ballSpeedX;
         ballYPosition += ballSpeedY;
-        var angleDeg = Math.atan2(ballYPositionOld - ballYPosition, ballXPositionOld - ballXPosition) * 180 / Math.PI;
+        var angleDeg = Math.atan2(ballYPositionOld - ballYPosition, ballXPositionOld - ballXPosition) * 180 / Math.
         var circleSize_1;
+
         if (windowWidth >= windowHeight) {
             circleSize_1 = windowHeight - 40;
         }
