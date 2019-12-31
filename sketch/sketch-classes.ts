@@ -65,7 +65,6 @@ function draw() {
     gameManager.draw();
 }
 
-
 // start game on enter key
 function keyPressed() {
     if (keyCode === ENTER && isGameRunning == 0) {
@@ -74,24 +73,10 @@ function keyPressed() {
 
         // change number of players, just for testing
         // it's supposed to recieve number from user input
-        nrOfPlayers = 5;
+        
 
         // create players, just for testing
         // players are supposed to be added dynamically, not manually like this
-        let player = new Player('blue', 65, 90);
-        gameManager.createPlayer(player);
-
-        player = new Player('green', 76, 80);
-        gameManager.createPlayer(player);
-
-        player = new Player('purple', 51, 69);
-        gameManager.createPlayer(player);
-
-        player = new Player('yellow', 53, 54);
-        gameManager.createPlayer(player);
-
-        player = new Player('red', 57, 48);
-        gameManager.createPlayer(player);
 
         // set some values after players are created
         // this must be fired after all players are created
@@ -122,9 +107,20 @@ function keyPressed() {
 }
 // mouse on click/press interactions called here
 function mousePressed(): void {
+
+    for (const playerObj in gameManager.players) {
+        if (gameManager.players.hasOwnProperty(playerObj)) {
+            const element = gameManager.players[playerObj];
+            element
+            
+        }
+    }
+
     // mouse click/press events on game menu
-    if (isGameRunning == 0) {
-        gameManager.gameMenu.update();
+    if (isGameRunning == 0 && gameManager.players.length < 9) {
+        gameManager.gameMenu.handleAddPlayerButton();
+        // gameManager.crePla();
+        
     }
     // mouse click/press events in game area
     else if (isGameRunning == 1) {
@@ -132,7 +128,6 @@ function mousePressed(): void {
     }
 
     // mute music and draw line on click
-    // always looking for mouse click on this one because sound button is always present
     gameManager.gameSettings.update();
 
 }

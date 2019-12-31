@@ -2,16 +2,16 @@
 /// <reference path="./Player.ts" />
 
 class Pad {
-    private playerColor: string;
-    private leftKey: number;
-    private rightKey: number;
+    public playerColor: p5.Color;
+    public leftKey: {}
+    public rightKey: {}
     private velocity: number;
     public currentPosition!: number;
     public startPosition!: number; 
     public minConstrain!: number;
     public maxConstrain!: number;
 
-    constructor(playerColor: string, leftKey: number, rightKey: number) {
+    constructor(playerColor: p5.Color, leftKey: number, rightKey: number) {
         this.playerColor = playerColor;
         this.leftKey = leftKey;
         this.rightKey = rightKey;

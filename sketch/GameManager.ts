@@ -26,6 +26,12 @@ class GameManager {
     }
 
     update(): void {
+        if (!nrOfPlayers) {
+            this.setDefaultNrOfPlayers();
+        }
+
+        this.gameMenu.update();
+
         if (isGameRunning == 1) {
             // update each player
             for (let i = 0; i < nrOfPlayers; i++) {
@@ -36,7 +42,7 @@ class GameManager {
         }
     }
 
-    draw(): void {
+    draw() {
         // draw menu
         if (isGameRunning == 1) {
             this.gameArea.draw();
@@ -45,18 +51,33 @@ class GameManager {
         this.gameMenu.draw();
         this.gameSettings.draw();
     }
+
+    private setDefaultNrOfPlayers() {
+        nrOfPlayers = 2;
+        this.gameMenu.addDefaultPlayers();
+    }
+
     // draw each player
-    drawPlayers(): void {
-        if (this.players) {
+    drawPlayers() {
+        if (this.players && isGameRunning == 1) {
             for (const player of this.players) {
                 player.draw();
             }
+            
         }
     }
-
     // add player to list of players
-    public createPlayer(newPlayer: Player): void {
+    public createPlayer(newPlayer: Player) {
         this.players.push(newPlayer);
+    }
+
+    public crePla() {
+        let r = random(0, 255);
+        let g = random(0, 255);
+        let b = random(0, 255);
+        let c = color(r, g, b);
+        let player = new Player(c, 65, 90);
+        gameManager.createPlayer(player);
     }
 
     createBall(): void { }
