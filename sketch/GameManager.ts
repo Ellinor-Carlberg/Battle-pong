@@ -29,14 +29,12 @@ class GameManager {
         if (!nrOfPlayers) {
             this.setDefaultNrOfPlayers();
         }
-
+        for (let i = 0; i < nrOfPlayers; i++) {
+            this.players[i].update();
+        }
         this.gameMenu.update();
 
         if (isGameRunning == 1) {
-            // update each player
-            for (let i = 0; i < nrOfPlayers; i++) {
-                this.players[i].update();
-            }
             // update variable for game area size
             circleSize = this.gameArea.calculateCircleSize();
         }
@@ -47,6 +45,9 @@ class GameManager {
         if (isGameRunning == 1) {
             this.gameArea.draw();
             this.drawPlayers();
+            for (let i = 0; i < nrOfPlayers; i++) {
+                this.players[i].draw();
+            }
         }
         this.gameMenu.draw();
         this.gameSettings.draw();
@@ -54,7 +55,13 @@ class GameManager {
 
     private setDefaultNrOfPlayers() {
         nrOfPlayers = 2;
-        this.gameMenu.addDefaultPlayers();
+        this.addDefaultPlayers();
+    }
+
+    private addDefaultPlayers() {
+        for (let i = 0; i < nrOfPlayers; i++) {
+            this.createPlayer();
+        }
     }
 
     // draw each player
@@ -67,17 +74,9 @@ class GameManager {
         }
     }
     // add player to list of players
-    public createPlayer(newPlayer: Player) {
+    public createPlayer() {
+        let newPlayer = new Player;
         this.players.push(newPlayer);
-    }
-
-    public crePla() {
-        let r = random(0, 255);
-        let g = random(0, 255);
-        let b = random(0, 255);
-        let c = color(r, g, b);
-        let player = new Player(c, 65, 90);
-        gameManager.createPlayer(player);
     }
 
     createBall(): void { }

@@ -1,49 +1,95 @@
 class Player {
-    protected activePlayer: boolean; // this property is probably not needed
-    public pad: Pad;
     public playerID: number = gameManager.players.length;
+    protected activePlayer: boolean;
+    public playerColor: p5.Color;
+    private playerButtonLeft!: number;
+    private playerButtonRight!: number;
+    public pad: Pad;
 
-    constructor(playerColor: p5.Color, playerButtonLeft: number, playerButtonRight: number) {
+    constructor() {
         this.activePlayer = true;
-        this.pad = new Pad(playerColor, playerButtonLeft, playerButtonRight);
-    }
-    // draw + update player pad
-    update(): void {
-        this.pad.update();
-    }
-    draw(): void {
-
-        this.pad.draw();
-    }
-    hitPlayer(): void { }
-
-    setLeftKey() {
-
+        this.playerColor = this.getPlayerColor;
+        this.pad = new Pad;
     }
 
-    setRightKey() {
+    update() {
+        this.setKeys();
+        if (isGameRunning === 1) {
+            this.setDefaultPositions();
+            this.handlePlayerButtons();
+        }
+    }
+    draw() {
+        this.pad.drawPlayer(this.playerColor);
+    }
+    hitPlayer() { }
 
+    // generate random color
+    private get getPlayerColor(): p5.Color {
+        let r = random(0, 255);
+        let g = random(0, 255);
+        let b = random(0, 255);
+        let c = color(r, g, b);
+        return c;
     }
 
-    setKeys() {
-        for (const keyObj in this.getKeys) {
-            if (this.getKeys.hasOwnProperty(keyObj)) {
-                const keys = this.getKeys[keyObj];
-                
-                console.log(Object.values(this.players));
-                
-                // let val = this.getKeys[].hasOwnProperty('left')
-                
-                console.log(val);
-                Object.getOwnPropertyDescriptors(keys)
-                for (let [key, value] of Object.entries(keys)) {
+    // handle user key press
+    private handlePlayerButtons(): void {
+        if (keyIsDown(this.playerButtonLeft)) {
+            this.pad.calculatePlayerVelocity('left');
+        }
+        else if (keyIsDown(this.playerButtonRight)) {
+            this.pad.calculatePlayerVelocity('right');
+        }
+    }
 
+    // constrain values
+    private setConstrainValues() {
+        this.pad.setMinValue = this.pad.getStartPosition - this.pad.getPadLength;
+        this.pad.setMaxValue = (this.pad.getStartPosition + this.pad.getPadLength) - 1;
+    }
+
+    // set start position and default current position
+    private setDefaultPositions() {
+        // if default positions are not set already
+        if (!this.pad.currentPosition && !this.pad.startPosition) {
+            if (this.playerID === 0) {
+                // 0 is not read as number so it is set manually
+                this.pad.setCurrentPosition = 0;
+                this.pad.setStartPosition = 0;
+            }
+            else {
+                // position = full circle divided by nr of players, multiplied by playerID
+                // or else each player ends up at the same position
+                this.pad.setCurrentPosition = (360 / nrOfPlayers) * this.playerID;
+                this.pad.setStartPosition = (360 / nrOfPlayers) * this.playerID;
+            }
+
+            this.setConstrainValues();
+        }
+    }
+
+    // set player buttons
+    public setKeys() {
+        if (!this.playerButtonRight) {
+            const allKeyPairs = Object.entries(this.getKeys)[this.playerID];
+            const keyPairIndex = parseInt(allKeyPairs[0])
+            const keyPairObj = allKeyPairs[1];
+            const keyPair = Object.entries(keyPairObj);
+
+            for (const [key, value] of keyPair) {
+                if (key === 'left' && keyPair[this.playerID] == keyPair[keyPairIndex]) {
+                    this.playerButtonLeft = (<number>value);
+                }
+                if (key === 'right' && keyPair[this.playerID] == keyPair[keyPairIndex]) {
+                    this.playerButtonRight = (<number>value);
                 }
             }
         }
     }
 
-    get getKeys(): Array<{}> {
+    // list of keys
+    private get getKeys(): Array<{}> {
         return [
             { left: UP_ARROW, right: DOWN_ARROW },
             { left: 65, right: 90 }, // A, Z

@@ -63,6 +63,33 @@ function setup() {
 function draw() {
     gameManager.update();
     gameManager.draw();
+
+    // console.log(nrOfPlayers)
+}
+
+function values() {
+    for (let i = 0; i < nrOfPlayers; i++) {
+        // set playerID for each player
+        const player = gameManager.players[i];
+
+        // set position for current position and default position
+        // currentPosition will change, startPosition won't
+        if (i === 0) {
+            // set for player with playerID = 0 to 0 or else playerID is not read as a number (i)
+            player.pad.setCurrentPosition = 0;
+            player.pad.setStartPosition = 0;
+        }
+        else {
+            // position = full circle divided by nr of players, multiplied by playerID
+            // or else each player ends up at the same position
+            player.pad.setCurrentPosition = (360 / nrOfPlayers) * i;
+            player.pad.setStartPosition = (360 / nrOfPlayers) * i;
+        }
+        // set min and max value for constrain()
+        // max value is - 1 to make players not overlap each other
+        player.pad.setMinValue = player.pad.getStartPosition - player.pad.getPadLength;
+        player.pad.setMaxValue = (player.pad.getStartPosition + player.pad.getPadLength) - 1;
+    }
 }
 
 // start game on enter key
@@ -80,47 +107,21 @@ function keyPressed() {
 
         // set some values after players are created
         // this must be fired after all players are created
-        for (let i = 0; i < nrOfPlayers; i++) {
-            // set playerID for each player
-            const player = gameManager.players[i];
-            player.playerID = i;
 
-            // set position for current position and default position
-            // currentPosition will change, startPosition won't
-            if (i === 0) {
-                // set for player with playerID = 0 to 0, or else playerID is not read as a number (i)
-                player.pad.setCurrentPosition = 0;
-                player.pad.setStartPosition = 0;
-            }
-            else {
-                // position = full circle divided by nr of players, multiplied by playerID
-                // or else each player ends up at the same position
-                player.pad.setCurrentPosition = (360 / nrOfPlayers) * i;
-                player.pad.setStartPosition = (360 / nrOfPlayers) * i;
-            }
-            // set min and max value for constrain()
-            // max value is - 1 to make players not overlap each other
-            player.pad.setMinValue = player.pad.getStartPosition - player.pad.getPadLength;
-            player.pad.setMaxValue = (player.pad.getStartPosition + player.pad.getPadLength) - 1;
-        }
     }
 }
 // mouse on click/press interactions called here
 function mousePressed(): void {
-
-    for (const playerObj in gameManager.players) {
-        if (gameManager.players.hasOwnProperty(playerObj)) {
-            const element = gameManager.players[playerObj];
-            element
-            
-        }
-    }
-
     // mouse click/press events on game menu
-    if (isGameRunning == 0 && gameManager.players.length < 9) {
+    if (isGameRunning == 0 && gameManager.players.length < 8) {
         gameManager.gameMenu.handleAddPlayerButton();
-        // gameManager.crePla();
-        
+
+        for (const playerObj in gameManager.players) {
+            if (gameManager.players.hasOwnProperty(playerObj)) {
+                const player = gameManager.players[playerObj];
+                player.setKeys();
+            }
+        }
     }
     // mouse click/press events in game area
     else if (isGameRunning == 1) {

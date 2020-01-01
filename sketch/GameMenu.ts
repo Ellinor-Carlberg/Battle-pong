@@ -16,11 +16,13 @@ class GameMenu {
         }
     }
 
+    // +-button at start menu
     public handleAddPlayerButton() {
         if (mouseX > (width * .5) + 190 && mouseX < (width * .5) + 290 &&
             mouseY > height * .9 && mouseY < (height * .9) + 45) {
             if (gameManager.players.length < 8) {
-                gameManager.crePla();
+                nrOfPlayers++;
+                gameManager.createPlayer();
             }
         }
     }
@@ -39,16 +41,15 @@ class GameMenu {
         text(s, (width * .5) + 230, (height * .9) + 30);
     }
 
-    drawNewPlayer() {
-        
+    // draw out new added player
+    private drawNewPlayer() {
         for (const playerObj in gameManager.players) {
             if (gameManager.players.hasOwnProperty(playerObj)) {
                 const player = gameManager.players[playerObj];
-                
                 // color
                 strokeWeight(3);
                 stroke('#000000');
-                fill(player.pad.playerColor);
+                fill(player.playerColor);
                 rect((width * .5) - 300, 200 + 60 * (player.playerID), 55, 45, 15);
                 // text
                 textSize(30);
@@ -65,12 +66,6 @@ class GameMenu {
                 fill('#ffffff');
                 rect((width * .5) + 250, 200 + 60 * (player.playerID), 50, 45, 15)
             }
-        }
-    }
-
-    addDefaultPlayers() {
-        for (let i = 0; i < nrOfPlayers; i++) {
-            gameManager.crePla();
         }
     }
 
