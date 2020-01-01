@@ -21,7 +21,6 @@ class GameSettings implements GameStatus, MusicStatus {
     set setSoundVolume(value: number) {
         this.gameMusic.menuMusic.setVolume(value);
     }
-
     // control volume property value
     private controlSound(): void {
         if (this.mutedMusic === true) {
@@ -31,19 +30,7 @@ class GameSettings implements GameStatus, MusicStatus {
             this.setSoundVolume = 0.2;
         }
     }
-
-    // handle sound button interaction
-    private handleSoundButton() {
-        if (dist(mouseX, mouseY, 60, 60) < 40) {
-            if (this.mutedMusic === false) {
-                this.mutedMusic = true;
-            }
-            else if (this.mutedMusic === true) {
-                this.mutedMusic = false;
-            }
-        }
-    }
-
+    // draw and handle sound button interaction
     private drawSoundButton() {
         /** sound button in top left corner, need to have a mouseClicked event 
         get it overlined when clicked  */
@@ -71,6 +58,16 @@ class GameSettings implements GameStatus, MusicStatus {
             strokeWeight(10)
             stroke('#000000');
             line(40, 90, 80, 30);
+        }
+    }
+    private handleSoundButton() {
+        if (dist(mouseX, mouseY, 60, 60) < 40) {
+            if (this.mutedMusic === false) {
+                this.mutedMusic = true;
+            }
+            else if (this.mutedMusic === true) {
+                this.mutedMusic = false;
+            }
         }
     }
 

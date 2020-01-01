@@ -22,6 +22,7 @@ class Player {
     draw() {
         this.pad.drawPlayer(this.playerColor);
     }
+
     hitPlayer() { }
 
     // generate random color
@@ -34,7 +35,7 @@ class Player {
     }
 
     // handle user key press
-    private handlePlayerButtons(): void {
+    public handlePlayerButtons(): void {
         if (keyIsDown(this.playerButtonLeft)) {
             this.pad.calculatePlayerVelocity('left');
         }
@@ -43,7 +44,7 @@ class Player {
         }
     }
 
-    // constrain values
+    // set constrain values
     private setConstrainValues() {
         this.pad.setMinValue = this.pad.getStartPosition - this.pad.getPadLength;
         this.pad.setMaxValue = (this.pad.getStartPosition + this.pad.getPadLength) - 1;
@@ -101,7 +102,6 @@ class Player {
             { left: 66, right: 78 } // B, N
         ]
     }
-
 }
 
 
