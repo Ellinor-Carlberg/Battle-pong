@@ -1,14 +1,40 @@
-    
-let player1Position = 0;
-let player2Position = 180;
-let ballSpeedX = 7;
-let ballSpeedY = -7;
-let ballXPosition : number;
-let ballYPosition : number;
-let padLength = 20;
-let hitboxRadius = 7;
+// global variables
+let gameManager: GameManager;
+let gameSettings: GameSettings;
+let gameArea: GameArea;
+let gameMenu: GameMenu;
+let gameMusic: GameMusic;
+let players: Player[];
+let pads: Pad[];
+let balls: Ball[];
 
- function preload() {
+// ball stuff
+let ballXPosition: number;
+let ballYPosition: number;
+let padLength = 20;
+let ballRadius: number;
+
+// etc
+let isGameRunning: number;
+let circleSize: number;
+let nrOfPlayers: number;
+let img: p5.Image;
+
+window.addEventListener('load', () => {
+    isGameRunning = 0;
+})
+
+/**
+ * Built in preload function in P5
+ * This is a good place to load assets such as
+ * sound files, images etc...
+ */
+function preload() {
+    img = loadImage('./assets/images/battle_pong.svg');
+
+    // load music
+    soundFormats('wav');
+    gameMusic = { menuMusic: (window as any).loadSound('./assets/music/menu-music.wav') }
 }
 
 function setup() {
@@ -18,14 +44,11 @@ function setup() {
     noCursor();
     fullscreen();
 
-    //puts the angles inte degrees rather than PI
-    angleMode(DEGREES);
-    ballXPosition = width / 2;
-    ballYPosition = height * .1;
-
-    //generate at random way for the ball to go
-    // ballSpeedX = -ballSpeedX;
-    // ballSpeedY = ballSpeedY;
+    // play menu music on page load
+    gameMusic.menuMusic.play();
+    // create new game manager instance
+    gameManager = new GameManager(gameMusic);
+    gameManager.setup();
 }
 
 //Draws this every 60 frames(see frameRate(60))
@@ -42,14 +65,13 @@ function draw() {
     
     // let angleDeg = Math.atan2(ballYPositionOld - ballYPosition, ballXPositionOld- ballXPosition) * 180 / Math.PI;
 
-    // console.log(angleDeg);
 
-    // Makes the gameArea-circle(dont remeber the name) by checking so its always 40 less than width/height
-    let circleSize;
-    if(windowWidth >= windowHeight){
-        circleSize = height - 40;
-    } else {
-        circleSize = width - 40;
+// start game on enter key
+function keyPressed(): void {
+    if (keyCode === ENTER && isGameRunning == 0) {
+        clear();
+        gameManager.gameSettings.startGame();
+        gameManager.createBall();
     }
 
     // The balls size is connected to the size of the screen

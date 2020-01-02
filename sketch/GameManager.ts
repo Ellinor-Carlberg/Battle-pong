@@ -25,6 +25,13 @@ class GameManager {
         this.pads = [];
     }
 
+    setup() {
+        //puts the angles into degrees
+        angleMode(DEGREES);
+        ballXPosition = width / 2;
+        ballYPosition = height * .1;
+    }
+
     update(): void {
         if (!nrOfPlayers) {
             this.setDefaultNrOfPlayers();
@@ -42,15 +49,21 @@ class GameManager {
 
     draw() {
         // draw menu
+        this.gameMenu.draw();
+        this.gameSettings.draw();
+
         if (isGameRunning == 1) {
             this.gameArea.draw();
             this.drawPlayers();
             for (let i = 0; i < nrOfPlayers; i++) {
                 this.players[i].draw();
             }
+            for (let i = 0; i < this.balls.length; i++) {
+                ballRadius = circleSize / 40;
+                this.balls[i].draw();
+            }
         }
-        this.gameMenu.draw();
-        this.gameSettings.draw();
+
     }
 
     private setDefaultNrOfPlayers() {
@@ -70,7 +83,7 @@ class GameManager {
             for (const player of this.players) {
                 player.draw();
             }
-            
+
         }
     }
     // add player to list of players
@@ -79,6 +92,13 @@ class GameManager {
         this.players.push(newPlayer);
     }
 
-    createBall(): void { }
+    createBall(): void {
+        let newBall = new Ball;
+        this.balls.push(newBall);
+
+        for (let i = 0; i < this.balls.length; i++) {
+            this.balls[i].update();
+        }
+    }
     rebuildGameArea(): void { }
 }
