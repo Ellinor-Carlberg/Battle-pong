@@ -9,6 +9,13 @@ let players: Player[];
 let pads: Pad[];
 let balls: Ball[];
 
+// ball stuff
+let ballXPosition: number;
+let ballYPosition: number;
+let padLength = 20;
+let ballRadius: number;
+
+// etc
 let isGameRunning: number;
 let circleSize: number;
 let nrOfPlayers: number;
@@ -47,9 +54,7 @@ function setup() {
     gameMusic.menuMusic.play();
     // create new game manager instance
     gameManager = new GameManager(gameMusic);
-
-    //puts the angles into degrees
-    angleMode(DEGREES);
+    gameManager.setup();
 }
 
 /**
@@ -67,6 +72,7 @@ function keyPressed(): void {
     if (keyCode === ENTER && isGameRunning == 0) {
         clear();
         gameManager.gameSettings.startGame();
+        gameManager.createBall();
     }
 }
 
