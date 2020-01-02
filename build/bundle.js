@@ -27,7 +27,7 @@ var Ball = (function () {
 }());
 var Events = (function () {
     function Events() {
-        this.eventsList = GameSettings.prototype.gameEvents;
+        this.eventsList = [];
     }
     Events.prototype.update = function () { };
     Events.prototype.draw = function () { };
@@ -45,7 +45,16 @@ var GameArea = (function () {
     function GameArea() {
     }
     GameArea.prototype.update = function () { };
-    GameArea.prototype.draw = function () { };
+    GameArea.prototype.draw = function () {
+        this.drawDefaultArea();
+    };
+    GameArea.prototype.drawDefaultArea = function () {
+        background('#777b7e');
+        noFill();
+        stroke(0, 0, 0);
+        strokeWeight(1);
+        ellipse(width / 2, height / 2, circleSize, circleSize);
+    };
     GameArea.prototype.calculateCircleSize = function () {
         if (windowWidth >= windowHeight) {
             circleSize = windowHeight - 40;
@@ -58,30 +67,58 @@ var GameArea = (function () {
     return GameArea;
 }());
 var GameManager = (function () {
-    function GameManager() {
+    function GameManager(gameMusic) {
+        this.gameSettings = new GameSettings(gameMusic);
         this.gameArea = new GameArea;
         this.gameMenu = new GameMenu;
+        this.gameMusic = gameMusic;
         this.events = [];
         this.players = [];
         this.balls = [];
         this.pads = [];
-        this.isGameRunning = 0;
     }
     GameManager.prototype.update = function () {
+        if (!nrOfPlayers) {
+            this.setDefaultNrOfPlayers();
+        }
         for (var i = 0; i < nrOfPlayers; i++) {
             this.players[i].update();
         }
-        circleSize = this.gameArea.calculateCircleSize();
-    };
-    GameManager.prototype.draw = function () {
-        for (var _i = 0, _a = this.players; _i < _a.length; _i++) {
-            var player = _a[_i];
-            player.draw();
+        this.gameMenu.update();
+        if (isGameRunning == 1) {
+            circleSize = this.gameArea.calculateCircleSize();
         }
     };
-    GameManager.prototype.startGame = function () { };
-    GameManager.prototype.quitGame = function () { };
-    GameManager.prototype.createPlayer = function (newPlayer) {
+    GameManager.prototype.draw = function () {
+        if (isGameRunning == 1) {
+            this.gameArea.draw();
+            this.drawPlayers();
+            for (var i = 0; i < nrOfPlayers; i++) {
+                this.players[i].draw();
+            }
+        }
+        this.gameMenu.draw();
+        this.gameSettings.draw();
+    };
+    GameManager.prototype.setDefaultNrOfPlayers = function () {
+        nrOfPlayers = 2;
+        this.addDefaultPlayers();
+    };
+    GameManager.prototype.addDefaultPlayers = function () {
+        for (var i = 0; i < nrOfPlayers; i++) {
+            this.createPlayer();
+        }
+    };
+    GameManager.prototype.drawPlayers = function () {
+        if (this.players && isGameRunning == 1) {
+            for (var _i = 0, _a = this.players; _i < _a.length; _i++) {
+                var player = _a[_i];
+                player.draw();
+            }
+        }
+    };
+    GameManager.prototype.createPlayer = function () {
+        var newPlayer = new Player;
         this.players.push(newPlayer);
     };
     GameManager.prototype.createBall = function () { };
@@ -90,258 +127,244 @@ var GameManager = (function () {
 }());
 var GameMenu = (function () {
     function GameMenu() {
-        this.x = 60;
-        this.y = 60;
-        this.circleDiameter = 80;
     }
-    GameMenu.prototype.update = function () { };
-    ;
-    GameMenu.prototype.draw = function () {
-        this.drawSoundButton();
+    GameMenu.prototype.update = function () {
     };
-    ;
-    GameMenu.prototype.drawSoundButton = function () {
+    GameMenu.prototype.draw = function () {
+        if (isGameRunning == 0) {
+            this.drawMenu();
+            this.drawAddPlayerButton();
+            this.drawNewPlayer();
+        }
+    };
+    GameMenu.prototype.handleAddPlayerButton = function () {
+        if (mouseX > (width * .5) + 190 && mouseX < (width * .5) + 290 &&
+            mouseY > height * .9 && mouseY < (height * .9) + 45) {
+            if (gameManager.players.length < 8) {
+                nrOfPlayers++;
+                gameManager.createPlayer();
+            }
+        }
+    };
+    GameMenu.prototype.drawAddPlayerButton = function () {
+        strokeWeight(3);
+        stroke('#000000');
+        fill('#ffffff');
+        rect((width * .5) + 190, height * .9, 100, 45, 15);
+        var s = '+';
+        textSize(30);
+        fill('#000000');
+        text(s, (width * .5) + 230, (height * .9) + 30);
+    };
+    GameMenu.prototype.drawNewPlayer = function () {
+        for (var playerObj in gameManager.players) {
+            var player = gameManager.players[playerObj];
+            strokeWeight(3);
+            stroke('#000000');
+            fill(player.playerColor);
+            rect((width * .5) - 300, 200 + 60 * (player.playerID), 55, 45, 15);
+            textSize(30);
+            fill('#000000');
+            text('Player ' + (player.playerID + 1), (width * .5) - 200, 232 + 60 * (player.playerID));
+            strokeWeight(3);
+            stroke('#000000');
+            fill('#ffffff');
+            rect((width * .5) + 180, 200 + 60 * (player.playerID), 50, 45, 15);
+            strokeWeight(3);
+            stroke('#000000');
+            fill('#ffffff');
+            rect((width * .5) + 250, 200 + 60 * (player.playerID), 50, 45, 15);
+            this.drawKeys(player.playerID);
+        }
+    };
+    GameMenu.prototype.drawKeys = function (playerID) {
+        switch (playerID) {
+            case 0:
+                fill('#000000');
+                triangle((width * .5) + 195, 230, (width * .5) + 215, 230, (width * .5) + 205, 210);
+                fill('#000000');
+                triangle((width * .5) + 265, 212, (width * .5) + 285, 212, (width * .5) + 275, 232);
+                break;
+            case 1:
+                var p2LeftKey = 'a';
+                textSize(30);
+                fill('#000000');
+                text(p2LeftKey, (width * .5) + 197, 290);
+                var p2RightKey = 'z';
+                textSize(30);
+                fill('#000000');
+                text(p2RightKey, (width * .5) + 267, 290);
+                break;
+            case 2:
+                var p3LeftKey = 'l';
+                textSize(30);
+                fill('#000000');
+                text(p3LeftKey, (width * .5) + 202, 352);
+                var p3RightKey = 'p';
+                textSize(30);
+                fill('#000000');
+                text(p3RightKey, (width * .5) + 267, 350);
+                break;
+            case 3:
+                var p4LeftKey = '3';
+                textSize(30);
+                fill('#000000');
+                text(p4LeftKey, (width * .5) + 198, 412);
+                var p4RightKey = 'e';
+                textSize(30);
+                fill('#000000');
+                text(p4RightKey, (width * .5) + 267, 410);
+                break;
+            case 4:
+                var p5LeftKey = '9';
+                textSize(30);
+                fill('#000000');
+                text(p5LeftKey, (width * .5) + 198, 472);
+                var p5RightKey = '0';
+                textSize(30);
+                fill('#000000');
+                text(p5RightKey, (width * .5) + 267, 472);
+                break;
+            case 5:
+                var p6LeftKey = '5';
+                textSize(30);
+                fill('#000000');
+                text(p6LeftKey, (width * .5) + 198, 532);
+                var p6RightKey = '6';
+                textSize(30);
+                fill('#000000');
+                text(p6RightKey, (width * .5) + 267, 532);
+                break;
+            case 6:
+                var p7LeftKey = 'c';
+                textSize(30);
+                fill('#000000');
+                text(p7LeftKey, (width * .5) + 198, 592);
+                var p7RightKey = 'v';
+                textSize(30);
+                fill('#000000');
+                text(p7RightKey, (width * .5) + 267, 592);
+                break;
+            case 7:
+                var p8LeftKey = 'b';
+                textSize(30);
+                fill('#000000');
+                text(p8LeftKey, (width * .5) + 198, 652);
+                var p8RightKey = 'n';
+                textSize(30);
+                fill('#000000');
+                text(p8RightKey, (width * .5) + 267, 652);
+                break;
+        }
+    };
+    GameMenu.prototype.drawMenu = function () {
+        background('#777b7e');
+        noStroke();
+        fill('#999966');
+        rect((width * .5) - 350, 0, 700, height);
+        strokeWeight(60);
+        stroke('#999966');
+        line(0, 150, width, 500);
+        strokeWeight(140);
+        stroke('#999966');
+        line(0, 280, width, 630);
+        strokeWeight(40);
+        stroke('#999966');
+        line(0, 400, width, 750);
+        strokeWeight(60);
+        stroke('#F4ed47');
+        line(0, 60, width, 60);
+        strokeWeight(1);
+        stroke('#000000');
+        line(0, 30, width, 30);
+        strokeWeight(3);
+        stroke('#000000');
+        line(0, 45, width, 45);
+        strokeWeight(1);
+        stroke('#000000');
+        line(0, 55, width, 55);
+        strokeWeight(2);
+        stroke('#000000');
+        line(0, 60, width, 60);
+        strokeWeight(2);
+        stroke('#000000');
+        line(0, 80, width, 80);
+        strokeWeight(2);
+        stroke('#000000');
+        line(0, 90, width, 90);
+        image(img, width * .5 - (img.width * 0.5), 20);
+        strokeWeight(3);
+        stroke('#000000');
+        fill('#000000');
+        rect((width * .304), height * .906, 260, 45, 15);
         strokeWeight(3);
         stroke('#000000');
         fill('#F4ed47');
-        circle(this.x, this.y, this.circleDiameter);
+        rect((width * .3), height * .9, 260, 45, 15);
+        var startButton = 'Press Enter To Start';
+        textSize(25);
         fill('#000000');
-        triangle((this.x * 2.5), this.circleDiameter, (this.x * 2.5), (this.circleDiameter / 2), (this.circleDiameter / 2), this.y);
+        text(startButton, (width * .3131), (height * .9) + 30);
+    };
+    return GameMenu;
+}());
+var GameSettings = (function () {
+    function GameSettings(gameMusic) {
+        this.mutedMusic = false;
+        this.gameMusic = gameMusic;
+        this.gameEvents = [];
+    }
+    GameSettings.prototype.update = function () {
+        this.handleSoundButton();
+        this.controlSound();
+    };
+    GameSettings.prototype.draw = function () {
+        this.drawSoundButton();
+    };
+    Object.defineProperty(GameSettings.prototype, "setSoundVolume", {
+        set: function (value) {
+            this.gameMusic.menuMusic.setVolume(value);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    GameSettings.prototype.controlSound = function () {
+        if (this.mutedMusic === true) {
+            this.setSoundVolume = 0;
+        }
+        else {
+            this.setSoundVolume = 0.2;
+        }
+    };
+    GameSettings.prototype.drawSoundButton = function () {
+        strokeWeight(3);
+        stroke('#000000');
+        fill('#F4ed47');
+        circle(60, 60, 80);
+        fill('#000000');
+        triangle(75, 80, 75, 40, 40, 60);
         fill('#F4ed47');
         stroke('#F4ed47');
         rect(47, 50, 5, 30);
         fill('#000000');
         stroke('#000000');
         rect(38, 54, 8, 13);
+        if (this.mutedMusic === true) {
+            strokeWeight(10);
+            stroke('#000000');
+            line(40, 90, 80, 30);
+        }
     };
-    GameMenu.prototype.muteMusic = function () {
-        strokeWeight(10);
-        stroke('#000000');
-        line((this.circleDiameter / 2), (this.x * 3), this.circleDiameter, this.y);
-        console.log('clicked');
+    GameSettings.prototype.handleSoundButton = function () {
+        if (dist(mouseX, mouseY, 60, 60) < 40) {
+            if (this.mutedMusic === false) {
+                this.mutedMusic = true;
+            }
+            else if (this.mutedMusic === true) {
+                this.mutedMusic = false;
+            }
+        }
     };
-    return GameMenu;
-}());
-function draw() {
-    background('#777b7e');
-    noStroke();
-    fill('#999966');
-    rect((width * .5) - 350, 0, 700, height);
-    strokeWeight(60);
-    stroke('#999966');
-    line(0, 150, width, 500);
-    strokeWeight(140);
-    stroke('#999966');
-    line(0, 280, width, 630);
-    strokeWeight(40);
-    stroke('#999966');
-    line(0, 400, width, 750);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#4363d8');
-    rect((width * .5) - 300, 200, 55, 45, 15);
-    var playerOne = 'Player 1';
-    textSize(30);
-    fill('#000000');
-    text(playerOne, (width * .5) - 200, 232);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#ffffff');
-    rect((width * .5) + 180, 200, 50, 45, 15);
-    fill('#000000');
-    triangle((width * .5) + 195, 230, (width * .5) + 215, 230, (width * .5) + 205, 210);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#ffffff');
-    rect((width * .5) + 250, 200, 50, 45, 15);
-    fill('#000000');
-    triangle((width * .5) + 265, 212, (width * .5) + 285, 212, (width * .5) + 275, 232);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#cc0000');
-    rect((width * .5) - 300, 260, 55, 45, 15);
-    var playerTwo = 'Player 2';
-    textSize(30);
-    fill('#000000');
-    text(playerTwo, (width * .5) - 200, 292);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#ffffff');
-    rect((width * .5) + 180, 260, 50, 45, 15);
-    var p2LeftKey = 'a';
-    textSize(30);
-    fill('#000000');
-    text(p2LeftKey, (width * .5) + 197, 290);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#ffffff');
-    rect((width * .5) + 250, 260, 50, 45, 15);
-    var p2RightKey = 'z';
-    textSize(30);
-    fill('#000000');
-    text(p2RightKey, (width * .5) + 267, 290);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#911eb4');
-    rect((width * .5) - 300, 320, 55, 45, 15);
-    var playerThree = 'Player 3';
-    textSize(30);
-    fill('#000000');
-    text(playerThree, (width * .5) - 200, 352);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#ffffff');
-    rect((width * .5) + 180, 320, 50, 45, 15);
-    var p3LeftKey = 'l';
-    textSize(30);
-    fill('#000000');
-    text(p3LeftKey, (width * .5) + 202, 352);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#ffffff');
-    rect((width * .5) + 250, 320, 50, 45, 15);
-    var p3RightKey = 'p';
-    textSize(30);
-    fill('#000000');
-    text(p3RightKey, (width * .5) + 267, 350);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#FFe119');
-    rect((width * .5) - 300, 380, 55, 45, 15);
-    var playerFour = 'Player 4';
-    textSize(30);
-    fill('#000000');
-    text(playerFour, (width * .5) - 200, 412);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#ffffff');
-    rect((width * .5) + 180, 380, 50, 45, 15);
-    var p4LeftKey = '3';
-    textSize(30);
-    fill('#000000');
-    text(p4LeftKey, (width * .5) + 198, 412);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#ffffff');
-    rect((width * .5) + 250, 380, 50, 45, 15);
-    var p4RightKey = 'e';
-    textSize(30);
-    fill('#000000');
-    text(p4RightKey, (width * .5) + 267, 410);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#3cb44b');
-    rect((width * .5) - 300, 440, 55, 45, 15);
-    var playerFive = 'Player 5';
-    textSize(30);
-    fill('#000000');
-    text(playerFive, (width * .5) - 200, 472);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#ffffff');
-    rect((width * .5) + 180, 440, 50, 45, 15);
-    var p5LeftKey = '9';
-    textSize(30);
-    fill('#000000');
-    text(p5LeftKey, (width * .5) + 198, 472);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#ffffff');
-    rect((width * .5) + 250, 440, 50, 45, 15);
-    var p5RightKey = '0';
-    textSize(30);
-    fill('#000000');
-    text(p5RightKey, (width * .5) + 267, 472);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#00ffff');
-    rect((width * .5) - 300, 500, 55, 45, 15);
-    var playerSix = 'Player 6';
-    textSize(30);
-    fill('#000000');
-    text(playerSix, (width * .5) - 200, 532);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#ffffff');
-    rect((width * .5) + 180, 500, 50, 45, 15);
-    var p6LeftKey = '5';
-    textSize(30);
-    fill('#000000');
-    text(p6LeftKey, (width * .5) + 198, 532);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#ffffff');
-    rect((width * .5) + 250, 500, 50, 45, 15);
-    var p6RightKey = '6';
-    textSize(30);
-    fill('#000000');
-    text(p6RightKey, (width * .5) + 267, 532);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#ffffff');
-    rect((width * .5) + 190, 700, 100, 45, 15);
-    var s = '+';
-    textSize(30);
-    fill('#000000');
-    text(s, (width * .5) + 230, 730);
-    strokeWeight(60);
-    stroke('#F4ed47');
-    line(0, 60, width, 60);
-    strokeWeight(1);
-    stroke('#000000');
-    line(0, 30, width, 30);
-    strokeWeight(3);
-    stroke('#000000');
-    line(0, 45, width, 45);
-    strokeWeight(1);
-    stroke('#000000');
-    line(0, 55, width, 55);
-    strokeWeight(2);
-    stroke('#000000');
-    line(0, 60, width, 60);
-    strokeWeight(2);
-    stroke('#000000');
-    line(0, 80, width, 80);
-    strokeWeight(2);
-    stroke('#000000');
-    line(0, 90, width, 90);
-    image(img, width * .5 - (img.width * 0.5), 20);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#000000');
-    rect(1290, 660, 150, 70, 20);
-    strokeWeight(3);
-    stroke('#000000');
-    fill('#F4ed47');
-    rect(1300, 650, 150, 70, 20);
-    var startButton = 'START';
-    textSize(30);
-    fill('#000000');
-    text(startButton, 1325, 695);
-}
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var GameSettings = (function (_super) {
-    __extends(GameSettings, _super);
-    function GameSettings() {
-        var _this = _super.call(this) || this;
-        _this.soundVolume = 5;
-        _this.gameEvents = [];
-        return _this;
-    }
-    GameSettings.prototype.controlEvents = function () { };
     GameSettings.prototype.gameStatus = function () {
         if (1) {
             this.startGame();
@@ -350,59 +373,125 @@ var GameSettings = (function (_super) {
             this.quitGame();
         }
     };
+    GameSettings.prototype.controlEvents = function () { };
+    GameSettings.prototype.startGame = function () {
+        isGameRunning = 1;
+    };
+    GameSettings.prototype.quitGame = function () { };
     return GameSettings;
-}(GameManager));
-var Music = (function () {
-    function Music() {
-    }
-    return Music;
-
 }());
 var Player = (function () {
-    function Player(playerColor, playerButtonLeft, playerButtonRight) {
-
+    function Player() {
+        this.playerID = gameManager.players.length;
         this.activePlayer = true;
-        this.pad = new Pad(playerColor, playerButtonLeft, playerButtonRight);
+        this.playerColor = this.getPlayerColor;
+        this.pad = new Pad;
     }
     Player.prototype.update = function () {
-        this.pad.update();
+        this.setKeys();
+        if (isGameRunning === 1) {
+            this.setDefaultPositions();
+            this.handlePlayerButtons();
+        }
     };
     Player.prototype.draw = function () {
-        this.pad.draw();
+        this.pad.drawPlayer(this.playerColor);
     };
-
     Player.prototype.hitPlayer = function () { };
+    Object.defineProperty(Player.prototype, "getPlayerColor", {
+        get: function () {
+            var r = random(0, 255);
+            var g = random(0, 255);
+            var b = random(0, 255);
+            var c = color(r, g, b);
+            return c;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Player.prototype.handlePlayerButtons = function () {
+        if (keyIsDown(this.playerButtonLeft)) {
+            this.pad.calculatePlayerVelocity('left');
+        }
+        else if (keyIsDown(this.playerButtonRight)) {
+            this.pad.calculatePlayerVelocity('right');
+        }
+    };
+    Player.prototype.setConstrainValues = function () {
+        this.pad.setMinValue = this.pad.getStartPosition - this.pad.getPadLength;
+        this.pad.setMaxValue = (this.pad.getStartPosition + this.pad.getPadLength) - 1;
+    };
+    Player.prototype.setDefaultPositions = function () {
+        if (!this.pad.currentPosition && !this.pad.startPosition) {
+            if (this.playerID === 0) {
+                this.pad.setCurrentPosition = 0;
+                this.pad.setStartPosition = 0;
+            }
+            else {
+                this.pad.setCurrentPosition = (360 / nrOfPlayers) * this.playerID;
+                this.pad.setStartPosition = (360 / nrOfPlayers) * this.playerID;
+            }
+            this.setConstrainValues();
+        }
+    };
+    Player.prototype.setKeys = function () {
+        if (!this.playerButtonRight) {
+            var allKeyPairs = Object.entries(this.getKeys)[this.playerID];
+            var keyPairIndex = parseInt(allKeyPairs[0]);
+            var keyPairObj = allKeyPairs[1];
+            var keyPair = Object.entries(keyPairObj);
+            for (var _i = 0, keyPair_1 = keyPair; _i < keyPair_1.length; _i++) {
+                var _a = keyPair_1[_i], key_1 = _a[0], value = _a[1];
+                if (key_1 === 'left' && keyPair[this.playerID] == keyPair[keyPairIndex]) {
+                    this.playerButtonLeft = value;
+                }
+                if (key_1 === 'right' && keyPair[this.playerID] == keyPair[keyPairIndex]) {
+                    this.playerButtonRight = value;
+                }
+            }
+        }
+    };
+    Object.defineProperty(Player.prototype, "getKeys", {
+        get: function () {
+            return [
+                { left: UP_ARROW, right: DOWN_ARROW },
+                { left: 65, right: 90 },
+                { left: 76, right: 80 },
+                { left: 51, right: 69 },
+                { left: 57, right: 48 },
+                { left: 53, right: 54 },
+                { left: 67, right: 86 },
+                { left: 66, right: 78 }
+            ];
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Player;
 }());
 var Pad = (function () {
-    function Pad(playerColor, leftKey, rightKey) {
-        this.playerColor = playerColor;
-        this.leftKey = leftKey;
-        this.rightKey = rightKey;
+    function Pad() {
         this.velocity = 0;
+        this.padLength = this.getPadLength;
     }
-
     Pad.prototype.update = function () {
-        this.calculatePlayerVelocity();
     };
     Pad.prototype.draw = function () {
-        this.drawPlayer();
     };
-    Pad.prototype.drawPlayer = function () {
+    Pad.prototype.drawPlayer = function (color) {
         noFill();
         stroke(0);
         strokeWeight(9);
         arc(width / 2, height / 2, circleSize, circleSize, this.currentPosition, this.currentPosition + this.getPadLength);
-        stroke(this.playerColor);
+        stroke(color);
         strokeWeight(5);
         arc(width / 2, height / 2, circleSize, circleSize, this.currentPosition, this.currentPosition + this.getPadLength);
     };
-    Pad.prototype.calculatePlayerVelocity = function () {
-        if (keyIsDown(this.leftKey)) {
+    Pad.prototype.calculatePlayerVelocity = function (direction) {
+        if (direction === 'left') {
             this.velocity += 2.5;
-
         }
-        if (keyIsDown(this.rightKey)) {
+        if (direction === 'right') {
             this.velocity -= 2.5;
         }
         this.currentPosition += this.velocity;
@@ -461,391 +550,68 @@ var Pad = (function () {
     Pad.prototype.deflectBall = function () { };
     return Pad;
 }());
-
 var gameManager;
 var gameSettings;
 var gameArea;
+var gameMenu;
+var gameMusic;
 var players;
 var pads;
 var balls;
-
 var isGameRunning;
 var circleSize;
 var nrOfPlayers;
-var menuMusic;
 var img;
 window.addEventListener('load', function () {
     isGameRunning = 0;
 });
-var mySound;
-function onSoundLoadSuccess(e) {
-    console.log("load sound success", e);
-}
-function onSoundLoadError(e) {
-    console.log("load sound error", e);
-}
-function onSoundLoadProgress(e) {
-    console.log("load sound progress", e);
-}
 function preload() {
     img = loadImage('./assets/images/battle_pong.svg');
     soundFormats('wav');
-    menuMusic = window.loadSound('./assets/music/menu-music.wav', onSoundLoadSuccess, onSoundLoadError, onSoundLoadProgress);
+    gameMusic = { menuMusic: window.loadSound('./assets/music/menu-music.wav') };
 }
 function setup() {
     createCanvas(windowWidth, windowHeight);
     frameRate(60);
     fullscreen();
-    menuMusic.setVolume(0.25);
-    menuMusic.play();
-    menuMusic.loop();
-    gameManager = new GameManager;
+    gameMusic.menuMusic.play();
+    gameManager = new GameManager(gameMusic);
     angleMode(DEGREES);
-    ballSpeedX = random(ballSpeedX * -1, ballSpeedX);
-    ballSpeedY = random(ballSpeedY * -1, ballSpeedY);
 }
 function draw() {
+    gameManager.update();
+    gameManager.draw();
 }
 function keyPressed() {
-    if (keyCode === ENTER) {
-        isGameRunning = 1;
-        nrOfPlayers = 5;
-        var player = new Player('blue', 65, 90);
-        gameManager.createPlayer(player);
-        player = new Player('green', 76, 80);
-        gameManager.createPlayer(player);
-        player = new Player('purple', 51, 69);
-        gameManager.createPlayer(player);
-        player = new Player('yellow', 53, 54);
-        gameManager.createPlayer(player);
-        player = new Player('red', 57, 48);
-        gameManager.createPlayer(player);
-        for (var i = 0; i < nrOfPlayers; i++) {
-            var player_1 = gameManager.players[i];
-            player_1.playerID = i;
-            if (i === 0) {
-                player_1.pad.setCurrentPosition = 0;
-                player_1.pad.setStartPosition = 0;
-            }
-            else {
-                player_1.pad.setCurrentPosition = (360 / nrOfPlayers) * i;
-                player_1.pad.setStartPosition = (360 / nrOfPlayers) * i;
-            }
-            player_1.pad.setMinValue = player_1.pad.getStartPosition - player_1.pad.getPadLength;
-            player_1.pad.setMaxValue = (player_1.pad.getStartPosition + player_1.pad.getPadLength) - 1;
-        }
+    if (keyCode === ENTER && isGameRunning == 0) {
+        clear();
+        gameManager.gameSettings.startGame();
     }
 }
-var player1Position = 0;
-var player2Position = 180;
-var ballSpeedX = 5;
-var ballSpeedY = 5;
-var ballXPosition = innerWidth / 2;
-var ballYPosition = innerHeight / 2;
-var padLength = 20;
-var hitboxRadius = 7;
-function draw() {
-    clear();
-    if (isGameRunning == 0) {
-        background('#777b7e');
-        noStroke();
-        fill('#999966');
-        rect((width * .5) - 350, 0, 700, height);
-        strokeWeight(60);
-        stroke('#999966');
-        line(0, 150, width, 500);
-        strokeWeight(140);
-        stroke('#999966');
-        line(0, 280, width, 630);
-        strokeWeight(40);
-        stroke('#999966');
-        line(0, 400, width, 750);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#4363d8');
-        rect((width * .5) - 300, 200, 55, 45, 15);
-        var playerOne = 'Player 1';
-        textSize(30);
-        fill('#000000');
-        text(playerOne, (width * .5) - 200, 232);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#ffffff');
-        rect((width * .5) + 180, 200, 50, 45, 15);
-        fill('#000000');
-        triangle((width * .5) + 195, 230, (width * .5) + 215, 230, (width * .5) + 205, 210);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#ffffff');
-        rect((width * .5) + 250, 200, 50, 45, 15);
-        fill('#000000');
-        triangle((width * .5) + 265, 212, (width * .5) + 285, 212, (width * .5) + 275, 232);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#cc0000');
-        rect((width * .5) - 300, 260, 55, 45, 15);
-        var playerTwo = 'Player 2';
-        textSize(30);
-        fill('#000000');
-        text(playerTwo, (width * .5) - 200, 292);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#ffffff');
-        rect((width * .5) + 180, 260, 50, 45, 15);
-        var p2LeftKey = 'a';
-        textSize(30);
-        fill('#000000');
-        text(p2LeftKey, (width * .5) + 197, 290);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#ffffff');
-        rect((width * .5) + 250, 260, 50, 45, 15);
-        var p2RightKey = 'z';
-        textSize(30);
-        fill('#000000');
-        text(p2RightKey, (width * .5) + 267, 290);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#911eb4');
-        rect((width * .5) - 300, 320, 55, 45, 15);
-        var playerThree = 'Player 3';
-        textSize(30);
-        fill('#000000');
-        text(playerThree, (width * .5) - 200, 352);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#ffffff');
-        rect((width * .5) + 180, 320, 50, 45, 15);
-        var p3LeftKey = 'l';
-        textSize(30);
-        fill('#000000');
-        text(p3LeftKey, (width * .5) + 202, 352);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#ffffff');
-        rect((width * .5) + 250, 320, 50, 45, 15);
-        var p3RightKey = 'p';
-        textSize(30);
-        fill('#000000');
-        text(p3RightKey, (width * .5) + 267, 350);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#FFe119');
-        rect((width * .5) - 300, 380, 55, 45, 15);
-        var playerFour = 'Player 4';
-        textSize(30);
-        fill('#000000');
-        text(playerFour, (width * .5) - 200, 412);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#ffffff');
-        rect((width * .5) + 180, 380, 50, 45, 15);
-        var p4LeftKey = '3';
-        textSize(30);
-        fill('#000000');
-        text(p4LeftKey, (width * .5) + 198, 412);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#ffffff');
-        rect((width * .5) + 250, 380, 50, 45, 15);
-        var p4RightKey = 'e';
-        textSize(30);
-        fill('#000000');
-        text(p4RightKey, (width * .5) + 267, 410);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#3cb44b');
-        rect((width * .5) - 300, 440, 55, 45, 15);
-        var playerFive = 'Player 5';
-        textSize(30);
-        fill('#000000');
-        text(playerFive, (width * .5) - 200, 472);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#ffffff');
-        rect((width * .5) + 180, 440, 50, 45, 15);
-        var p5LeftKey = '9';
-        textSize(30);
-        fill('#000000');
-        text(p5LeftKey, (width * .5) + 198, 472);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#ffffff');
-        rect((width * .5) + 250, 440, 50, 45, 15);
-        var p5RightKey = '0';
-        textSize(30);
-        fill('#000000');
-        text(p5RightKey, (width * .5) + 267, 472);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#00ffff');
-        rect((width * .5) - 300, 500, 55, 45, 15);
-        var playerSix = 'Player 6';
-        textSize(30);
-        fill('#000000');
-        text(playerSix, (width * .5) - 200, 532);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#ffffff');
-        rect((width * .5) + 180, 500, 50, 45, 15);
-        var p6LeftKey = '5';
-        textSize(30);
-        fill('#000000');
-        text(p6LeftKey, (width * .5) + 198, 532);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#ffffff');
-        rect((width * .5) + 250, 500, 50, 45, 15);
-        var p6RightKey = '6';
-        textSize(30);
-        fill('#000000');
-        text(p6RightKey, (width * .5) + 267, 532);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#ffffff');
-        rect((width * .5) + 190, 700, 100, 45, 15);
-        var s = '+';
-        textSize(30);
-        fill('#000000');
-        text(s, (width * .5) + 230, 730);
-        strokeWeight(60);
-        stroke('#F4ed47');
-        line(0, 60, width, 60);
-        strokeWeight(1);
-        stroke('#000000');
-        line(0, 30, width, 30);
-        strokeWeight(3);
-        stroke('#000000');
-        line(0, 45, width, 45);
-        strokeWeight(1);
-        stroke('#000000');
-        line(0, 55, width, 55);
-        strokeWeight(2);
-        stroke('#000000');
-        line(0, 60, width, 60);
-        strokeWeight(2);
-        stroke('#000000');
-        line(0, 80, width, 80);
-        strokeWeight(2);
-        stroke('#000000');
-        line(0, 90, width, 90);
-        gameManager.gameMenu.drawSoundButton();
-        image(img, width * .5 - (img.width * 0.5), 20);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#000000');
-        rect(1290, 660, 150, 70, 20);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#F4ed47');
-        rect(1300, 650, 150, 70, 20);
-        var startButton = 'START';
-        textSize(30);
-        fill('#000000');
-        text(startButton, 1325, 695);
+function mouseMoved() {
+    var addPlayerButton = mouseX > (width * .5) + 190 && mouseX < (width * .5) + 290 &&
+        mouseY > height * .9 && mouseY < (height * .9) + 45;
+    var soundButton = dist(mouseX, mouseY, 60, 60) < 40;
+    if (addPlayerButton || soundButton) {
+        cursor('pointer');
     }
-    if (isGameRunning == 1) {
-        var ballXPositionOld = ballXPosition;
-        var ballYPositionOld = ballYPosition;
-        ballXPosition += ballSpeedX;
-        ballYPosition += ballSpeedY;
-        var angleDeg = Math.atan2(ballYPositionOld - ballYPosition, ballXPositionOld - ballXPosition) * 180 / Math.
-        var circleSize_1;
-
-        if (windowWidth >= windowHeight) {
-            circleSize_1 = windowHeight - 40;
-        }
-        else {
-            circleSize_1 = windowWidth - 40;
-        }
-        var ballRadius = circleSize_1 / 40;
-        var player1XCoordinates = [];
-        var player1YCoordinates = [];
-        for (var i = 0; i <= padLength; i++) {
-            player1XCoordinates[i] = (circleSize_1 / 2) * Math.cos(((player1Position + i) * Math.PI / 180)) + (width / 2);
-        }
-        for (var i = 0; i <= padLength; i++) {
-            player1YCoordinates[i] = (circleSize_1 / 2) * Math.sin(((player1Position + i) * Math.PI / 180)) + (height / 2);
-        }
-        for (var i = 0; i <= padLength; i++) {
-            if (dist(ballXPosition, ballYPosition, player1XCoordinates[i], player1YCoordinates[i])
-                < ballRadius + hitboxRadius) {
+    else {
+        cursor(ARROW);
+    }
+}
+function mousePressed() {
+    if (isGameRunning == 0 && gameManager.players.length < 8) {
+        gameManager.gameMenu.handleAddPlayerButton();
+        for (var playerObj in gameManager.players) {
+            if (gameManager.players.hasOwnProperty(playerObj)) {
+                var player = gameManager.players[playerObj];
+                player.setKeys();
             }
         }
-        var dx = ballXPosition - circleSize_1 / 2;
-        var dy = ballYPosition - circleSize_1 / 2;
-        if (dist(ballXPosition, ballYPosition, width / 2, height / 2) > -ballRadius + circleSize_1 / 2) {
-            var velocity = Math.sqrt(ballSpeedX * ballSpeedX + ballSpeedY * ballSpeedY);
-            var angleToCollisionPoint = Math.atan2(-dy, dx);
-            var oldAngle = Math.atan2(-ballSpeedY, ballSpeedX);
-            var newAngle = 2 * angleToCollisionPoint - oldAngle;
-            ballSpeedX = -velocity * Math.cos(newAngle);
-            ballSpeedY = velocity * Math.sin(newAngle);
-        }
-        background(119, 123, 126);
-        fill(255, 255, 255);
-        stroke(0, 0, 0);
-        strokeWeight(2);
-        ellipse(ballXPosition, ballYPosition, ballRadius * 2, ballRadius * 2);
-        noFill();
-        stroke(0, 0, 0);
-        strokeWeight(1);
-        ellipse(width / 2, height / 2, circleSize_1, circleSize_1);
-        stroke(0, 0, 0);
-        strokeWeight(9);
-        arc(width / 2, height / 2, circleSize_1, circleSize_1, player1Position, player1Position + padLength);
-        stroke(255, 204, 0);
-        strokeWeight(5);
-        arc(width / 2, height / 2, circleSize_1, circleSize_1, player1Position, player1Position + padLength);
-        stroke(0, 0, 0);
-        strokeWeight(9);
-        arc(width / 2, height / 2, circleSize_1, circleSize_1, player2Position, player2Position + padLength);
-        stroke(253, 188, 180);
-        strokeWeight(5);
-        arc(width / 2, height / 2, circleSize_1, circleSize_1, player2Position, player2Position + padLength);
-        handlePads();
-        handleBall(player1XCoordinates, player1YCoordinates);
-        push();
-        gameManager.update();
-        gameManager.draw();
     }
-}
-function handlePads() {
-    var player1Velocity = 0;
-    var player2Velocity = 0;
-    if (keyIsDown(87)) {
-        player1Velocity -= 5;
+    else if (isGameRunning == 1) {
     }
-    else if (keyIsDown(83)) {
-        player1Velocity += 5;
-    }
-    if (keyIsDown(UP_ARROW)) {
-        player2Velocity -= 5;
-    }
-    else if (keyIsDown(DOWN_ARROW)) {
-        player2Velocity += 5;
-    }
-    player1Position += player1Velocity;
-    player2Position += player2Velocity;
-    player1Velocity *= 0.4;
-    player2Velocity *= 0.4;
-    player1Position = constrain(player1Position, 0, 159);
-    player2Position = constrain(player2Position, 180, 339);
-}
-function handleBall(player1XCoordinates, player1YCoordinates) {
-    if (ballYPosition > height || ballYPosition < 0) {
-        ballSpeedY *= -1;
-    }
-    else if (ballXPosition > width || ballXPosition < 0) {
-        ballSpeedX *= -1;
-    }
-    for (var i = 0; i <= padLength; i++) {
-        for (var j = 0; j <= padLength; j++) {
-            fill('purple');
-            strokeWeight(2);
-            ellipse(player1XCoordinates[i], player1YCoordinates[i], 7, 7);
-        }
-    }
+    gameManager.gameSettings.update();
 }
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
