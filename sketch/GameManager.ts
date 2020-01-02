@@ -36,12 +36,19 @@ class GameManager {
         if (!nrOfPlayers) {
             this.setDefaultNrOfPlayers();
         }
+
         for (let i = 0; i < nrOfPlayers; i++) {
-            this.players[i].update();
+            if (this.players[i].activePlayer === true) {
+                this.players[i].update();
+            }
         }
+
         this.gameMenu.update();
 
         if (isGameRunning == 1) {
+            // check for inactive player
+            this.removeInactivePlayer();
+
             // update variable for game area size
             circleSize = this.gameArea.calculateCircleSize();
         }
@@ -64,6 +71,42 @@ class GameManager {
             }
         }
 
+    }
+
+    removeInactivePlayer(): void {
+        for (let i = 0; i < this.players.length; i++) {
+            const player = this.players[i];
+            if (player.activePlayer === false) {
+                this.pads.splice(i, 1)
+                this.players.splice(i, 1)
+
+            }
+            if (this.players.length < nrOfPlayers) {
+                nrOfPlayers--;
+                this.setDefaultPositions();
+            }
+        }
+    }
+
+    setDefaultPositions() {
+        // if nr of players is more than 1, just for testing
+        // if (this.players.length > 1) {
+            for (let i = 0; i < this.players.length; i++) {
+                const player = this.players[i];
+                if (i === 0) {
+                    // 0 is not read as number so it is set manually
+                    player.pad.setCurrentPosition = 0;
+                    player.pad.setStartPosition = 0;
+                }
+                else {
+                    // position = full circle divided by nr of players, multiplied by playerID
+                    // or else each player ends up at the same position
+                    player.pad.setCurrentPosition = (360 / nrOfPlayers) * i;
+                    player.pad.setStartPosition = (360 / nrOfPlayers) * i;
+                }
+                player.setConstrainValues();
+            }
+        // }
     }
 
     private setDefaultNrOfPlayers() {
