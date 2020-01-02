@@ -229,18 +229,22 @@ class GameMenu {
         strokeWeight(3)
         stroke('#000000')
         fill('#000000');
-        rect(1290, 660, 150, 70, 20)
+        rect((width * .304), height * .906, 260, 45, 15);
 
         /** yellow start button */
         strokeWeight(3)
         stroke('#000000')
         fill('#F4ed47');
-        rect(1300, 650, 150, 70, 20)
+        rect((width * .3), height * .9, 260, 45, 15);
 
         /** text in start button */
-        let startButton = 'START'
-        textSize(30);
+        let startButton = 'Press Enter To Start'
+        textSize(25);
         fill('#000000');
-        text(startButton, 1325, 695)
+        text(startButton, (width * .3131), (height * .9) + 30);
+
+
+        
+        
     }
 }
