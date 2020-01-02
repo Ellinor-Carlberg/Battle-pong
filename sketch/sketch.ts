@@ -66,13 +66,23 @@ function draw() {
     gameManager.draw();
 }
 
-// start game on enter key
+// key press event
 function keyPressed(): void {
+    // start game on enter key
     if (keyCode === ENTER && isGameRunning == 0) {
         clear();
         gameManager.gameSettings.startGame();
         gameManager.createBall();
     }
+
+    // just for testing
+    // when 1st player presses on left button, remove player
+    for (let i = 0; i < gameManager.players.length; i++) {
+        if (keyCode === gameManager.players[0].playerButtonLeft && isGameRunning == 1 && gameManager.players.length > 1) {
+            gameManager.players[0].removePlayer();
+        }
+    }
+
 }
 
 // hover event
