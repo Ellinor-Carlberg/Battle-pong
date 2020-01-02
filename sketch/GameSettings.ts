@@ -1,5 +1,5 @@
 class GameSettings implements GameStatus, MusicStatus {
-    public gameMusic: GameMusic;
+    private gameMusic: GameMusic;
     public mutedMusic: boolean;
     private gameEvents: number[];
 
@@ -14,13 +14,13 @@ class GameSettings implements GameStatus, MusicStatus {
         this.controlSound();
     }
     draw() {
+        this.drawSoundButton();
     }
 
     // set volume on soundfile
     set setSoundVolume(value: number) {
         this.gameMusic.menuMusic.setVolume(value);
     }
-
     // control volume property value
     private controlSound(): void {
         if (this.mutedMusic === true) {
@@ -30,20 +30,8 @@ class GameSettings implements GameStatus, MusicStatus {
             this.setSoundVolume = 0.2;
         }
     }
-
-    // handle sound button interaction
-    private handleSoundButton(): void {
-        if (dist(mouseX, mouseY, 60, 60) < 40) {
-            if (this.mutedMusic === false) {
-                this.mutedMusic = true;
-            }
-            else if (this.mutedMusic === true) {
-                this.mutedMusic = false;
-            }
-        }
-    }
-
-    public drawSoundButton() {
+    // draw and handle sound button interaction
+    private drawSoundButton() {
         /** sound button in top left corner, need to have a mouseClicked event 
         get it overlined when clicked  */
 
@@ -72,8 +60,18 @@ class GameSettings implements GameStatus, MusicStatus {
             line(40, 90, 80, 30);
         }
     }
+    private handleSoundButton() {
+        if (dist(mouseX, mouseY, 60, 60) < 40) {
+            if (this.mutedMusic === false) {
+                this.mutedMusic = true;
+            }
+            else if (this.mutedMusic === true) {
+                this.mutedMusic = false;
+            }
+        }
+    }
 
-    gameStatus(): void {
+    private gameStatus(): void {
         if (1) {
             this.startGame();
         }
@@ -81,7 +79,9 @@ class GameSettings implements GameStatus, MusicStatus {
             this.quitGame();
         }
     }
-    controlEvents(): void { }
-    startGame() { }
-    quitGame() { }
+    private controlEvents(): void { }
+    public startGame() { 
+        isGameRunning = 1;
+    }
+    public quitGame() { }
 }

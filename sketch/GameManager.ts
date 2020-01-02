@@ -4,7 +4,7 @@ interface GameStatus {
     quitGame(): void;
 }
 /** class GameManager */
-class GameManager implements GameStatus {
+class GameManager {
     public gameSettings: GameSettings;
     public gameArea: GameArea;
     public gameMenu: GameMenu;
@@ -13,8 +13,6 @@ class GameManager implements GameStatus {
     public players: Player[];
     public balls: Ball[];
     public pads: Pad[];
-    public isGameRunning: number;
-
 
     constructor(gameMusic: GameMusic) {
         this.gameSettings = new GameSettings(gameMusic);
@@ -25,41 +23,62 @@ class GameManager implements GameStatus {
         this.players = [];
         this.balls = [];
         this.pads = [];
-        this.isGameRunning = 0;
     }
 
     update(): void {
-        // update each player
+        if (!nrOfPlayers) {
+            this.setDefaultNrOfPlayers();
+        }
         for (let i = 0; i < nrOfPlayers; i++) {
             this.players[i].update();
         }
-        // update variable for game area size
-        circleSize = this.gameArea.calculateCircleSize();
+        this.gameMenu.update();
+
+        if (isGameRunning == 1) {
+            // update variable for game area size
+            circleSize = this.gameArea.calculateCircleSize();
+        }
     }
-    draw(): void {
+
+    draw() {
         // draw menu
         if (isGameRunning == 1) {
             this.gameArea.draw();
+            this.drawPlayers();
+            for (let i = 0; i < nrOfPlayers; i++) {
+                this.players[i].draw();
+            }
         }
-
         this.gameMenu.draw();
-        this.drawPlayers();
+        this.gameSettings.draw();
     }
+
+    private setDefaultNrOfPlayers() {
+        nrOfPlayers = 2;
+        this.addDefaultPlayers();
+    }
+
+    private addDefaultPlayers() {
+        for (let i = 0; i < nrOfPlayers; i++) {
+            this.createPlayer();
+        }
+    }
+
     // draw each player
-    drawPlayers(): void {
-        if (this.players) {
+    drawPlayers() {
+        if (this.players && isGameRunning == 1) {
             for (const player of this.players) {
                 player.draw();
             }
+            
         }
     }
-    // Start/Quit
-    startGame(): void { }
-    quitGame(): void { }
     // add player to list of players
-    public createPlayer(newPlayer: Player): void {
+    public createPlayer() {
+        let newPlayer = new Player;
         this.players.push(newPlayer);
     }
+
     createBall(): void { }
     rebuildGameArea(): void { }
 }

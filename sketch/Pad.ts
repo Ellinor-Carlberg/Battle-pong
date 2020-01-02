@@ -2,56 +2,51 @@
 /// <reference path="./Player.ts" />
 
 class Pad {
-    private playerColor: string;
-    private leftKey: number;
-    private rightKey: number;
     private velocity: number;
     public currentPosition!: number;
-    public startPosition!: number; 
-    public minConstrain!: number;
-    public maxConstrain!: number;
+    public startPosition!: number;
+    private minConstrain!: number;
+    private maxConstrain!: number;
+    private padLength: number;
 
-    constructor(playerColor: string, leftKey: number, rightKey: number) {
-        this.playerColor = playerColor;
-        this.leftKey = leftKey;
-        this.rightKey = rightKey;
+    constructor() {
         this.velocity = 0;
+        this.padLength = this.getPadLength;
     }
     // update player position
     update(): any {
-        this.calculatePlayerVelocity();
     }
     draw(): void {
-        this.drawPlayer();
     }
     // draw player
-    private drawPlayer(): void {
+    public drawPlayer(color: p5.Color): void {
         noFill();
         stroke(0);
         strokeWeight(9);
         arc(width / 2, height / 2, circleSize, circleSize, this.currentPosition, this.currentPosition + this.getPadLength);
-        stroke(this.playerColor);
+        stroke(color);
         strokeWeight(5);
         arc(width / 2, height / 2, circleSize, circleSize, this.currentPosition, this.currentPosition + this.getPadLength);
     }
     // calculate velocity
-    private calculatePlayerVelocity(): void {
-        // check if key is down
-        if (keyIsDown(this.leftKey)) {
-            this.velocity += 2.5;
-        }
-        if (keyIsDown(this.rightKey)) {
-            this.velocity -= 2.5;
-        }
+    public calculatePlayerVelocity(direction: string): void {
+            // check if key is down
+            if (direction === 'left') {
+                this.velocity += 2.5;
+            }
+            if (direction === 'right') {
+                this.velocity -= 2.5;
+            }
 
-        // change position
-        this.currentPosition += this.velocity;
+            // change position
+            this.currentPosition += this.velocity;
 
-        // add friction
-        this.velocity *= 0.4;
+            // add friction
+            this.velocity *= 0.4;
 
-        // constrain pad
-        this.currentPosition = constrain(this.currentPosition, this.minConstrain, this.maxConstrain);
+            // constrain pad
+            this.currentPosition = constrain(this.currentPosition, this.minConstrain, this.maxConstrain);
+        
     }
     // set/get start position
     set setStartPosition(value: number) {
