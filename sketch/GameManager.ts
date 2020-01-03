@@ -25,22 +25,13 @@ class GameManager {
         this.pads = [];
     }
 
-    setup() {
-        //puts the angles into degrees
-        angleMode(DEGREES);
-        ballXPosition = width / 2;
-        ballYPosition = height * .1;
-    }
-
     update(): void {
+        if (!ballXPosition && !ballYPosition) {
+            ballXPosition = width / 2;
+            ballYPosition = height / 2;
+        }
         if (!nrOfPlayers) {
             this.setDefaultNrOfPlayers();
-        }
-
-        for (let i = 0; i < nrOfPlayers; i++) {
-            if (this.players[i].activePlayer === true) {
-                this.players[i].update();
-            }
         }
 
         this.gameMenu.update();
@@ -51,25 +42,31 @@ class GameManager {
 
             // update variable for game area size
             circleSize = this.gameArea.calculateCircleSize();
+            for (let i = 0; i < nrOfPlayers; i++) {
+                if (this.players[i].activePlayer === true) {
+                    this.players[i].update();
+                }
+            }
         }
     }
 
     draw() {
         // draw menu
-        this.gameMenu.draw();
-        this.gameSettings.draw();
-
-        if (isGameRunning == 1) {
+        if (isGameRunning == 0) {
+            this.gameMenu.draw();
+        }
+        else if (isGameRunning == 1) {
             this.gameArea.draw();
             this.drawPlayers();
             for (let i = 0; i < nrOfPlayers; i++) {
                 this.players[i].draw();
             }
-            for (let i = 0; i < this.balls.length; i++) {
-                ballRadius = circleSize / 40;
-                this.balls[i].draw();
+            for (const ball of this.balls) {
+                ball.draw();
             }
+            ballRadius = circleSize / 40;
         }
+        this.gameSettings.draw();
 
     }
 
@@ -79,8 +76,8 @@ class GameManager {
             if (player.activePlayer === false) {
                 this.pads.splice(i, 1)
                 this.players.splice(i, 1)
-
             }
+            // if nr of players has changed, reset positions
             if (this.players.length < nrOfPlayers) {
                 nrOfPlayers--;
                 this.setDefaultPositions();
@@ -109,12 +106,10 @@ class GameManager {
         // }
     }
 
+    // set and add default nr of players at start
     private setDefaultNrOfPlayers() {
         nrOfPlayers = 2;
-        this.addDefaultPlayers();
-    }
-
-    private addDefaultPlayers() {
+  
         for (let i = 0; i < nrOfPlayers; i++) {
             this.createPlayer();
         }
@@ -126,13 +121,18 @@ class GameManager {
             for (const player of this.players) {
                 player.draw();
             }
-
         }
     }
-    // add player to list of players
+
+    // add player and pad to each list
     public createPlayer() {
         let newPlayer = new Player;
         this.players.push(newPlayer);
+
+        for (let i = 0; i < this.players.length; i++) {
+            const pad = this.players[i].pad;
+            this.pads.push(pad);
+        }
     }
 
     createBall(): void {
@@ -143,5 +143,6 @@ class GameManager {
             this.balls[i].update();
         }
     }
+
     rebuildGameArea(): void { }
 }

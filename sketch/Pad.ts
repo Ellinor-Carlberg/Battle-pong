@@ -7,19 +7,18 @@ class Pad {
     public startPosition!: number;
     private minConstrain!: number;
     private maxConstrain!: number;
-    private padLength: number;
 
     constructor() {
         this.velocity = 0;
-        this.padLength = this.getPadLength;
     }
-    // update player position
-    update(): any {
-    }
+
+    update(): any { }
+
     draw(): void {
     }
+
     // draw player
-    public drawPlayer(color: p5.Color): void {
+    public drawPad(color: p5.Color): void {
         noFill();
         stroke(0);
         strokeWeight(9);

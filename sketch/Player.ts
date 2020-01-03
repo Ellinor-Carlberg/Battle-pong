@@ -4,11 +4,15 @@ class Player {
     public playerColor: p5.Color;
     public playerButtonLeft!: number;
     private playerButtonRight!: number;
+    public playerXCoordinates: number[];
+    public playerYCoordinates: number[];
     public pad: Pad;
 
     constructor() {
         this.activePlayer = true;
         this.playerColor = this.getPlayerColor;
+        this.playerXCoordinates = [];
+        this.playerYCoordinates = [];
         this.pad = new Pad;
     }
 
@@ -20,11 +24,12 @@ class Player {
             if (this.pad.currentPosition == undefined && this.pad.startPosition == undefined) {
                 gameManager.setDefaultPositions();
             }
+            this.getPlayerCoordinates();
             this.handlePlayerButtons();
         }
     }
     draw() {
-        this.pad.drawPlayer(this.playerColor);
+        this.pad.drawPad(this.playerColor);
     }
 
     hitPlayer() { }
@@ -32,6 +37,13 @@ class Player {
     // make player inactive
     removePlayer() {
         this.activePlayer = false;
+    }
+
+    getPlayerCoordinates() {
+        for(let i = 0; i <= this.pad.getPadLength; i++){
+            this.playerXCoordinates[i] = (circleSize / 2) * Math.cos(((this.pad.getCurrentPosition + i) * Math.PI / 180)) + (width / 2);
+            this.playerYCoordinates[i] = (circleSize / 2) * Math.sin(((this.pad.getCurrentPosition + i) * Math.PI / 180)) + (height / 2);
+        }
     }
 
     // generate random color
@@ -61,8 +73,6 @@ class Player {
 
     // set start position and default current position
     public setDefaultPositionss() {
-        // if default positions are not set already
-
         if (this.playerID === 0) {
             // 0 is not read as number so it is set manually
             this.pad.setCurrentPosition = 0;
@@ -74,10 +84,7 @@ class Player {
             this.pad.setCurrentPosition = (360 / nrOfPlayers) * this.playerID;
             this.pad.setStartPosition = (360 / nrOfPlayers) * this.playerID;
         }
-        console.log(this)
-
         this.setConstrainValues();
-
     }
 
     // set player buttons
