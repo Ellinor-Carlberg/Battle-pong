@@ -66,6 +66,8 @@ function draw() {
     gameManager.draw();
 }
 
+/* Should we take away this code?
+
 // key press event
 function keyPressed(): void {
     // start game on enter key
@@ -84,6 +86,7 @@ function keyPressed(): void {
     }
 
 }
+*/
 
 // hover event
 function mouseMoved(): void {
@@ -91,7 +94,10 @@ function mouseMoved(): void {
         mouseY > height * .9 && mouseY < (height * .9) + 45;
     const soundButton = dist(mouseX, mouseY, 60, 60) < 40;
 
-    if (addPlayerButton || soundButton) {
+    const StartGameButton = mouseX > (width * .5) - 75 && mouseX < (width * .5) + 70 &&
+    mouseY > height * .89 && mouseY < (height * .89) + 50 ;
+
+    if (addPlayerButton || soundButton || StartGameButton) {
         cursor('pointer');
     }
     else {
@@ -114,14 +120,23 @@ function mousePressed(): void {
             }
         }
     }
-    // etc mouse click/press events in game area, not player buttons
-    else if (isGameRunning == 1) {
 
+    // mouse click/press events on start button
+    if (isGameRunning == 0 && mouseX > (width * .5) - 75 && mouseX < (width * .5) + 70 &&
+    mouseY > height * .89 && mouseY < (height * .89) + 50) {
+        clear();
+        gameManager.gameSettings.startGame();
+        gameManager.createBall();
     }
 
+    // etc mouse click/press events in game area, not player buttons
+    else if (isGameRunning == 1) {
+    }
     // mute music and draw line on click
     gameManager.gameSettings.update();
 }
+
+
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);

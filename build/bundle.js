@@ -1,28 +1,58 @@
 "use strict";
 var Ball = (function () {
-    function Ball(ballXPosition, ballYPosition, ballSpeed, ballRadius) {
-        this.ballXPosition = ballXPosition;
-        this.ballYPosition = ballYPosition;
-        this.ballSpeed = ballSpeed;
-        this.ballRadius = ballRadius;
+    function Ball() {
+        this.ballSpeedX = 7;
+        this.ballSpeedY = -7;
     }
-    Ball.prototype.update = function () { };
+    Ball.prototype.update = function () {
+    };
     Ball.prototype.draw = function () {
+        this.moveBall();
+        this.drawBall();
+    };
+    Ball.prototype.drawBall = function () {
         fill(255, 255, 255);
         stroke(0, 0, 0);
         strokeWeight(2);
-        ellipse(this.ballXPosition, this.ballYPosition, this.ballRadius * 2, this.ballRadius * 2);
+        ellipse(ballXPosition, ballYPosition, ballRadius * 2, ballRadius * 2);
+        this.handleBall();
+    };
+    Ball.prototype.moveBall = function () {
+        ballXPosition += this.ballSpeedX;
+        ballYPosition += this.ballSpeedY;
+        this.dx = ballXPosition - width / 2;
+        this.dy = ballYPosition - height / 2;
     };
     Ball.prototype.handleBall = function () {
-        if (this.ballYPosition > height || this.ballYPosition < 0) {
-            this.ballSpeed *= -1;
-        }
-        else if (this.ballXPosition > width || this.ballXPosition < 0) {
-            this.ballSpeed *= -1;
+        for (var _i = 0, _a = gameManager.players; _i < _a.length; _i++) {
+            var player = _a[_i];
+            for (var i = 0; i <= player.pad.getPadLength; i++) {
+                if (player.playerXCoordinates[i] && player.playerYCoordinates[i]) {
+                    if (dist(ballXPosition, ballYPosition, player.playerXCoordinates[i], player.playerYCoordinates[i]) < ballRadius + .5) {
+                        this.bounceBackFromPad();
+                    }
+                }
+            }
         }
     };
     Ball.prototype.ballSize = function () { };
-    Ball.prototype.bounceBackFromPad = function () { };
+    Ball.prototype.bounceBackFromPad = function () {
+        if (dist(ballXPosition, ballYPosition, width / 2, height / 2) >= circleSize / 2 - ballRadius) {
+            var velocity = Math.sqrt(this.ballSpeedX * this.ballSpeedX + this.ballSpeedY * this.ballSpeedY);
+            var angleToCollisionPoint = Math.atan2(-this.dy, this.dx);
+            var oldAngle = Math.atan2(-this.ballSpeedY, this.ballSpeedX);
+            var newAngle = 2 * angleToCollisionPoint - oldAngle;
+            this.ballSpeedX = -velocity * Math.cos(newAngle);
+            this.ballSpeedY = velocity * Math.sin(newAngle);
+            var vector = createVector(this.dx, this.dy);
+            vector.normalize();
+            var scalar = (circleSize / 2 - ballRadius);
+            vector.mult(scalar);
+            ballXPosition = vector.x + width / 2;
+            ballYPosition = vector.y + height / 2;
+            this.handleBall();
+        }
+    };
     return Ball;
 }());
 var Events = (function () {
@@ -78,33 +108,71 @@ var GameManager = (function () {
         this.pads = [];
     }
     GameManager.prototype.update = function () {
+        if (!ballXPosition && !ballYPosition) {
+            ballXPosition = width / 2;
+            ballYPosition = height / 2;
+        }
         if (!nrOfPlayers) {
             this.setDefaultNrOfPlayers();
         }
-        for (var i = 0; i < nrOfPlayers; i++) {
-            this.players[i].update();
-        }
         this.gameMenu.update();
         if (isGameRunning == 1) {
+            this.removeInactivePlayer();
             circleSize = this.gameArea.calculateCircleSize();
+            for (var i = 0; i < nrOfPlayers; i++) {
+                if (this.players[i].activePlayer === true) {
+                    this.players[i].update();
+                }
+            }
         }
     };
     GameManager.prototype.draw = function () {
-        if (isGameRunning == 1) {
+        if (isGameRunning == 0) {
+            this.gameMenu.draw();
+        }
+        else if (isGameRunning == 1) {
             this.gameArea.draw();
             this.drawPlayers();
             for (var i = 0; i < nrOfPlayers; i++) {
                 this.players[i].draw();
             }
+            for (var _i = 0, _a = this.balls; _i < _a.length; _i++) {
+                var ball = _a[_i];
+                ball.draw();
+            }
+            ballRadius = circleSize / 40;
         }
-        this.gameMenu.draw();
         this.gameSettings.draw();
+    };
+    GameManager.prototype.removeInactivePlayer = function () {
+        for (var i = 0; i < this.players.length; i++) {
+            var player = this.players[i];
+            if (player.activePlayer === false) {
+                this.pads.splice(i, 1);
+                this.players.splice(i, 1);
+            }
+            if (this.players.length < nrOfPlayers) {
+                nrOfPlayers--;
+                this.setDefaultPositions();
+            }
+        }
+    };
+    GameManager.prototype.setDefaultPositions = function () {
+        for (var i = 0; i < this.players.length; i++) {
+            var player = this.players[i];
+            if (i === 0) {
+                player.pad.setCurrentPosition = 0;
+                player.pad.setStartPosition = 0;
+            }
+            else {
+                player.pad.setCurrentPosition = (360 / nrOfPlayers) * i;
+                player.pad.setStartPosition = (360 / nrOfPlayers) * i;
+            }
+            player.setConstrainValues();
+        }
     };
     GameManager.prototype.setDefaultNrOfPlayers = function () {
         nrOfPlayers = 2;
-        this.addDefaultPlayers();
-    };
-    GameManager.prototype.addDefaultPlayers = function () {
         for (var i = 0; i < nrOfPlayers; i++) {
             this.createPlayer();
         }
@@ -120,8 +188,18 @@ var GameManager = (function () {
     GameManager.prototype.createPlayer = function () {
         var newPlayer = new Player;
         this.players.push(newPlayer);
+        for (var i = 0; i < this.players.length; i++) {
+            var pad = this.players[i].pad;
+            this.pads.push(pad);
+        }
     };
-    GameManager.prototype.createBall = function () { };
+    GameManager.prototype.createBall = function () {
+        var newBall = new Ball;
+        this.balls.push(newBall);
+        for (var i = 0; i < this.balls.length; i++) {
+            this.balls[i].update();
+        }
+    };
     GameManager.prototype.rebuildGameArea = function () { };
     return GameManager;
 }());
@@ -131,11 +209,10 @@ var GameMenu = (function () {
     GameMenu.prototype.update = function () {
     };
     GameMenu.prototype.draw = function () {
-        if (isGameRunning == 0) {
-            this.drawMenu();
-            this.drawAddPlayerButton();
-            this.drawNewPlayer();
-        }
+        this.drawMenu();
+        this.drawAddPlayerButton();
+        this.drawNewPlayer();
+        this.drawStartGameButton();
     };
     GameMenu.prototype.handleAddPlayerButton = function () {
         if (mouseX > (width * .5) + 190 && mouseX < (width * .5) + 290 &&
@@ -257,6 +334,20 @@ var GameMenu = (function () {
                 break;
         }
     };
+    GameMenu.prototype.drawStartGameButton = function () {
+        strokeWeight(3);
+        stroke('#000000');
+        fill('#000000');
+        rect((width * .5) - 75, height * .89, 140, 50, 20);
+        strokeWeight(3);
+        stroke('#000000');
+        fill('#F4ed47');
+        rect((width * .5) - 70, height * .89, 140, 50, 20);
+        var startButton = 'START';
+        textSize(30);
+        fill('#000000');
+        text(startButton, (width * .5) - 52, (height * .89) + 35);
+    };
     GameMenu.prototype.drawMenu = function () {
         background('#777b7e');
         noStroke();
@@ -293,18 +384,6 @@ var GameMenu = (function () {
         stroke('#000000');
         line(0, 90, width, 90);
         image(img, width * .5 - (img.width * 0.5), 20);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#000000');
-        rect((width * .304), height * .906, 260, 45, 15);
-        strokeWeight(3);
-        stroke('#000000');
-        fill('#F4ed47');
-        rect((width * .3), height * .9, 260, 45, 15);
-        var startButton = 'Press Enter To Start';
-        textSize(25);
-        fill('#000000');
-        text(startButton, (width * .3131), (height * .9) + 30);
     };
     return GameMenu;
 }());
@@ -385,12 +464,17 @@ var Player = (function () {
         this.playerID = gameManager.players.length;
         this.activePlayer = true;
         this.playerColor = this.getPlayerColor;
+        this.playerXCoordinates = [];
+        this.playerYCoordinates = [];
         this.pad = new Pad;
     }
     Player.prototype.update = function () {
         this.setKeys();
         if (isGameRunning === 1) {
-            this.setDefaultPositions();
+            if (this.pad.currentPosition == undefined && this.pad.startPosition == undefined) {
+                gameManager.setDefaultPositions();
+            }
+            this.getPlayerCoordinates();
             this.handlePlayerButtons();
         }
     };
@@ -398,6 +482,15 @@ var Player = (function () {
         this.pad.drawPlayer(this.playerColor);
     };
     Player.prototype.hitPlayer = function () { };
+    Player.prototype.removePlayer = function () {
+        this.activePlayer = false;
+    };
+    Player.prototype.getPlayerCoordinates = function () {
+        for (var i = 0; i <= this.pad.getPadLength; i++) {
+            this.playerXCoordinates[i] = (circleSize / 2) * Math.cos(((this.pad.getCurrentPosition + i) * Math.PI / 180)) + (width / 2);
+            this.playerYCoordinates[i] = (circleSize / 2) * Math.sin(((this.pad.getCurrentPosition + i) * Math.PI / 180)) + (height / 2);
+        }
+    };
     Object.defineProperty(Player.prototype, "getPlayerColor", {
         get: function () {
             var r = random(0, 255);
@@ -421,18 +514,16 @@ var Player = (function () {
         this.pad.setMinValue = this.pad.getStartPosition - this.pad.getPadLength;
         this.pad.setMaxValue = (this.pad.getStartPosition + this.pad.getPadLength) - 1;
     };
-    Player.prototype.setDefaultPositions = function () {
-        if (!this.pad.currentPosition && !this.pad.startPosition) {
-            if (this.playerID === 0) {
-                this.pad.setCurrentPosition = 0;
-                this.pad.setStartPosition = 0;
-            }
-            else {
-                this.pad.setCurrentPosition = (360 / nrOfPlayers) * this.playerID;
-                this.pad.setStartPosition = (360 / nrOfPlayers) * this.playerID;
-            }
-            this.setConstrainValues();
+    Player.prototype.setDefaultPositionss = function () {
+        if (this.playerID === 0) {
+            this.pad.setCurrentPosition = 0;
+            this.pad.setStartPosition = 0;
         }
+        else {
+            this.pad.setCurrentPosition = (360 / nrOfPlayers) * this.playerID;
+            this.pad.setStartPosition = (360 / nrOfPlayers) * this.playerID;
+        }
+        this.setConstrainValues();
     };
     Player.prototype.setKeys = function () {
         if (!this.playerButtonRight) {
@@ -472,10 +563,8 @@ var Player = (function () {
 var Pad = (function () {
     function Pad() {
         this.velocity = 0;
-        this.padLength = this.getPadLength;
     }
-    Pad.prototype.update = function () {
-    };
+    Pad.prototype.update = function () { };
     Pad.prototype.draw = function () {
     };
     Pad.prototype.drawPlayer = function (color) {
@@ -486,6 +575,9 @@ var Pad = (function () {
         stroke(color);
         strokeWeight(5);
         arc(width / 2, height / 2, circleSize, circleSize, this.currentPosition, this.currentPosition + this.getPadLength);
+        stroke(0);
+        strokeWeight(7);
+        arc(width / 2, height / 2, circleSize, circleSize, this.minConstrain, this.minConstrain + 0.01);
     };
     Pad.prototype.calculatePlayerVelocity = function (direction) {
         if (direction === 'left') {
@@ -558,6 +650,10 @@ var gameMusic;
 var players;
 var pads;
 var balls;
+var ballXPosition;
+var ballYPosition;
+var padLength = 20;
+var ballRadius;
 var isGameRunning;
 var circleSize;
 var nrOfPlayers;
@@ -574,25 +670,21 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     frameRate(60);
     fullscreen();
+    angleMode(DEGREES);
     gameMusic.menuMusic.play();
     gameManager = new GameManager(gameMusic);
-    angleMode(DEGREES);
 }
 function draw() {
     gameManager.update();
     gameManager.draw();
 }
-function keyPressed() {
-    if (keyCode === ENTER && isGameRunning == 0) {
-        clear();
-        gameManager.gameSettings.startGame();
-    }
-}
 function mouseMoved() {
     var addPlayerButton = mouseX > (width * .5) + 190 && mouseX < (width * .5) + 290 &&
         mouseY > height * .9 && mouseY < (height * .9) + 45;
     var soundButton = dist(mouseX, mouseY, 60, 60) < 40;
-    if (addPlayerButton || soundButton) {
+    var StartGameButton = mouseX > (width * .5) - 75 && mouseX < (width * .5) + 70 &&
+        mouseY > height * .89 && mouseY < (height * .89) + 50;
+    if (addPlayerButton || soundButton || StartGameButton) {
         cursor('pointer');
     }
     else {
@@ -608,6 +700,12 @@ function mousePressed() {
                 player.setKeys();
             }
         }
+    }
+    if (isGameRunning == 0 && mouseX > (width * .5) - 75 && mouseX < (width * .5) + 70 &&
+        mouseY > height * .89 && mouseY < (height * .89) + 50) {
+        clear();
+        gameManager.gameSettings.startGame();
+        gameManager.createBall();
     }
     else if (isGameRunning == 1) {
     }
