@@ -11,7 +11,7 @@ class Ball {
     update(): void {
     }
     draw(): void {
-        this.handleBall(); // should be in update() but it only works from here right now
+        this.moveBall(); // should be in update() but it only works from here right now
         this.drawBall();
     }
 
@@ -21,11 +21,11 @@ class Ball {
         strokeWeight(2);
         ellipse(ballXPosition, ballYPosition, ballRadius * 2, ballRadius * 2);
 
-        this.checkCollision();
+        this.handleBall();
     }
 
-    handleBall(): void {
-        // move ball
+    // move ball
+    moveBall(): void {
         ballXPosition += this.ballSpeedX;
         ballYPosition += this.ballSpeedY;
 
@@ -34,11 +34,27 @@ class Ball {
         this.dy = ballYPosition - height / 2;
     }
 
-    checkCollision() {
+    // check for ball collision
+    handleBall() {
+        for (const player of gameManager.players) {
+            for (let i = 0; i <= player.pad.getPadLength; i++) {
+                if (player.playerXCoordinates[i] && player.playerYCoordinates[i]) {
+                    // bounce on ball - pad collision
+                    if (dist(ballXPosition, ballYPosition, player.playerXCoordinates[i], player.playerYCoordinates[i]) < ballRadius + .5) {
+                        this.bounceBackFromPad();
+                    }
+                }
+            }
+        }
+    }
+
+    ballSize(): void { }
+
+    // ball bounces
+    bounceBackFromPad(): void {
         if (dist(ballXPosition, ballYPosition, width / 2, height / 2) >= circleSize / 2 - ballRadius) {
             const velocity = Math.sqrt(this.ballSpeedX * this.ballSpeedX + this.ballSpeedY * this.ballSpeedY);
             let angleToCollisionPoint = Math.atan2(-this.dy, this.dx);
-            // console.log("v", angleToCollisionPoint);
             var oldAngle = Math.atan2(-this.ballSpeedY, this.ballSpeedX);
             var newAngle = 2 * angleToCollisionPoint - oldAngle;
 
@@ -46,7 +62,7 @@ class Ball {
             this.ballSpeedY = velocity * Math.sin(newAngle);
 
             const vector = createVector(this.dx, this.dy);
-            vector.normalize()
+            vector.normalize();
             const scalar = (circleSize / 2 - ballRadius);
             vector.mult(scalar);
             ballXPosition = vector.x + width / 2;
@@ -54,7 +70,4 @@ class Ball {
             this.handleBall();
         }
     }
-    
-    ballSize(): void { }
-    bounceBackFromPad(): void { }
 }

@@ -2,12 +2,9 @@ class GameMenu {
     update() {
     }
     draw() {
-        // draw menu if game is not running
-        if (isGameRunning == 0) {
             this.drawMenu();
             this.drawAddPlayerButton();
             this.drawNewPlayer();
-        }
     }
 
     // add new player

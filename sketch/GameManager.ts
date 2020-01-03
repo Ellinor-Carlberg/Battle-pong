@@ -25,53 +25,91 @@ class GameManager {
         this.pads = [];
     }
 
-    setup() {
-        //puts the angles into degrees
-        angleMode(DEGREES);
-        ballXPosition = width / 2;
-        ballYPosition = height * .1;
-    }
-
     update(): void {
+        if (!ballXPosition && !ballYPosition) {
+            ballXPosition = width / 2;
+            ballYPosition = height / 2;
+        }
         if (!nrOfPlayers) {
             this.setDefaultNrOfPlayers();
         }
-        for (let i = 0; i < nrOfPlayers; i++) {
-            this.players[i].update();
-        }
+
         this.gameMenu.update();
 
         if (isGameRunning == 1) {
+            // check for inactive player
+            this.removeInactivePlayer();
+
             // update variable for game area size
             circleSize = this.gameArea.calculateCircleSize();
+            for (let i = 0; i < nrOfPlayers; i++) {
+                if (this.players[i].activePlayer === true) {
+                    this.players[i].update();
+                }
+            }
         }
     }
 
     draw() {
         // draw menu
-        this.gameMenu.draw();
-        this.gameSettings.draw();
-
-        if (isGameRunning == 1) {
+        if (isGameRunning == 0) {
+            this.gameMenu.draw();
+        }
+        else if (isGameRunning == 1) {
             this.gameArea.draw();
             this.drawPlayers();
             for (let i = 0; i < nrOfPlayers; i++) {
                 this.players[i].draw();
             }
-            for (let i = 0; i < this.balls.length; i++) {
-                ballRadius = circleSize / 40;
-                this.balls[i].draw();
+            for (const ball of this.balls) {
+                ball.draw();
+            }
+            ballRadius = circleSize / 40;
+        }
+        this.gameSettings.draw();
+
+    }
+
+    removeInactivePlayer(): void {
+        for (let i = 0; i < this.players.length; i++) {
+            const player = this.players[i];
+            if (player.activePlayer === false) {
+                this.pads.splice(i, 1)
+                this.players.splice(i, 1)
+            }
+            // if nr of players has changed, reset positions
+            if (this.players.length < nrOfPlayers) {
+                nrOfPlayers--;
+                this.setDefaultPositions();
             }
         }
-
     }
 
+    setDefaultPositions() {
+        // if nr of players is more than 1, just for testing
+        // if (this.players.length > 1) {
+            for (let i = 0; i < this.players.length; i++) {
+                const player = this.players[i];
+                if (i === 0) {
+                    // 0 is not read as number so it is set manually
+                    player.pad.setCurrentPosition = 0;
+                    player.pad.setStartPosition = 0;
+                }
+                else {
+                    // position = full circle divided by nr of players, multiplied by playerID
+                    // or else each player ends up at the same position
+                    player.pad.setCurrentPosition = (360 / nrOfPlayers) * i;
+                    player.pad.setStartPosition = (360 / nrOfPlayers) * i;
+                }
+                player.setConstrainValues();
+            }
+        // }
+    }
+
+    // set and add default nr of players at start
     private setDefaultNrOfPlayers() {
         nrOfPlayers = 2;
-        this.addDefaultPlayers();
-    }
-
-    private addDefaultPlayers() {
+  
         for (let i = 0; i < nrOfPlayers; i++) {
             this.createPlayer();
         }
@@ -83,13 +121,18 @@ class GameManager {
             for (const player of this.players) {
                 player.draw();
             }
-
         }
     }
-    // add player to list of players
+
+    // add player and pad to each list
     public createPlayer() {
         let newPlayer = new Player;
         this.players.push(newPlayer);
+
+        for (let i = 0; i < this.players.length; i++) {
+            const pad = this.players[i].pad;
+            this.pads.push(pad);
+        }
     }
 
     createBall(): void {
@@ -100,5 +143,6 @@ class GameManager {
             this.balls[i].update();
         }
     }
+
     rebuildGameArea(): void { }
 }

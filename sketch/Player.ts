@@ -1,21 +1,30 @@
 class Player {
     public playerID: number = gameManager.players.length;
-    protected activePlayer: boolean;
+    public activePlayer: boolean;
     public playerColor: p5.Color;
-    private playerButtonLeft!: number;
+    public playerButtonLeft!: number;
     private playerButtonRight!: number;
+    public playerXCoordinates: number[];
+    public playerYCoordinates: number[];
     public pad: Pad;
 
     constructor() {
         this.activePlayer = true;
         this.playerColor = this.getPlayerColor;
+        this.playerXCoordinates = [];
+        this.playerYCoordinates = [];
         this.pad = new Pad;
     }
 
     update() {
         this.setKeys();
+
         if (isGameRunning === 1) {
-            this.setDefaultPositions();
+            // set positions if they're unset
+            if (this.pad.currentPosition == undefined && this.pad.startPosition == undefined) {
+                gameManager.setDefaultPositions();
+            }
+            this.getPlayerCoordinates();
             this.handlePlayerButtons();
         }
     }
@@ -24,6 +33,18 @@ class Player {
     }
 
     hitPlayer() { }
+
+    // make player inactive
+    removePlayer() {
+        this.activePlayer = false;
+    }
+
+    getPlayerCoordinates() {
+        for(let i = 0; i <= this.pad.getPadLength; i++){
+            this.playerXCoordinates[i] = (circleSize / 2) * Math.cos(((this.pad.getCurrentPosition + i) * Math.PI / 180)) + (width / 2);
+            this.playerYCoordinates[i] = (circleSize / 2) * Math.sin(((this.pad.getCurrentPosition + i) * Math.PI / 180)) + (height / 2);
+        }
+    }
 
     // generate random color
     private get getPlayerColor(): p5.Color {
@@ -45,29 +66,25 @@ class Player {
     }
 
     // set constrain values
-    private setConstrainValues() {
+    public setConstrainValues() {
         this.pad.setMinValue = this.pad.getStartPosition - this.pad.getPadLength;
         this.pad.setMaxValue = (this.pad.getStartPosition + this.pad.getPadLength) - 1;
     }
 
     // set start position and default current position
-    private setDefaultPositions() {
-        // if default positions are not set already
-        if (!this.pad.currentPosition && !this.pad.startPosition) {
-            if (this.playerID === 0) {
-                // 0 is not read as number so it is set manually
-                this.pad.setCurrentPosition = 0;
-                this.pad.setStartPosition = 0;
-            }
-            else {
-                // position = full circle divided by nr of players, multiplied by playerID
-                // or else each player ends up at the same position
-                this.pad.setCurrentPosition = (360 / nrOfPlayers) * this.playerID;
-                this.pad.setStartPosition = (360 / nrOfPlayers) * this.playerID;
-            }
-
-            this.setConstrainValues();
+    public setDefaultPositionss() {
+        if (this.playerID === 0) {
+            // 0 is not read as number so it is set manually
+            this.pad.setCurrentPosition = 0;
+            this.pad.setStartPosition = 0;
         }
+        else {
+            // position = full circle divided by nr of players, multiplied by playerID
+            // or else each player ends up at the same position
+            this.pad.setCurrentPosition = (360 / nrOfPlayers) * this.playerID;
+            this.pad.setStartPosition = (360 / nrOfPlayers) * this.playerID;
+        }
+        this.setConstrainValues();
     }
 
     // set player buttons
