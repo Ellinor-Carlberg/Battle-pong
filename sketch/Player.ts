@@ -29,7 +29,7 @@ class Player {
         }
     }
     draw() {
-        this.pad.drawPad(this.playerColor);
+        this.pad.drawPlayer(this.playerColor);
     }
 
     hitPlayer() { }
