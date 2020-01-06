@@ -5,6 +5,7 @@ class GameMenu {
             this.drawMenu();
             this.drawAddPlayerButton();
             this.drawNewPlayer();
+            this.drawStartGameButton();
     }
 
     // add new player
@@ -160,6 +161,29 @@ class GameMenu {
         }
     }
 
+// draw start-button
+private drawStartGameButton() {
+    /** start button, need to have a mouseClicked event */
+
+    /** black shadow for start button */
+    strokeWeight(3)
+    stroke('#000000')
+    fill('#000000');
+    rect((width * .5) -75, height * .89, 140, 50, 20)
+
+    /** yellow start button */
+    strokeWeight(3)
+    stroke('#000000')
+    fill('#F4ed47');
+    rect((width * .5) -70, height * .89, 140, 50, 20)
+
+    /** text in start button */
+    let startButton = 'START'
+    textSize(30);
+    fill('#000000');
+    text(startButton, (width * .5) -52, (height * .89) +35)
+}
+
     // draw menu elements
     private drawMenu() {
         /** Background, (grey and brown) */
@@ -220,28 +244,6 @@ class GameMenu {
 
         /**headline Battle-Pong svg */
         image(img, width * .5 - (img.width * 0.5), 20)
-
-        /** start button in right bottom corner, need to have a mouseClicked event */
-        /** black shadow for start button */
-        strokeWeight(3)
-        stroke('#000000')
-        fill('#000000');
-        rect((width * .304), height * .906, 260, 45, 15);
-
-        /** yellow start button */
-        strokeWeight(3)
-        stroke('#000000')
-        fill('#F4ed47');
-        rect((width * .3), height * .9, 260, 45, 15);
-
-        /** text in start button */
-        let startButton = 'Press Enter To Start'
-        textSize(25);
-        fill('#000000');
-        text(startButton, (width * .3131), (height * .9) + 30);
-
-
-        
-        
+    
     }
 }
