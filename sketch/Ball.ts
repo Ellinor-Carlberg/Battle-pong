@@ -3,12 +3,16 @@ class Ball {
     private dy!: number;
     private ballSpeedX: number;
     private ballSpeedY: number;
+    private startDirection: Array <number>;
+    
 
     constructor() {
+        this.startDirection = [4, -4];
         this.ballSpeedX = 7;
         this.ballSpeedY = -7;
     }
     update(): void {
+        this.setStartDirection();
     }
     draw(): void {
         this.moveBall(); // should be in update() but it only works from here right now
@@ -33,7 +37,10 @@ class Ball {
         this.dx = ballXPosition - width / 2;
         this.dy = ballYPosition - height / 2;
     }
-
+    setStartDirection(): void { //Randomizes direction
+        this.ballSpeedX = this.startDirection[Math.floor(Math.random()*this.startDirection.length)];
+        this.ballSpeedY = this.startDirection[Math.floor(Math.random()*this.startDirection.length)];
+    }
     // check for ball collision
     handleBall() {
         for (const player of gameManager.players) {
@@ -52,7 +59,7 @@ class Ball {
 
     // ball bounces
     bounceBackFromPad(): void {
-        if (dist(ballXPosition, ballYPosition, width / 2, height / 2) >= circleSize / 2 - ballRadius) {
+        if (dist(ballXPosition, ballYPosition, width / 2, height / 2) >= circleSize / 2 - 5) {
             const velocity = Math.sqrt(this.ballSpeedX * this.ballSpeedX + this.ballSpeedY * this.ballSpeedY);
             let angleToCollisionPoint = Math.atan2(-this.dy, this.dx);
             var oldAngle = Math.atan2(-this.ballSpeedY, this.ballSpeedX);
