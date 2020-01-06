@@ -20,7 +20,10 @@ When you are done with this step, press the start button.
 Good luck!
 
 
-Demo link (from Github pages): https://ellinor-carlberg.github.io/Battle-pong/
+# Link for playing the game:
+Demo link (Github pages): https://ellinor-carlberg.github.io/Battle-pong/
 
-Link to Github repot: https://github.com/Ellinor-Carlberg/Battle-pong
+
+# Link to the repository:
+https://github.com/Ellinor-Carlberg/Battle-pong
 
