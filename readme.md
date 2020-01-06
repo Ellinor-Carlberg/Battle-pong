@@ -6,8 +6,8 @@ This game is based on classic pong but has a round playing field, the number of 
 The playing area is the edge of a large circle.
 The edge is divided into equal parts based on the number of players.
 Each player has their own part of the circle's edge, this one is marked with 2 dots and has a paddle with the player's assigned color.
-The player can move his paddle back and forth on the edge of the circle using his 2 keys on the keyboard.
-Players should use the paddles to hit a ball back and forth between each other. The goal is for each player to prevent the ball from colliding with their playing area. If the ball collides with the player's game area the player is out of play.
+The player can move their paddle back and forth on the edge of the circle using his 2 keys on the keyboard.
+Players should use the paddles to hit a ball back and forth between each other. The goal is for each player to prevent the ball from colliding with their game area. If the ball collides with the player's game area the player is out of the game.
 
 The game continues until there is only one player left and that player wins the game.
 
