@@ -109,7 +109,7 @@ class Player {
     // list of keys
     private get getKeys(): Array<{}> {
         return [
-            { left: UP_ARROW, right: DOWN_ARROW },
+            { left: DOWN_ARROW, right: UP_ARROW },
             { left: 65, right: 90 }, // A, Z
             { left: 76, right: 80 }, // L, P
             { left: 51, right: 69 }, // 3, E

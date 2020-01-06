@@ -1,10 +1,12 @@
 "use strict";
 var Ball = (function () {
     function Ball() {
+        this.startDirection = [4, -4];
         this.ballSpeedX = 7;
         this.ballSpeedY = -7;
     }
     Ball.prototype.update = function () {
+        this.setStartDirection();
     };
     Ball.prototype.draw = function () {
         this.moveBall();
@@ -23,6 +25,10 @@ var Ball = (function () {
         this.dx = ballXPosition - width / 2;
         this.dy = ballYPosition - height / 2;
     };
+    Ball.prototype.setStartDirection = function () {
+        this.ballSpeedX = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
+        this.ballSpeedY = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
+    };
     Ball.prototype.handleBall = function () {
         for (var _i = 0, _a = gameManager.players; _i < _a.length; _i++) {
             var player = _a[_i];
@@ -37,7 +43,7 @@ var Ball = (function () {
     };
     Ball.prototype.ballSize = function () { };
     Ball.prototype.bounceBackFromPad = function () {
-        if (dist(ballXPosition, ballYPosition, width / 2, height / 2) >= circleSize / 2 - ballRadius) {
+        if (dist(ballXPosition, ballYPosition, width / 2, height / 2) >= circleSize / 2 - 5) {
             var velocity = Math.sqrt(this.ballSpeedX * this.ballSpeedX + this.ballSpeedY * this.ballSpeedY);
             var angleToCollisionPoint = Math.atan2(-this.dy, this.dx);
             var oldAngle = Math.atan2(-this.ballSpeedY, this.ballSpeedX);
@@ -545,7 +551,7 @@ var Player = (function () {
     Object.defineProperty(Player.prototype, "getKeys", {
         get: function () {
             return [
-                { left: UP_ARROW, right: DOWN_ARROW },
+                { left: DOWN_ARROW, right: UP_ARROW },
                 { left: 65, right: 90 },
                 { left: 76, right: 80 },
                 { left: 51, right: 69 },
@@ -671,7 +677,7 @@ function setup() {
     frameRate(60);
     fullscreen();
     angleMode(DEGREES);
-    gameMusic.menuMusic.play();
+    gameMusic.menuMusic.loop();
     gameManager = new GameManager(gameMusic);
 }
 function draw() {
