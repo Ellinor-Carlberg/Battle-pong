@@ -88,11 +88,6 @@ var GameArea = (function () {
         stroke(0, 0, 0);
         strokeWeight(1);
         ellipse(width / 2, height / 2, circleSize, circleSize);
-        fill('black');
-        noStroke();
-        textAlign(CENTER, CENTER);
-        textSize(40);
-        text("press SPACE \n to start", width / 2, height / 2);
     };
     GameArea.prototype.calculateCircleSize = function () {
         if (windowWidth >= windowHeight) {
