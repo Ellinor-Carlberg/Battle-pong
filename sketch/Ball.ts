@@ -3,7 +3,7 @@ class Ball {
     private dy!: number;
     public ballSpeedX!: number;
     public ballSpeedY!: number;
-    private startDirection: Array <number>;
+    private startDirection: Array<number>;
     public ballXPosition: number;
     public ballYPosition: number;
     private ballRadius!: number;
@@ -19,7 +19,7 @@ class Ball {
     }
     draw(): void {
         this.moveBall(); // should be in update() but it only works from here right now
-        this.playerLoss();
+        // this.playerLoss();
         this.drawBall();
     }
 
@@ -42,8 +42,8 @@ class Ball {
         this.dy = this.ballYPosition - height / 2;
     }
     setStartDirection(): void { //Randomizes direction
-        this.ballSpeedX = this.startDirection[Math.floor(Math.random()*this.startDirection.length)];
-        this.ballSpeedY = this.startDirection[Math.floor(Math.random()*this.startDirection.length)];
+        this.ballSpeedX = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
+        this.ballSpeedY = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
     }
     // check for ball collision
     private handleBall(): void {
@@ -53,6 +53,27 @@ class Ball {
                     // bounce if ball+pad collision
                     if (dist(this.ballXPosition, this.ballYPosition, player.playerXCoordinates[i], player.playerYCoordinates[i]) < this.ballRadius + .5) {
                         this.bounceBackFromPad();
+                    }
+                }
+            }
+            if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) > this.ballRadius + circleSize / 2) {
+                let distances: number[];
+                distances = [];
+                Math.max(...distances)
+                for (let i = 0; i < gameManager.players.length; i++) {
+                    const player = gameManager.players[i];
+                    Math.max(...distances)
+                    let distanceToBall = player.getDistanceToBall(this.ballXPosition, this.ballYPosition)
+                    distances.push(distanceToBall);
+
+                }
+                if (distances.length = gameManager.players.length) {
+                    for (const player of gameManager.players) {
+                        if (distances[player.playerID] === Math.min(...distances)) {
+                            gameManager.players[player.playerID].removePlayer();
+                        }
+                        this.ballXPosition = innerWidth / 2;
+                        this.ballYPosition = innerHeight / 2;
                     }
                 }
             }
@@ -83,19 +104,16 @@ class Ball {
             this.handleBall();
         }
     }
-
-    private playerLoss(): void {
-        if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) > this.ballRadius + circleSize / 2) {
-            if (this.ballYPosition < height / 2) {
-                gameRestart = 1;
-                this.ballXPosition = innerWidth / 2;
-                this.ballYPosition = innerHeight / 2;
-            }
-            if (this.ballYPosition > height / 2) {
-                gameRestart = 1;
-                this.ballXPosition = innerWidth / 2;
-                this.ballYPosition = innerHeight / 2;
-            }
-        }
-    }
 }
+/*
+if (this.ballYPosition < height / 2) {
+    gameRestart = 1;
+    this.ballXPosition = innerWidth / 2;
+    this.ballYPosition = innerHeight / 2;
+}
+if (this.ballYPosition > height / 2) {
+    gameRestart = 1;
+    this.ballXPosition = innerWidth / 2;
+    this.ballYPosition = innerHeight / 2;
+}
+*/

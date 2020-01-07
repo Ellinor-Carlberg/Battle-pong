@@ -6,8 +6,6 @@ class Player {
     private playerButtonRight!: number;
     public playerXCoordinates: number[];
     public playerYCoordinates: number[];
-    public playerXArea: number[];
-    public playerYArea: number[];
     public pad: Pad;
 
     constructor() {
@@ -15,8 +13,6 @@ class Player {
         this.playerColor = this.getPlayerColor;
         this.playerXCoordinates = [];
         this.playerYCoordinates = [];
-        this.playerXArea = [];
-        this.playerYArea = [];
         this.pad = new Pad;
     }
 
@@ -29,7 +25,7 @@ class Player {
                 gameManager.setDefaultPositions();
             }
             this.getPlayerCoordinates();
-            this.getPlayerAreaCoordinates();
+            this.getPlayerConstrainCoordinates();
             this.handlePlayerButtons();
         }
     }
@@ -48,11 +44,30 @@ class Player {
         }
     }
 
-    getPlayerAreaCoordinates() {
-        for (let i = this.pad.minConstrain; i <= this.pad.maxConstrain; i++) {
-            this.playerXArea[i] = (circleSize / 2) * Math.cos(this.pad.getStartPosition + i);
-            this.playerYArea[i] = (circleSize / 2) * Math.sin(this.pad.getStartPosition + i);
+    get getPlayerMinCoordinates() {
+        return {
+            x: (circleSize / 2) * Math.cos(((this.pad.minConstrain) * Math.PI / 180)) + (width / 2),
+            y: (circleSize / 2) * Math.sin(((this.pad.minConstrain) * Math.PI / 180)) + (height / 2)
         }
+    }
+    get getPlayerMaxCoordinates() {
+        return {
+            x: (circleSize / 2) * Math.cos(((this.pad.getStartPosition - 5 + (this.pad.getPadLength * 3)) * Math.PI / 180)) + (width / 2),
+            y: (circleSize / 2) * Math.sin(((this.pad.getStartPosition - 5+ (this.pad.getPadLength * 3)) * Math.PI / 180)) + (height / 2)
+        }
+    }
+
+    getDistanceToBall(ballX: number, ballY: number) {
+        let distance = dist(ballX, ballY, this.getPlayerMinCoordinates.x, this.getPlayerMinCoordinates.y) + dist(ballX, ballY, this.getPlayerMaxCoordinates.x, this.getPlayerMaxCoordinates.y);
+        return distance;
+    }
+
+    getPlayerConstrainCoordinates() {
+
+        // if (mouseIsPressed) {
+        //     console.log(this.getPlayerMinCoordinates, this.getPlayerMaxCoordinates);
+        //     console.log('ID', this.playerID, 'mouseX', mouseX, 'mouseY', mouseY)
+        // }
     }
 
     // generate random color
