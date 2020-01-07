@@ -1,34 +1,46 @@
 // global variables
 let gameManager: GameManager;
-let gameSettings: GameSettings;
-let gameArea: GameArea;
-let gameMenu: GameMenu;
 let gameMusic: GameMusic;
-let players: Player[];
-let pads: Pad[];
-let balls: Ball[];
-
-// ball stuff
-let ballXPosition: number;
-let ballYPosition: number;
-let padLength = 20;
-let ballRadius: number;
-
-// etc
 let isGameRunning: number;
+let gameRestart: number;
 let circleSize: number;
 let nrOfPlayers: number;
 let img: p5.Image;
+let img2: p5.Image;
+/*
+const canv = document.querySelector('canvas')
+const context = canv.getContext('2d');
+
+// Create circle
+const circles = new Path2D();
+
+circles.arc(150, 75, 50, 0, (2 * Math.PI) / 2);
+context.fillStyle = 'red';
+circles.arc(150, 5, 50, Math.PI, (2 * Math.PI) / 2);
+context.fillStyle = 'blue';
+context.fill(circles);
+
+function addEL() {
+    // Listen for mouse moves
+    canv.addEventListener('mousemove', function (event) {
+        // Check whether point is inside circle
+        if (context.isPointInPath(circles, event.clientX, event.clientY)) {
+            context.fillStyle = 'green';
+        }
+        else {
+            context.fillStyle = 'red';
+        }
+
+        // Draw circle
+        context.clearRect(0, 0, canv.width, canv.height);
+        context.fill(circles);
+    });
+}*/
 
 window.addEventListener('load', () => {
     isGameRunning = 0;
 })
 
-/**
- * Built in preload function in P5
- * This is a good place to load assets such as
- * sound files, images etc...
- */
 function preload() {
     img = loadImage('./assets/images/battle_pong.svg');
 
@@ -37,56 +49,37 @@ function preload() {
     gameMusic = { menuMusic: (window as any).loadSound('./assets/music/menu-music.wav') }
 }
 
-/**
- * Built in setup function in P5
- * This is a good place to create your first class object
- * and save it as a global variable so it can be used
- * in the draw function below
- */
 function setup() {
-    //size of the screen
-    createCanvas(windowWidth, windowHeight);
+    // size of the screen
+    createCanvas(windowWidth, windowHeight, "p2d");
     frameRate(60);
     fullscreen();
     angleMode(DEGREES);
 
     // play menu music on page load
     gameMusic.menuMusic.loop();
+    gameMusic.menuMusic.play();
     // create new game manager instance
     gameManager = new GameManager(gameMusic);
 }
-
-/**
- * Built in draw function in P5
- * This is a good place to call public functions of the object
- * you created in the setup function above
- */
 function draw() {
     gameManager.update();
     gameManager.draw();
 }
 
-/* Should we take away this code?
 
 // key press event
-function keyPressed(): void {
-    // start game on enter key
-    if (keyCode === ENTER && isGameRunning == 0) {
-        clear();
-        gameManager.gameSettings.startGame();
-        gameManager.createBall();
-    }
-
+function keyPressed() {
     // just for testing
     // when 1st player presses on left button, remove player
-    for (let i = 0; i < gameManager.players.length; i++) {
-        if (keyCode === gameManager.players[0].playerButtonLeft && isGameRunning == 1 && gameManager.players.length > 1) {
-            // gameManager.players[0].removePlayer();
-        }
-    }
+     for (let i = 0; i < gameManager.players.length; i++) {
+         if (keyCode === gameManager.players[0].playerButtonLeft && isGameRunning == 1 && gameManager.players.length > 1) {
+             gameManager.players[0].removePlayer();
+         }
+     }
 
 }
-*/
+
 
 // hover event
 function mouseMoved(): void {
@@ -95,7 +88,7 @@ function mouseMoved(): void {
     const soundButton = dist(mouseX, mouseY, 60, 60) < 40;
 
     const StartGameButton = mouseX > (width * .5) - 75 && mouseX < (width * .5) + 70 &&
-    mouseY > height * .89 && mouseY < (height * .89) + 50 ;
+        mouseY > height * .89 && mouseY < (height * .89) + 50;
 
     if (addPlayerButton || soundButton || StartGameButton) {
         cursor('pointer');
@@ -112,7 +105,6 @@ function mousePressed(): void {
         gameManager.gameMenu.handleAddPlayerButton();
 
         // set keys after each player is created
-        // not the prettiest to have this here...
         for (const playerObj in gameManager.players) {
             if (gameManager.players.hasOwnProperty(playerObj)) {
                 const player = gameManager.players[playerObj];
@@ -123,20 +115,14 @@ function mousePressed(): void {
 
     // mouse click/press events on start button
     if (isGameRunning == 0 && mouseX > (width * .5) - 75 && mouseX < (width * .5) + 70 &&
-    mouseY > height * .89 && mouseY < (height * .89) + 50) {
+        mouseY > height * .89 && mouseY < (height * .89) + 50) {
         clear();
         gameManager.gameSettings.startGame();
-        gameManager.createBall();
     }
 
-    // etc mouse click/press events in game area, not player buttons
-    else if (isGameRunning == 1) {
-    }
     // mute music and draw line on click
     gameManager.gameSettings.update();
 }
-
-
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
