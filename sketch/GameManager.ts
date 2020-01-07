@@ -36,7 +36,7 @@ class GameManager {
 
         this.gameMenu.update();
 
-        if (isGameRunning == 1) {
+        if (isGameRunning == 1 || isGameRunning == 2) {
             // check for inactive player
             this.removeInactivePlayer();
 
@@ -56,6 +56,7 @@ class GameManager {
             this.gameMenu.draw();
         }
         else if (isGameRunning == 1) {
+            
             this.gameArea.draw();
             this.drawPlayers();
             for (let i = 0; i < nrOfPlayers; i++) {
@@ -66,14 +67,22 @@ class GameManager {
             textAlign(CENTER, CENTER);
             textSize(40);
             text("press SPACE \n to start", width/2, height/2);
+
             if(keyCode === 32){
-                for (const ball of this.balls) {
-                    ball.draw();
+                isGameRunning = 2;
                 }
+            } else if (isGameRunning == 2){
+            this.gameArea.draw();
+            this.drawPlayers();
+            for (let i = 0; i < nrOfPlayers; i++) {
+                this.players[i].draw();
             }
-            
+            for (const ball of this.balls) {
+                ball.draw();
+            }
             ballRadius = circleSize / 40;
         }
+        
         this.gameSettings.draw();
 
     }
@@ -125,7 +134,7 @@ class GameManager {
 
     // draw each player
     drawPlayers() {
-        if (this.players && isGameRunning == 1) {
+        if ((this.players && isGameRunning == 1) || (this.players && isGameRunning == 2)) {
             for (const player of this.players) {
                 player.draw();
             }
