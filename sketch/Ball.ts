@@ -3,8 +3,8 @@ let arcis;
 class Ball {
     private dx!: number;
     private dy!: number;
-    private ballSpeedX: number;
-    private ballSpeedY: number;
+    private ballSpeedX!: number;
+    private ballSpeedY!: number;
     private startDirection: Array <number>;
     public ballXPosition: number;
     public ballYPosition: number;
@@ -61,19 +61,9 @@ class Ball {
             // this.checkBall();
             for (let i = 0; i <= player.pad.getPadLength; i++) {
                 if (player.playerXCoordinates[i] && player.playerYCoordinates[i]) {
-                    // bounce if ball+pad collision
-                    let angle = Math.atan2(this.ballYPosition - height / 2, this.ballXPosition - width / 2) * 180 / Math.PI + 180;
-                    if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) > this.ballRadius + circleSize / 2) {
-                        console.log('que');
+                    // bounce on ball - pad collision
+                    if (dist(ballXPosition, ballYPosition, player.playerXCoordinates[i], player.playerYCoordinates[i]) < ballRadius + .5) {
                         
-                        if (angle > player.pad.minConstrain && angle < (player.pad.maxConstrain + player.pad.getPadLength)) {
-                            console.log('nope');
-                        }
-                        else if (angle > player.pad.minConstrain && angle < (player.pad.maxConstrain + player.pad.getPadLength)) {
-                            console.log('hej');
-                        }
-                    }
-                    if (dist(this.ballXPosition, this.ballYPosition, player.playerXCoordinates[i], player.playerYCoordinates[i]) < this.ballRadius + .5) {
                         this.bounceBackFromPad();
                     }
                 }
@@ -139,6 +129,8 @@ class Ball {
             let angleToCollisionPoint = Math.atan2(-this.dy, this.dx);
             let oldAngle = Math.atan2(-this.ballSpeedY, this.ballSpeedX);
             let newAngle = 2 * angleToCollisionPoint - oldAngle;
+
+            // TODO: check where on pad...
 
             this.ballSpeedX = -velocity * Math.cos(newAngle);
             this.ballSpeedY = velocity * Math.sin(newAngle);

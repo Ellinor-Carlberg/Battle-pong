@@ -2,8 +2,6 @@
 var Ball = (function () {
     function Ball() {
         this.startDirection = [4, -4];
-        this.ballSpeedX = 7;
-        this.ballSpeedY = -7;
     }
     Ball.prototype.update = function () {
         this.setStartDirection();
@@ -122,7 +120,7 @@ var GameManager = (function () {
             this.setDefaultNrOfPlayers();
         }
         this.gameMenu.update();
-        if (isGameRunning == 1) {
+        if (isGameRunning == 1 || isGameRunning == 2) {
             this.removeInactivePlayer();
             circleSize = this.gameArea.calculateCircleSize();
             for (var i = 0; i < nrOfPlayers; i++) {
@@ -137,6 +135,21 @@ var GameManager = (function () {
             this.gameMenu.draw();
         }
         else if (isGameRunning == 1) {
+            this.gameArea.draw();
+            this.drawPlayers();
+            for (var i = 0; i < nrOfPlayers; i++) {
+                this.players[i].draw();
+            }
+            fill('black');
+            noStroke();
+            textAlign(CENTER, CENTER);
+            textSize(40);
+            text("press SPACE \n to start", width / 2, height / 2);
+            if (keyCode === 32) {
+                isGameRunning = 2;
+            }
+        }
+        else if (isGameRunning == 2) {
             this.gameArea.draw();
             this.drawPlayers();
             for (var i = 0; i < nrOfPlayers; i++) {
@@ -184,7 +197,7 @@ var GameManager = (function () {
         }
     };
     GameManager.prototype.drawPlayers = function () {
-        if (this.players && isGameRunning == 1) {
+        if ((this.players && isGameRunning == 1) || (this.players && isGameRunning == 2)) {
             for (var _i = 0, _a = this.players; _i < _a.length; _i++) {
                 var player = _a[_i];
                 player.draw();
@@ -476,7 +489,7 @@ var Player = (function () {
     }
     Player.prototype.update = function () {
         this.setKeys();
-        if (isGameRunning === 1) {
+        if (isGameRunning === 1 || isGameRunning === 2) {
             if (this.pad.currentPosition == undefined && this.pad.startPosition == undefined) {
                 gameManager.setDefaultPositions();
             }
@@ -713,7 +726,7 @@ function mousePressed() {
         gameManager.gameSettings.startGame();
         gameManager.createBall();
     }
-    else if (isGameRunning == 1) {
+    else if (isGameRunning == 1 || isGameRunning == 2) {
     }
     gameManager.gameSettings.update();
 }
