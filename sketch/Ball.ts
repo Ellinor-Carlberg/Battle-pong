@@ -1,15 +1,13 @@
 class Ball {
     private dx!: number;
     private dy!: number;
-    private ballSpeedX: number;
-    private ballSpeedY: number;
+    private ballSpeedX!: number;
+    private ballSpeedY!: number;
     private startDirection: Array <number>;
     
 
     constructor() {
         this.startDirection = [4, -4];
-        this.ballSpeedX = 7;
-        this.ballSpeedY = -7;
     }
     update(): void {
         this.setStartDirection();
@@ -48,6 +46,7 @@ class Ball {
                 if (player.playerXCoordinates[i] && player.playerYCoordinates[i]) {
                     // bounce on ball - pad collision
                     if (dist(ballXPosition, ballYPosition, player.playerXCoordinates[i], player.playerYCoordinates[i]) < ballRadius + .5) {
+                        
                         this.bounceBackFromPad();
                     }
                 }
@@ -64,6 +63,8 @@ class Ball {
             let angleToCollisionPoint = Math.atan2(-this.dy, this.dx);
             var oldAngle = Math.atan2(-this.ballSpeedY, this.ballSpeedX);
             var newAngle = 2 * angleToCollisionPoint - oldAngle;
+
+            // TODO: check where on pad...
 
             this.ballSpeedX = -velocity * Math.cos(newAngle);
             this.ballSpeedY = velocity * Math.sin(newAngle);

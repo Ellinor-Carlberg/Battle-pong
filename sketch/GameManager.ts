@@ -61,9 +61,17 @@ class GameManager {
             for (let i = 0; i < nrOfPlayers; i++) {
                 this.players[i].draw();
             }
-            for (const ball of this.balls) {
-                ball.draw();
+            fill('black');
+            noStroke();
+            textAlign(CENTER, CENTER);
+            textSize(40);
+            text("press SPACE \n to start", width/2, height/2);
+            if(keyCode === 32){
+                for (const ball of this.balls) {
+                    ball.draw();
+                }
             }
+            
             ballRadius = circleSize / 40;
         }
         this.gameSettings.draw();

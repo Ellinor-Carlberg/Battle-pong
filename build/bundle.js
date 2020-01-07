@@ -2,8 +2,6 @@
 var Ball = (function () {
     function Ball() {
         this.startDirection = [4, -4];
-        this.ballSpeedX = 7;
-        this.ballSpeedY = -7;
     }
     Ball.prototype.update = function () {
         this.setStartDirection();
@@ -90,6 +88,11 @@ var GameArea = (function () {
         stroke(0, 0, 0);
         strokeWeight(1);
         ellipse(width / 2, height / 2, circleSize, circleSize);
+        fill('black');
+        noStroke();
+        textAlign(CENTER, CENTER);
+        textSize(40);
+        text("press SPACE \n to start", width / 2, height / 2);
     };
     GameArea.prototype.calculateCircleSize = function () {
         if (windowWidth >= windowHeight) {
@@ -142,9 +145,16 @@ var GameManager = (function () {
             for (var i = 0; i < nrOfPlayers; i++) {
                 this.players[i].draw();
             }
-            for (var _i = 0, _a = this.balls; _i < _a.length; _i++) {
-                var ball = _a[_i];
-                ball.draw();
+            fill('black');
+            noStroke();
+            textAlign(CENTER, CENTER);
+            textSize(40);
+            text("press SPACE \n to start", width / 2, height / 2);
+            if (keyCode === 32) {
+                for (var _i = 0, _a = this.balls; _i < _a.length; _i++) {
+                    var ball = _a[_i];
+                    ball.draw();
+                }
             }
             ballRadius = circleSize / 40;
         }
