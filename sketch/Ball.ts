@@ -1,9 +1,11 @@
+let hello: number = 0;
+let arcis;
 class Ball {
     private dx!: number;
     private dy!: number;
-    public ballSpeedX!: number;
-    public ballSpeedY!: number;
-    private startDirection: Array<number>;
+    private ballSpeedX!: number;
+    private ballSpeedY!: number;
+    private startDirection: Array <number>;
     public ballXPosition: number;
     public ballYPosition: number;
     private ballRadius!: number;
@@ -21,6 +23,11 @@ class Ball {
         this.moveBall(); // should be in update() but it only works from here right now
         // this.playerLoss();
         this.drawBall();
+
+        /*
+        if (hello != 1) {
+             this.drawws()
+         }*/
     }
 
     drawBall(): void {
@@ -45,9 +52,11 @@ class Ball {
         this.ballSpeedX = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
         this.ballSpeedY = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
     }
+
     // check for ball collision
     private handleBall(): void {
         for (const player of gameManager.players) {
+            // this.checkBall();
             for (let i = 0; i <= player.pad.getPadLength; i++) {
                 if (player.playerXCoordinates[i] && player.playerYCoordinates[i]) {
                     // bounce if ball+pad collision
@@ -92,6 +101,8 @@ class Ball {
             let oldAngle = Math.atan2(-this.ballSpeedY, this.ballSpeedX);
             let newAngle = 2 * angleToCollisionPoint - oldAngle;
 
+            // TODO: check where on pad...
+
             this.ballSpeedX = -velocity * Math.cos(newAngle);
             this.ballSpeedY = velocity * Math.sin(newAngle);
 
@@ -116,4 +127,5 @@ if (this.ballYPosition > height / 2) {
     this.ballXPosition = innerWidth / 2;
     this.ballYPosition = innerHeight / 2;
 }
+*/
 */

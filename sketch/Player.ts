@@ -6,6 +6,8 @@ class Player {
     private playerButtonRight!: number;
     public playerXCoordinates: number[];
     public playerYCoordinates: number[];
+    public playerXArea: number[];
+    public playerYArea: number[];
     public pad: Pad;
 
     constructor() {
@@ -13,13 +15,15 @@ class Player {
         this.playerColor = this.getPlayerColor;
         this.playerXCoordinates = [];
         this.playerYCoordinates = [];
+        this.playerXArea = [];
+        this.playerYArea = [];
         this.pad = new Pad;
     }
 
     update() {
         this.setKeys();
 
-        if (isGameRunning === 1) {
+        if (isGameRunning === 1 || isGameRunning === 2) {
             // set positions if they're unset
             if (this.pad.currentPosition == undefined && this.pad.startPosition == undefined) {
                 gameManager.setDefaultPositions();

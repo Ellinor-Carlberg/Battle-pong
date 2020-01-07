@@ -11,7 +11,9 @@ class GameArea {
         stroke(0, 0, 0);
         strokeWeight(1);
         ellipse(width / 2, height / 2, circleSize, circleSize);
+
     }
+
     // calculate game area size
     public calculateCircleSize(): number {
         if (windowWidth >= windowHeight) {

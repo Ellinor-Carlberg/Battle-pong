@@ -24,7 +24,7 @@ class GameManager {
 
         this.gameMenu.update();
 
-        if (isGameRunning == 1) {
+        if (isGameRunning == 1 || isGameRunning == 2) {
             this.gameArea.update();
 
             for (const ball of this.balls) {
@@ -37,6 +37,8 @@ class GameManager {
                 if (this.players[i].activePlayer === true) {
                     this.players[i].update();
                 }
+                // console.log('ID: ', this.players[i].playerID, 'Max: ', this.players[i].pad.maxConstrain, 'Min: ', this.players[i].pad.minConstrain);
+
             }
 
             // check for inactive player
@@ -51,6 +53,22 @@ class GameManager {
             this.gameMenu.draw();
         }
         else if (isGameRunning == 1) {
+            
+            this.gameArea.draw();
+            this.drawPlayers();
+            for (let i = 0; i < nrOfPlayers; i++) {
+                this.players[i].draw();
+            }
+            fill('black');
+            noStroke();
+            textAlign(CENTER, CENTER);
+            textSize(40);
+            text("press SPACE \n to start", width/2, height/2);
+
+            if(keyCode === 32){
+                isGameRunning = 2;
+                }
+            } else if (isGameRunning == 2){
             this.gameArea.draw();
             this.drawPlayers();
             for (let i = 0; i < nrOfPlayers; i++) {
@@ -60,6 +78,7 @@ class GameManager {
                 ball.draw();
             }
         }
+        
         this.gameSettings.draw();
     }
 
@@ -106,8 +125,8 @@ class GameManager {
     }
 
     // draw each player
-    private drawPlayers() {
-        if (this.players && isGameRunning == 1) {
+    drawPlayers() {
+        if ((this.players && isGameRunning == 1) || (this.players && isGameRunning == 2)) {
             for (const player of this.players) {
                 player.draw();
             }
@@ -128,6 +147,11 @@ class GameManager {
     public createBall(): void {
         let newBall = new Ball;
         this.balls.push(newBall);
+    }
+
+    createEvent(): void {
+        const newEvent = new Events;
+        this.events.push(newEvent);
     }
 
     createEvent(): void {
