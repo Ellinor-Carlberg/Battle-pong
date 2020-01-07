@@ -1,10 +1,8 @@
-let hello: number = 0;
-let arcis;
 class Ball {
     private dx!: number;
     private dy!: number;
-    private ballSpeedX: number;
-    private ballSpeedY: number;
+    public ballSpeedX!: number;
+    public ballSpeedY!: number;
     private startDirection: Array <number>;
     public ballXPosition: number;
     public ballYPosition: number;
@@ -12,23 +10,17 @@ class Ball {
 
     constructor() {
         this.startDirection = [4, -4];
-        this.ballSpeedX = 7;
-        this.ballSpeedY = -7;
+        this.setStartDirection();
         this.ballXPosition = width / 2;
         this.ballYPosition = width / 2;
     }
     update(): void {
         this.setBallSize(circleSize);
-        this.setStartDirection();
     }
     draw(): void {
         this.moveBall(); // should be in update() but it only works from here right now
         this.playerLoss();
         this.drawBall();
-
-        if (hello != 1) {
-             this.drawws()
-         }
     }
 
     drawBall(): void {
@@ -56,74 +48,15 @@ class Ball {
     // check for ball collision
     private handleBall(): void {
         for (const player of gameManager.players) {
-            this.checkBall();
             for (let i = 0; i <= player.pad.getPadLength; i++) {
                 if (player.playerXCoordinates[i] && player.playerYCoordinates[i]) {
                     // bounce if ball+pad collision
-                    let angle = Math.atan2(this.ballYPosition - height / 2, this.ballXPosition - width / 2) * 180 / Math.PI + 180;
-                    if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) > this.ballRadius + circleSize / 2) {
-                        console.log('que');
-                        
-                        if (angle > player.pad.minConstrain && angle < (player.pad.maxConstrain + player.pad.getPadLength)) {
-                            console.log('nope');
-                        }
-                        else if (angle > player.pad.minConstrain && angle < (player.pad.maxConstrain + player.pad.getPadLength)) {
-                            console.log('hej');
-                        }
-                    }
                     if (dist(this.ballXPosition, this.ballYPosition, player.playerXCoordinates[i], player.playerYCoordinates[i]) < this.ballRadius + .5) {
                         this.bounceBackFromPad();
                     }
                 }
             }
-
         }
-    }
-
-    // radius, x, y, startAngle, endAngle
-    checkBall() {
-        for (let i = 0; i < gameManager.players.length; i++) {
-            const player = gameManager.players[1];
-            let radius = circleSize / 2;
-            let sectorStart = radians(player.pad.getStartPosition);
-            let sectorEnd = radians((player.pad.getStartPosition + (player.pad.getPadLength * 2)));
-
-            let x = this.ballXPosition;
-            let y = this.ballYPosition;
-            stroke('red')
-            strokeWeight(5)
-            point(this.ballXPosition, this.ballYPosition);
-            let angle = atan2(y, x)
-            if (angle > sectorStart && angle < sectorEnd) {
-                console.log('yes');
-
-            }
-        }
-    }
-
-    drawws() {
-        let can = new OffscreenCanvas(width, height);
-        let ctx = can.getContext('2d')
-
-        for (let i = 0; i <= 1; i++) {
-            arcis = new Path2D();
-            const player = gameManager.players[0];
-            arcis.arc(width / 2, height / 2, circleSize / 2, player.pad.minConstrain, player.pad.maxConstrain + player.pad.getPadLength)
-            arcis.closePath();
-            ctx.fillStyle = 'red'
-            ctx.lineWidth = 10
-            ctx.fill(arcis)
-            if (mouseIsPressed && ctx.isPointInStroke(arcis, mouseX, mouseY)) {
-
-                console.log('maybe');
-
-            }
-            else if (mouseIsPressed && !ctx.isPointInPath(arcis, mouseX, mouseY)) {
-                console.log('no')
-            }
-
-        }
-        // hello = 1;
     }
 
     setBallSize(diameter: number) {

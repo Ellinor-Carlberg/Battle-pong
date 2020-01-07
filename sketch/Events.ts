@@ -5,9 +5,12 @@ class Events {
         this.eventsList = [];
     }
     update(): void {
-        this.moreBalls();
-
+        let ballSpawnInterval = setInterval(this.moreBalls, 5000);
+        if (gameManager.balls.length = 5) {
+            clearInterval(ballSpawnInterval);
+        }
     }
+
     draw(): void { }
 
     announceEvent(): void { }
@@ -21,13 +24,11 @@ class Events {
 
     moreBalls(): void {
         setTimeout(() => {
-            if (gameManager.balls.length < 5) {
-                gameManager.createBall();
-                for (let i = 1; i < gameManager.balls.length; i++) {
-                    const ball = gameManager.balls[i];
-                    ball.ballSpeedX * (-5 * i);
-                    ball.ballSpeedY * (-5 * i);
-                }
+            gameManager.createBall();
+            for (let i = 1; i < gameManager.balls.length; i++) {
+                const ball = gameManager.balls[i];
+                ball.ballSpeedX * i;
+                ball.ballSpeedY * i;
             }
         }, 60000);
     }

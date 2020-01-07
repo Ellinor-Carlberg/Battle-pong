@@ -79,6 +79,7 @@ class GameSettings implements GameStatus, MusicStatus {
     }
     public startGame(): void { 
         isGameRunning = 1;
+        gameManager.createBall();
     }
     public quitGame() { }
 }

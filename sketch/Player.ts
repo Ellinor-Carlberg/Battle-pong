@@ -36,11 +36,6 @@ class Player {
     draw() {
         this.pad.drawPlayer(this.playerColor);
     }
-
-    hitPlayer() { }
-
-
-
     // make player inactive
     removePlayer() {
         this.activePlayer = false;

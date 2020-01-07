@@ -8,37 +8,8 @@ let nrOfPlayers: number;
 let img: p5.Image;
 let img2: p5.Image;
 
-const canv = document.querySelector('canvas')
-const context = canv.getContext('2d');
-
-// Create circle
-const circles = new Path2D();
-
-circles.arc(150, 75, 50, 0, (2 * Math.PI) / 2);
-circles.arc(150, 75, 50, 0, (2 * Math.PI) * 2);
-context.fillStyle = 'red';
-context.fill(circles);
-
-function addEL() {
-    // Listen for mouse moves
-    canv.addEventListener('mousemove', function (event) {
-        // Check whether point is inside circle
-        if (context.isPointInPath(circles, event.clientX, event.clientY)) {
-            context.fillStyle = 'green';
-        }
-        else {
-            context.fillStyle = 'red';
-        }
-
-        // Draw circle
-        context.clearRect(0, 0, canv.width, canv.height);
-        context.fill(circles);
-    });
-}
-
 window.addEventListener('load', () => {
     isGameRunning = 0;
-    addEL()
 })
 
 function preload() {
@@ -57,11 +28,8 @@ function setup() {
     angleMode(DEGREES);
 
     // play menu music on page load
-<<<<<<< Updated upstream
     gameMusic.menuMusic.loop();
-=======
-    // gameMusic.menuMusic.play();
->>>>>>> Stashed changes
+    gameMusic.menuMusic.play();
     // create new game manager instance
     gameManager = new GameManager(gameMusic);
 }

@@ -27,23 +27,16 @@ class GameManager {
         if (isGameRunning == 1) {
             this.gameArea.update();
 
-            if (this.balls.length < 1) {
-                this.createBall()
-                this.createEvent();
-            }
-            
-            for (const event of this.events) {
-                event.update();
-            }
             for (const ball of this.balls) {
                 ball.update();
+            }
+            for (const event of this.events) {
+                event.update();
             }
             for (let i = 0; i < nrOfPlayers; i++) {
                 if (this.players[i].activePlayer === true) {
                     this.players[i].update();
                 }
-                // console.log('ID: ', this.players[i].playerID, 'Max: ', this.players[i].pad.maxConstrain, 'Min: ', this.players[i].pad.minConstrain);
-
             }
 
             // check for inactive player
@@ -68,7 +61,6 @@ class GameManager {
             }
         }
         this.gameSettings.draw();
-
     }
 
     removeInactivePlayer(): void {
@@ -136,10 +128,6 @@ class GameManager {
     public createBall(): void {
         let newBall = new Ball;
         this.balls.push(newBall);
-
-        for (let i = 0; i < this.balls.length; i++) {
-            this.balls[i].update();
-        }
     }
 
     createEvent(): void {
