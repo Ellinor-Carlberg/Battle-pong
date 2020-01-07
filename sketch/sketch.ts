@@ -130,7 +130,7 @@ function mousePressed(): void {
     }
 
     // etc mouse click/press events in game area, not player buttons
-    else if (isGameRunning == 1) {
+    else if (isGameRunning == 1 || isGameRunning == 2) {
     }
     // mute music and draw line on click
     gameManager.gameSettings.update();
