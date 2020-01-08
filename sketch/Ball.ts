@@ -12,7 +12,7 @@ class Ball {
         this.startDirection = [4, -4];
         this.setStartDirection();
         this.ballXPosition = width / 2;
-        this.ballYPosition = width / 2;
+        this.ballYPosition = height / 2;
     }
     update(): void {
         this.setBallSize(circleSize);
@@ -52,9 +52,16 @@ class Ball {
             // this.checkBall();
             for (let i = 0; i <= player.pad.getPadLength; i++) {
                 if (player.playerXCoordinates[i] && player.playerYCoordinates[i]) {
-                    // bounce if ball+pad collision
+                    // bounce if ball + pad collision
                     if (dist(this.ballXPosition, this.ballYPosition, player.playerXCoordinates[i], player.playerYCoordinates[i]) < this.ballRadius + .5) {
-                        this.bounceBackFromPad();
+                        //detectcs where on the pad it bounces (it is possible to add more detection-spots, just slice the pad in more parts)
+                        if(i < player.pad.getPadLength/3 || i > player.pad.getPadLength*0.67){
+                            let ballAndPadCollisionPoint = 1;
+                            this.bounceBackFromPad(ballAndPadCollisionPoint);
+                        } else {
+                            let ballAndPadCollisionPoint = 0;
+                            this.bounceBackFromPad(ballAndPadCollisionPoint);
+                        }
                     }
                 }
                 // outside circle
@@ -104,12 +111,17 @@ class Ball {
     }
 
     // ball bounces
-    private bounceBackFromPad(): void {
+    private bounceBackFromPad(ballAndPadCollisionPoint: number): void {
         if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) >= circleSize / 2 - 5) {
             const velocity = Math.sqrt(this.ballSpeedX * this.ballSpeedX + this.ballSpeedY * this.ballSpeedY);
             let angleToCollisionPoint = Math.atan2(-this.dy, this.dx);
             let oldAngle = Math.atan2(-this.ballSpeedY, this.ballSpeedX);
             let newAngle = 2 * angleToCollisionPoint - oldAngle;
+            if (ballAndPadCollisionPoint == 1){
+                newAngle = newAngle - 0.3;
+            } else {
+                newAngle = newAngle + 0.3;
+            }
 
             // TODO: check where on pad...
 
