@@ -24,17 +24,6 @@ var Ball = (function () {
         this.ballSpeedX = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
         this.ballSpeedY = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
     };
-    Ball.prototype.getDistArr = function (playerObjArr, distList) {
-        for (var playerObj in playerObjArr) {
-            if (playerObjArr.hasOwnProperty(playerObj)) {
-                if (gameManager.players[playerObj].getDistanceToBall(this.ballXPosition, this.ballYPosition) === Math.min.apply(Math, distList)) {
-                    gameManager.players[playerObj].removePlayer();
-                    this.ballXPosition = width / 2;
-                    this.ballYPosition = height / 2;
-                }
-            }
-        }
-    };
     Ball.prototype.setBallSize = function (diameter) {
         this.ballRadius = diameter / 40;
     };
@@ -62,29 +51,43 @@ var Ball = (function () {
                 }
                 if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) > this.ballRadius + circleSize / 2) {
                     if (gameManager.players.length >= 2) {
-                        var playerObjArr = [];
-                        var playdist = [];
-                        for (var i_1 = 0; i_1 < gameManager.players.length; i_1++) {
-                            var player_1 = gameManager.players[i_1];
-                            var playerObj = {
-                                "ID": player_1.playerID,
-                                "distance": player_1.getDistanceToBall(this.ballXPosition, this.ballYPosition)
-                            };
-                            playerObjArr.push(playerObj);
-                            playdist.push(player_1.getDistanceToBall(this.ballXPosition, this.ballYPosition));
-                        }
-                        this.getDistArr(playerObjArr, playdist);
+                        this.createDistanceList();
                     }
                 }
+
+            }
+        }
+    };
+    Ball.prototype.createDistanceList = function () {
+        var distances = [];
+        for (var i = 0; i < gameManager.players.length; i++) {
+            var player = gameManager.players[i];
+            distances.push(player.getDistanceToBall(this.ballXPosition, this.ballYPosition));
+        }
+        this.checkPlayerLoss(distances);
+    };
+    Ball.prototype.checkPlayerLoss = function (distances) {
+        for (var playerObj in gameManager.players) {
+            if (gameManager.players.hasOwnProperty(playerObj)) {
+                if (gameManager.players[playerObj].getDistanceToBall(this.ballXPosition, this.ballYPosition) === Math.min.apply(Math, distances)) {
+                    gameManager.players[playerObj].changeActivePlayer();
+                    this.resetBall();
+
                 if (gameManager.players.length === 1) {
                     this.ballSpeedY = this.ballSpeedX = 0;
                     this.ballXPosition = width / 2;
                     this.ballYPosition = height / 2;
                     this.drawWinnerAnnouncement();
+
                 }
             }
         }
     };
+    Ball.prototype.resetBall = function () {
+        this.ballXPosition = width / 2;
+        this.ballYPosition = height / 2;
+        gameMode = 1;
+
     Ball.prototype.drawWinnerAnnouncement = function () {
         strokeWeight(2);
         stroke('#000000');
@@ -114,6 +117,7 @@ var Ball = (function () {
         textSize(20);
         fill('#000000');
         text(winnerText5, (width * .5), (height * .5) + 100);
+
     };
     Ball.prototype.bounceBackFromPad = function (ballAndPadCollisionPoint) {
         if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) >= circleSize / 2 - 5) {
@@ -142,31 +146,25 @@ var Ball = (function () {
 }());
 var Events = (function () {
     function Events() {
-        this.eventsList = [];
+        this.setEventInterval();
     }
-    Events.prototype.update = function () {
-        var ballSpawnInterval = setInterval(this.moreBalls, 5000);
-        if (gameManager.balls.length = 5) {
-            clearInterval(ballSpawnInterval);
+    Events.prototype.setEventInterval = function () {
+        var _this = this;
+        if (gameManager.players != undefined) {
+            if (gameManager.balls.length < 10 && gameMode === 2) {
+                var ballSpawnInterval_1 = setInterval(function () {
+                    _this.addBalls(ballSpawnInterval_1);
+                }, 4250);
+            }
         }
     };
-    Events.prototype.draw = function () { };
-    Events.prototype.announceEvent = function () { };
-    Events.prototype.activateEvent = function () { };
-    Events.prototype.countDownToEvent = function () { };
-    Events.prototype.reverseButtons = function () { };
-    Events.prototype.shrinkPad = function () { };
-    Events.prototype.fasterBall = function () { };
-    Events.prototype.hideBall = function () { };
-    Events.prototype.moreBalls = function () {
-        setTimeout(function () {
-            gameManager.createBall();
-            for (var i = 1; i < gameManager.balls.length; i++) {
-                var ball = gameManager.balls[i];
-                ball.ballSpeedX * i;
-                ball.ballSpeedY * i;
-            }
-        }, 60000);
+    Events.prototype.addBalls = function (interval) {
+        gameManager.createBall();
+        if (gameManager.balls.length == 10 || gameMode === 1) {
+            gameManager.balls.length = 1;
+            gameManager.events.length = 0;
+            clearInterval(interval);
+        }
     };
     return Events;
 }());
@@ -215,11 +213,9 @@ var GameManager = (function () {
             this.gameArea.update();
             for (var _i = 0, _a = this.balls; _i < _a.length; _i++) {
                 var ball = _a[_i];
-                ball.update();
-            }
-            for (var _b = 0, _c = this.events; _b < _c.length; _b++) {
-                var event_1 = _c[_b];
-                event_1.update();
+                if (ball != undefined) {
+                    ball.update();
+                }
             }
             for (var i = 0; i < nrOfPlayers; i++) {
                 if (this.players[i].activePlayer === true) {
@@ -236,27 +232,34 @@ var GameManager = (function () {
         else if (gameMode == 1) {
             this.gameArea.draw();
             this.drawPlayers();
-            for (var i = 0; i < nrOfPlayers; i++) {
-                this.players[i].draw();
-            }
             fill('black');
             noStroke();
             textAlign(CENTER, CENTER);
             textSize(40);
             text("press SPACE \n to start", width / 2, height / 2);
+
+            if (this.players.length === 1) {
+                this.drawWinnerAnnouncement();
+            }
+            if (keyIsDown(32) && this.players.length > 1) {
+                gameMode = 2;
+                this.createEvent();
+
             if (keyCode === 32) {
                 gameMode = 2;
+
             }
         }
         else if (gameMode == 2) {
             this.gameArea.draw();
             this.drawPlayers();
-            for (var i = 0; i < nrOfPlayers; i++) {
-                this.players[i].draw();
-            }
-            for (var _i = 0, _a = this.balls; _i < _a.length; _i++) {
-                var ball = _a[_i];
-                ball.draw();
+            if (this.players.length > 1) {
+                for (var _i = 0, _a = this.balls; _i < _a.length; _i++) {
+                    var ball = _a[_i];
+                    if (ball != undefined) {
+                        ball.draw();
+                    }
+                }
             }
         }
         this.gameSettings.draw();
@@ -267,6 +270,9 @@ var GameManager = (function () {
             if (player.activePlayer === false) {
                 this.pads.splice(i, 1);
                 this.players.splice(i, 1);
+                this.balls.length = 1;
+                this.events.length = 0;
+                gameMode = 1;
             }
             if (this.players.length < nrOfPlayers) {
                 nrOfPlayers--;
@@ -287,6 +293,36 @@ var GameManager = (function () {
             }
             player.setConstrainValues();
         }
+    };
+    GameManager.prototype.drawWinnerAnnouncement = function () {
+        strokeWeight(2);
+        stroke('#000000');
+        fill('#F4ed47');
+        circle((width * .5), (height * .5), 500);
+        strokeWeight(2);
+        var winnerText1 = 'CONGRATULATIONS!';
+        textSize(30);
+        fill('#000000');
+        text(winnerText1, (width * .5), (height * .5) - 70);
+        var winnerText2 = 'YOU HAVE WON';
+        textSize(30);
+        fill('#000000');
+        text(winnerText2, (width * .5), (height * .5) - 20);
+        strokeWeight(5);
+        var winnerText3 = 'BATTLE PONG';
+        textSize(50);
+        fill('#000000');
+        text(winnerText3, (width * .5), (height * .5) + 30);
+        strokeWeight(5);
+        var winnerText4 = 'BATTLE PONG';
+        textSize(50);
+        fill('#ff0000');
+        text(winnerText4, (width * .5) + 5, (height * .5) + 27);
+        strokeWeight(0);
+        var winnerText5 = 'Refresh the page to play again';
+        textSize(20);
+        fill('#000000');
+        text(winnerText5, (width * .5), (height * .5) + 100);
     };
     GameManager.prototype.drawPlayers = function () {
         if ((this.players && gameMode == 1) || (this.players && gameMode == 2)) {
@@ -309,10 +345,15 @@ var GameManager = (function () {
         this.balls.push(newBall);
     };
     GameManager.prototype.createEvent = function () {
-        var newEvent = new Events;
-        this.events.push(newEvent);
+        if (!this.events || this.events.length < 1 || this.players.length > 1) {
+            var newEvent = new Events;
+            this.events.push(newEvent);
+        }
+        else {
+            this.events.length = 0;
+            this.balls.length = 0;
+        }
     };
-    GameManager.prototype.rebuildGameArea = function () { };
     GameManager.prototype.setDefaultNrOfPlayers = function () {
         nrOfPlayers = 2;
         for (var i = 0; i < nrOfPlayers; i++) {
@@ -565,19 +606,10 @@ var GameSettings = (function () {
             }
         }
     };
-    GameSettings.prototype.gameStatus = function () {
-        if (1) {
-            this.startGame();
-        }
-        else if (2) {
-            this.quitGame();
-        }
-    };
     GameSettings.prototype.startGame = function () {
         gameMode = 1;
         gameManager.createBall();
     };
-    GameSettings.prototype.quitGame = function () { };
     return GameSettings;
 }());
 var Player = (function () {
@@ -604,7 +636,7 @@ var Player = (function () {
     Player.prototype.draw = function () {
         this.pad.drawPlayer(this.playerColor);
     };
-    Player.prototype.removePlayer = function () {
+    Player.prototype.changeActivePlayer = function () {
         this.activePlayer = false;
     };
     Player.prototype.getPlayerCoordinates = function () {
@@ -710,9 +742,6 @@ var Pad = (function () {
     function Pad() {
         this.velocity = 0;
     }
-    Pad.prototype.update = function () { };
-    Pad.prototype.draw = function () {
-    };
     Pad.prototype.drawPlayer = function (color) {
         stroke(0);
         noFill();

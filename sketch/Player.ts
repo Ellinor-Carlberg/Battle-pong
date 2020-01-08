@@ -10,7 +10,6 @@ class Player {
     public pad: Pad;
     private playerButtonRight!: number;
 
-
     constructor() {
         this.activePlayer = true;
         this.playerColor = this.getPlayerColor;
@@ -33,6 +32,7 @@ class Player {
             this.handlePlayerButtons();
         }
     }
+
     public draw(): void {
         this.pad.drawPlayer(this.playerColor);
     }
@@ -66,7 +66,6 @@ class Player {
         }
     }
 
-    
     // generate random color
     private get getPlayerColor(): p5.Color {
         let r = random(0, 255);

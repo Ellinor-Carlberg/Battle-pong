@@ -33,11 +33,11 @@ function setup() {
     // create new game manager instance
     gameManager = new GameManager(gameMusic);
 }
+
 function draw() {
     gameManager.update();
     gameManager.draw();
 }
-
 
 // key press event
 function keyPressed() {

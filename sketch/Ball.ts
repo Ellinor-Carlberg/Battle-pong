@@ -9,14 +9,16 @@ class Ball {
     public ballSpeedY!: number;
 
     constructor() {
-        this.startDirection = [4, -4];
+        this.startDirection = [4, -4]; // Change the add start speed. Should be the same number
         this.setStartDirection();
         this.ballXPosition = width / 2;
         this.ballYPosition = height / 2;
     }
+
     public update(): void {
         this.setBallSize(circleSize);
     }
+
     public draw(): void {
         this.moveBall();
         this.drawBall();
@@ -27,14 +29,14 @@ class Ball {
         stroke(0, 0, 0);
         strokeWeight(2);
         ellipse(this.ballXPosition, this.ballYPosition, this.ballRadius * 2, this.ballRadius * 2);
-
         this.handleBall();
     }
-    public setStartDirection(): void { //Randomizes direction
+
+    //Randomizes direction
+    public setStartDirection(): void { 
         this.ballSpeedX = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
         this.ballSpeedY = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
     }
-
 
     public setBallSize(diameter: number): void {
         this.ballRadius = diameter / 40;
@@ -49,7 +51,6 @@ class Ball {
         this.dx = this.ballXPosition - width / 2;
         this.dy = this.ballYPosition - height / 2;
     }
-
 
     // check for ball collision
     private handleBall(): void {
@@ -77,8 +78,6 @@ class Ball {
             }
         }
     }
-    
-
 
     // create array of pad-to-ball distances
     private createDistanceList(): void {
@@ -109,22 +108,22 @@ class Ball {
         gameMode = 1;
     }
 
-    // ball bounces
+    // makes the ball bounce
     private bounceBackFromPad(ballAndPadCollisionPoint: number): void {
         if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) >= circleSize / 2 - 5) {
             const velocity = Math.sqrt(this.ballSpeedX * this.ballSpeedX + this.ballSpeedY * this.ballSpeedY);
             let angleToCollisionPoint = Math.atan2(-this.dy, this.dx);
             let oldAngle = Math.atan2(-this.ballSpeedY, this.ballSpeedX);
             let newAngle = 2 * angleToCollisionPoint - oldAngle;
+            // Changes angle depending on where the pad was hit
             if (ballAndPadCollisionPoint == 1) {
                 newAngle = newAngle - 0.3;
             } else {
                 newAngle = newAngle + 0.3;
             }
-
+            // magic happens
             this.ballSpeedX = -velocity * Math.cos(newAngle);
             this.ballSpeedY = velocity * Math.sin(newAngle);
-
             const vector = createVector(this.dx, this.dy);
             vector.normalize();
             const scalar = (circleSize / 2 - this.ballRadius);
