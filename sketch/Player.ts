@@ -37,7 +37,7 @@ class Player {
         this.pad.drawPlayer(this.playerColor);
     }
     // make player inactive
-    public removePlayer(): void {
+    public changeActivePlayer(): void {
         this.activePlayer = false;
     }
 

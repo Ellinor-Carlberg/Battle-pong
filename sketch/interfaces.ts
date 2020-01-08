@@ -1,6 +1,5 @@
 interface GameStatus {
     startGame(): void;
-    quitGame(): void;
 }
 
 interface GameMusic {

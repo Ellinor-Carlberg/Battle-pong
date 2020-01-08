@@ -12,24 +12,15 @@ class Pad {
         this.velocity = 0;
     }
 
-    public update(): void { }
-
-    public draw(): void {
-    }
-
     // draw player
     public drawPlayer(color: p5.Color): void {
         stroke(0);
-        // fill(color)
-        noFill()
+        noFill();
         strokeWeight(9);
         arc(width / 2, height / 2, circleSize, circleSize, this.currentPosition, this.currentPosition + this.getPadLength);
         stroke(color);
         strokeWeight(5);
         arc(width / 2, height / 2, circleSize, circleSize, this.currentPosition, this.currentPosition + this.getPadLength);
-
-        
-
         stroke(0);
         strokeWeight(7);
         arc(width / 2, height / 2, circleSize, circleSize, this.minConstrain, this.minConstrain + 0.01);
