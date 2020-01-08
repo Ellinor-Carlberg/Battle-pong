@@ -53,13 +53,13 @@ class Player {
         return distance;
     }
 
-    private get getPlayerMinCoordinates(): {} {
+    private get getPlayerMinCoordinates() {
         return {
             x: (circleSize / 2) * Math.cos(((this.pad.minConstrain) * Math.PI / 180)) + (width / 2),
             y: (circleSize / 2) * Math.sin(((this.pad.minConstrain) * Math.PI / 180)) + (height / 2)
         }
     }
-    private get getPlayerMaxCoordinates(): {} {
+    private get getPlayerMaxCoordinates() {
         return {
             x: (circleSize / 2) * Math.cos(((this.pad.getStartPosition - 5 + (this.pad.getPadLength * 3)) * Math.PI / 180)) + (width / 2),
             y: (circleSize / 2) * Math.sin(((this.pad.getStartPosition - 5+ (this.pad.getPadLength * 3)) * Math.PI / 180)) + (height / 2)
