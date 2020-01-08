@@ -12,7 +12,7 @@ class Ball {
         this.startDirection = [4, -4];
         this.setStartDirection();
         this.ballXPosition = width / 2;
-        this.ballYPosition = width / 2;
+        this.ballYPosition = height / 2;
     }
     update(): void {
         this.setBallSize(circleSize);
