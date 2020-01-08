@@ -85,10 +85,48 @@ class Ball {
                     this.ballSpeedY = this.ballSpeedX = 0;
                     this.ballXPosition = width / 2;
                     this.ballYPosition = height / 2;
+                    this.drawWinnerAnnouncement();
                 }
             }
         }
     }
+    private drawWinnerAnnouncement() {
+            /** Draw the yellow circle*/ 
+            strokeWeight(2)
+            stroke('#000000')
+            fill('#F4ed47');
+            circle((width * .5), (height * .5), 500)
+        
+             /** text*/ 
+           strokeWeight(2)
+            let winnerText1 = 'CONGRATULATIONS!'
+            textSize(30);
+            fill('#000000');
+            text(winnerText1, (width * .5), (height * .5) -70)
+        
+            let winnerText2 = 'YOU HAVE WON'
+            textSize(30);
+            fill('#000000');
+            text(winnerText2, (width * .5), (height * .5) -20)
+        
+            strokeWeight(5)
+            let winnerText3 = 'BATTLE PONG'
+            textSize(50);
+            fill('#000000');
+            text(winnerText3, (width * .5), (height * .5) +30)
+        
+            strokeWeight(5)
+            let winnerText4 = 'BATTLE PONG'
+            textSize(50);
+            fill('#ff0000');
+            text(winnerText4, (width * .5) +5, (height * .5) +27)
+        
+            strokeWeight(0)
+            let winnerText5 = 'Refresh the page to play again'
+            textSize(20);
+            fill('#000000');
+            text(winnerText5, (width * .5), (height * .5) +100)
+}
 
     getDistArr(playerObjArr: Array<{}>, distList: number[]) {
 

@@ -1,10 +1,12 @@
 "use strict";
+var hello = 0;
+var arcis;
 var Ball = (function () {
     function Ball() {
         this.startDirection = [4, -4];
         this.setStartDirection();
         this.ballXPosition = width / 2;
-        this.ballYPosition = height / 2;
+        this.ballYPosition = width / 2;
     }
     Ball.prototype.update = function () {
         this.setBallSize(circleSize);
@@ -36,47 +38,29 @@ var Ball = (function () {
             for (var i = 0; i <= player.pad.getPadLength; i++) {
                 if (player.playerXCoordinates[i] && player.playerYCoordinates[i]) {
                     if (dist(this.ballXPosition, this.ballYPosition, player.playerXCoordinates[i], player.playerYCoordinates[i]) < this.ballRadius + .5) {
-                        if (i < player.pad.getPadLength / 3 || i > player.pad.getPadLength * 0.67) {
-                            var ballAndPadCollisionPoint = 1;
-                            this.bounceBackFromPad(ballAndPadCollisionPoint);
-                        }
-                        else {
-                            var ballAndPadCollisionPoint = 0;
-                            this.bounceBackFromPad(ballAndPadCollisionPoint);
-                        }
+                        this.bounceBackFromPad();
                     }
-                }
-                if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) > this.ballRadius + circleSize / 2) {
-                    if (gameManager.players.length >= 2) {
-                        var playerObjArr = [];
-                        var playdist = [];
-                        for (var i_1 = 0; i_1 < gameManager.players.length; i_1++) {
-                            var player_1 = gameManager.players[i_1];
-                            var playerObj = {
-                                "ID": player_1.playerID,
-                                "distance": player_1.getDistanceToBall(this.ballXPosition, this.ballYPosition)
-                            };
-                            playerObjArr.push(playerObj);
-                            playdist.push(player_1.getDistanceToBall(this.ballXPosition, this.ballYPosition));
-                        }
-                        this.getDistArr(playerObjArr, playdist);
-                    }
-                }
-                if (gameManager.players.length === 1) {
-                    this.ballSpeedY = this.ballSpeedX = 0;
-                    this.ballXPosition = width / 2;
-                    this.ballYPosition = height / 2;
                 }
             }
-        }
-    };
-    Ball.prototype.getDistArr = function (playerObjArr, distList) {
-        for (var playerObj in playerObjArr) {
-            if (playerObjArr.hasOwnProperty(playerObj)) {
-                if (gameManager.players[playerObj].getDistanceToBall(this.ballXPosition, this.ballYPosition) === Math.min.apply(Math, distList)) {
-                    gameManager.players[playerObj].removePlayer();
-                    this.ballXPosition = width / 2;
-                    this.ballYPosition = height / 2;
+            if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) > this.ballRadius + circleSize / 2) {
+                var distances = void 0;
+                distances = [];
+                Math.max.apply(Math, distances);
+                for (var i = 0; i < gameManager.players.length; i++) {
+                    var player_1 = gameManager.players[i];
+                    Math.max.apply(Math, distances);
+                    var distanceToBall = player_1.getDistanceToBall(this.ballXPosition, this.ballYPosition);
+                    distances.push(distanceToBall);
+                }
+                if (distances.length = gameManager.players.length) {
+                    for (var _b = 0, _c = gameManager.players; _b < _c.length; _b++) {
+                        var player_2 = _c[_b];
+                        if (distances[player_2.playerID] === Math.min.apply(Math, distances)) {
+                            gameManager.players[player_2.playerID].removePlayer();
+                        }
+                        this.ballXPosition = innerWidth / 2;
+                        this.ballYPosition = innerHeight / 2;
+                    }
                 }
             }
         }
@@ -84,18 +68,12 @@ var Ball = (function () {
     Ball.prototype.setBallSize = function (diameter) {
         this.ballRadius = diameter / 40;
     };
-    Ball.prototype.bounceBackFromPad = function (ballAndPadCollisionPoint) {
+    Ball.prototype.bounceBackFromPad = function () {
         if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) >= circleSize / 2 - 5) {
             var velocity = Math.sqrt(this.ballSpeedX * this.ballSpeedX + this.ballSpeedY * this.ballSpeedY);
             var angleToCollisionPoint = Math.atan2(-this.dy, this.dx);
             var oldAngle = Math.atan2(-this.ballSpeedY, this.ballSpeedX);
             var newAngle = 2 * angleToCollisionPoint - oldAngle;
-            if (ballAndPadCollisionPoint == 1) {
-                newAngle = newAngle - 0.3;
-            }
-            else {
-                newAngle = newAngle + 0.3;
-            }
             this.ballSpeedX = -velocity * Math.cos(newAngle);
             this.ballSpeedY = velocity * Math.sin(newAngle);
             var vector = createVector(this.dx, this.dy);
@@ -109,6 +87,7 @@ var Ball = (function () {
     };
     return Ball;
 }());
+    * /;
 var Events = (function () {
     function Events() {
         this.eventsList = [];
@@ -282,6 +261,10 @@ var GameManager = (function () {
     GameManager.prototype.createBall = function () {
         var newBall = new Ball;
         this.balls.push(newBall);
+    };
+    GameManager.prototype.createEvent = function () {
+        var newEvent = new Events;
+        this.events.push(newEvent);
     };
     GameManager.prototype.createEvent = function () {
         var newEvent = new Events;
@@ -563,6 +546,7 @@ var Player = (function () {
                 gameManager.setDefaultPositions();
             }
             this.getPlayerCoordinates();
+            this.getPlayerConstrainCoordinates();
             this.handlePlayerButtons();
         }
     };
@@ -601,6 +585,8 @@ var Player = (function () {
     Player.prototype.getDistanceToBall = function (ballX, ballY) {
         var distance = dist(ballX, ballY, this.getPlayerMinCoordinates.x, this.getPlayerMinCoordinates.y) + dist(ballX, ballY, this.getPlayerMaxCoordinates.x, this.getPlayerMaxCoordinates.y);
         return distance;
+    };
+    Player.prototype.getPlayerConstrainCoordinates = function () {
     };
     Object.defineProperty(Player.prototype, "getPlayerColor", {
         get: function () {
@@ -773,6 +759,8 @@ function setup() {
     frameRate(60);
     fullscreen();
     angleMode(DEGREES);
+    gameMusic.menuMusic.loop();
+    gameMusic.menuMusic.play();
     gameManager = new GameManager(gameMusic);
 }
 function draw() {

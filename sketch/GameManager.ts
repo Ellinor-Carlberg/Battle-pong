@@ -24,7 +24,7 @@ class GameManager {
 
         this.gameMenu.update();
 
-        if (isGameRunning == 1 || isGameRunning == 2) {
+        if (gameMode == 1 || gameMode == 2) {
             this.gameArea.update();
 
             for (const ball of this.balls) {
@@ -47,10 +47,10 @@ class GameManager {
 
     draw() {
         // draw menu
-        if (isGameRunning == 0) {
+        if (gameMode == 0) {
             this.gameMenu.draw();
         }
-        else if (isGameRunning == 1) {
+        else if (gameMode == 1) {
             
             this.gameArea.draw();
             this.drawPlayers();
@@ -64,9 +64,9 @@ class GameManager {
             text("press SPACE \n to start", width/2, height/2);
 
             if(keyCode === 32){
-                isGameRunning = 2;
+                gameMode = 2;
                 }
-            } else if (isGameRunning == 2){
+            } else if (gameMode == 2){
             this.gameArea.draw();
             this.drawPlayers();
             for (let i = 0; i < nrOfPlayers; i++) {
@@ -87,6 +87,7 @@ class GameManager {
                 this.pads.splice(i, 1)
                 this.players.splice(i, 1)
             }
+
             // if nr of players has changed, reset positions
             if (this.players.length < nrOfPlayers) {
                 nrOfPlayers--;
@@ -124,7 +125,7 @@ class GameManager {
 
     // draw each player
     drawPlayers() {
-        if ((this.players && isGameRunning == 1) || (this.players && isGameRunning == 2)) {
+        if ((this.players && gameMode == 1) || (this.players && gameMode == 2)) {
             for (const player of this.players) {
                 player.draw();
             }
