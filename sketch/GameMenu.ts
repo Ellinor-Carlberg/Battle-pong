@@ -82,87 +82,87 @@ class GameMenu {
                 break;
             case 1:
                 /** text left-key player two */
-                let p2LeftKey = 'a';
+                let p2LeftKey = '1';
                 textSize(30);
                 fill('#000000');
-                text(p2LeftKey, (width * .5) + 197, 290);
+                text(p2LeftKey, (width * .5) + 197, 292);
                 /** text right-key player two */
-                let p2RightKey = 'z';
+                let p2RightKey = 'Q';
                 textSize(30);
                 fill('#000000');
-                text(p2RightKey, (width * .5) + 267, 290);
+                text(p2RightKey, (width * .5) + 264, 292);
                 break;
             case 2:
                 /** text left-key player three */
-                let p3LeftKey = 'l';
+                let p3LeftKey = '5';
                 textSize(30);
                 fill('#000000');
-                text(p3LeftKey, (width * .5) + 202, 352);
+                text(p3LeftKey, (width * .5) + 197, 353);
                 /** text right-key player three */
-                let p3RightKey = 'p';
+                let p3RightKey = '6';
                 textSize(30);
                 fill('#000000');
-                text(p3RightKey, (width * .5) + 267, 350);
+                text(p3RightKey, (width * .5) + 267, 353);
                 break;
             case 3:
                 /** text left-key player four */
-                let p4LeftKey = '3';
+                let p4LeftKey = 'L';
                 textSize(30);
                 fill('#000000');
                 text(p4LeftKey, (width * .5) + 198, 412);
                 /** text right-key player four */
-                let p4RightKey = 'e';
+                let p4RightKey = 'P';
                 textSize(30);
                 fill('#000000');
-                text(p4RightKey, (width * .5) + 267, 410);
+                text(p4RightKey, (width * .5) + 267, 412);
                 break;
             case 4:
                 /** text left-key player five */
-                let p5LeftKey = '9';
+                let p5LeftKey = 'S';
                 textSize(30);
                 fill('#000000');
-                text(p5LeftKey, (width * .5) + 198, 472);
+                text(p5LeftKey, (width * .5) + 195, 473);
                 /** text right-key player five */
-                let p5RightKey = '0';
+                let p5RightKey = 'X';
                 textSize(30);
                 fill('#000000');
-                text(p5RightKey, (width * .5) + 267, 472);
+                text(p5RightKey, (width * .5) + 265, 473);
                 break;
             case 5:
                 /** text left-key player six */
-                let p6LeftKey = '5';
+                let p6LeftKey = 'U';
                 textSize(30);
                 fill('#000000');
-                text(p6LeftKey, (width * .5) + 198, 532);
+                text(p6LeftKey, (width * .5) + 195, 532);
                 /** text right-key player six */
-                let p6RightKey = '6';
+                let p6RightKey = 'I';
                 textSize(30);
                 fill('#000000');
-                text(p6RightKey, (width * .5) + 267, 532);
+                text(p6RightKey, (width * .5) + 271, 532);
                 break;
             case 6:
                 /** text left-key player seven */
-                let p7LeftKey = 'c';
+                let p7LeftKey = 'F';
                 textSize(30);
                 fill('#000000');
-                text(p7LeftKey, (width * .5) + 198, 592);
+                text(p7LeftKey, (width * .5) + 195, 592);
                 /** text right-key player seven */
-                let p7RightKey = 'v';
+                let p7RightKey = 'G';
                 textSize(30);
                 fill('#000000');
-                text(p7RightKey, (width * .5) + 267, 592);
+                text(p7RightKey, (width * .5) + 264, 592);
                 break;
             case 7:
                 /** text left-key player eight */
-                let p8LeftKey = 'b';
+                let p8LeftKey = 'N';
                 textSize(30);
                 fill('#000000');
-                text(p8LeftKey, (width * .5) + 198, 652);
+                text(p8LeftKey, (width * .5) + 195, 652);
                 /** text right-key player eight */
-                let p8RightKey = 'n';
+                let p8RightKey = 'M';
                 textSize(30);
                 fill('#000000');
-                text(p8RightKey, (width * .5) + 267, 652);
+                text(p8RightKey, (width * .5) + 264, 652);
 
                 break;
         }
