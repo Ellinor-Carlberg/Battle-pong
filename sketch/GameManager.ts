@@ -58,16 +58,19 @@ class GameManager {
             textSize(40);
             text("press SPACE \n to start", width / 2, height / 2);
 
-            if (keyCode === 32) {
-                this.createEvent();
+            if (keyIsDown(32)) {
                 isGameRunning = 2;
+                this.createEvent();
             }
+
         } else if (isGameRunning == 2) {
             this.gameArea.draw();
             this.drawPlayers();
-            for (const ball of this.balls) {
-                if (ball != undefined) {
-                    ball.draw();
+            if (this.players.length > 1) {
+                for (const ball of this.balls) {
+                    if (ball != undefined) {
+                        ball.draw();
+                    }
                 }
             }
         }
@@ -75,12 +78,16 @@ class GameManager {
         this.gameSettings.draw();
     }
 
+    // remove player with activePlayer = false
     removeInactivePlayer(): void {
         for (let i = 0; i < this.players.length; i++) {
             const player = this.players[i];
             if (player.activePlayer === false) {
-                this.pads.splice(i, 1)
-                this.players.splice(i, 1)
+                this.pads.splice(i, 1);
+                this.players.splice(i, 1);
+                this.balls.length = 1;
+                this.events.length = 0;
+                isGameRunning = 1;
             }
             // if nr of players has changed, reset positions
             if (this.players.length < nrOfPlayers) {
@@ -90,6 +97,7 @@ class GameManager {
         }
     }
 
+    // set default positions
     setDefaultPositions() {
         for (let i = 0; i < this.players.length; i++) {
             const player = this.players[i];
@@ -108,10 +116,9 @@ class GameManager {
         }
     }
 
-    // set and add default nr of players at start
+    // set and add default nr of players at game start
     private setDefaultNrOfPlayers() {
         nrOfPlayers = 2;
-
         for (let i = 0; i < nrOfPlayers; i++) {
             this.createPlayer();
         }
@@ -137,19 +144,21 @@ class GameManager {
         }
     }
 
+    // create and add ball to list
     public createBall(): void {
         let newBall = new Ball;
-        console.log(this.balls);
-
         this.balls.push(newBall);
     }
 
+    // create event
     createEvent(): void {
-        if (!this.events || this.events.length < 1) {
+        if (!this.events || this.events.length < 1 || this.players.length > 1) {
             const newEvent = new Events;
             this.events.push(newEvent);
         }
+        else {
+            this.events.length = 0;
+            this.balls.length = 0;
+        }
     }
-
-    rebuildGameArea(): void { }
 }

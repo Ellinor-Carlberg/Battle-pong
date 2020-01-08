@@ -18,8 +18,7 @@ class Ball {
         this.setBallSize(circleSize);
     }
     draw(): void {
-        this.moveBall(); // should be in update() but it only works from here right now
-        // this.playerLoss();
+        this.moveBall();
         this.drawBall();
     }
 
@@ -64,7 +63,7 @@ class Ball {
                         }
                     }
                 }
-                // outside circle
+                // ball outside game area
                 if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) > this.ballRadius + circleSize / 2) {
                     if (gameManager.players.length >= 2) {
                         this.createDistanceList();
@@ -72,7 +71,6 @@ class Ball {
                 }
                 // game end
                 if (gameManager.players.length === 1) {
-                    // this.ballSpeedY = this.ballSpeedX = 0;
                     this.ballXPosition = width / 2;
                     this.ballYPosition = height / 2;
                 }
@@ -90,12 +88,12 @@ class Ball {
         this.checkPlayerLoss(distances);
     }
 
-    // check if player has min pad-to-ball distance, change its' activePlayer status and reset ball
+    // change activePlayer status on player with min pad-to-ball distance
     private checkPlayerLoss(distances: number[]): void {
         for (const playerObj in gameManager.players) {
             if (gameManager.players.hasOwnProperty(playerObj)) {
                 if (gameManager.players[playerObj].getDistanceToBall(this.ballXPosition, this.ballYPosition) === Math.min(...distances)) {
-                    // gameManager.players[playerObj].changeActivePlayer();
+                    gameManager.players[playerObj].changeActivePlayer();
                     this.resetBall();
                 }
             }
@@ -106,6 +104,7 @@ class Ball {
     private resetBall(): void {
         this.ballXPosition = width / 2;
         this.ballYPosition = height / 2;
+        isGameRunning = 1;
     }
 
     setBallSize(diameter: number) {
@@ -124,8 +123,6 @@ class Ball {
             } else {
                 newAngle = newAngle + 0.3;
             }
-
-            // TODO: check where on pad...
 
             this.ballSpeedX = -velocity * Math.cos(newAngle);
             this.ballSpeedY = velocity * Math.sin(newAngle);

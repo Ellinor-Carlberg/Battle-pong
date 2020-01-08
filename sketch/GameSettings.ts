@@ -68,18 +68,8 @@ class GameSettings implements GameStatus, MusicStatus {
             }
         }
     }
-
-    private gameStatus(): void {
-        if (1) {
-            this.startGame();
-        }
-        else if (2) {
-            this.quitGame();
-        }
-    }
     public startGame(): void { 
         isGameRunning = 1;
         gameManager.createBall();
     }
-    public quitGame() { }
 }

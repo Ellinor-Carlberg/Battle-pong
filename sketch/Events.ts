@@ -6,18 +6,20 @@ class Events {
     // set interval for adding balls
     private setEventInterval(): void {
         if (gameManager.players != undefined) {
-            if (gameManager.players.length < 5) {
+            if (gameManager.balls.length < 10 && isGameRunning === 2) {
                 let ballSpawnInterval = setInterval(() => {
-                    this.moreBalls(ballSpawnInterval);
+                    this.addBalls(ballSpawnInterval);
                 }, 60000);
             }
         }
     }
 
-    // add ball if nr of balls is less than 5
-    private moreBalls(interval: NodeJS.Timeout): void {
+    // add balls and/or clear interval
+    private addBalls(interval: NodeJS.Timeout): void {
         gameManager.createBall();
-        if (gameManager.balls.length == 5) {
+        if (gameManager.balls.length == 10 || isGameRunning === 1) {
+            gameManager.balls.length = 1;
+            gameManager.events.length = 0;
             clearInterval(interval);
         }
     }
