@@ -2,7 +2,7 @@ class GameManager {
     public gameSettings: GameSettings;
     public gameArea: GameArea;
     public gameMenu: GameMenu;
-    public events: Events[]
+    public events!: Events[];
     public players: Player[];
     public balls: Ball[];
     public pads: Pad[];
@@ -24,14 +24,13 @@ class GameManager {
 
         this.gameMenu.update();
 
-        if (isGameRunning == 1 || isGameRunning == 2) {
+        if (isGameRunning == 1 || isGameRunning == 2) {
             this.gameArea.update();
 
             for (const ball of this.balls) {
-                ball.update();
-            }
-            for (const event of this.events) {
-                event.update();
+                if (ball != undefined) {
+                    ball.update();
+                }
             }
             for (let i = 0; i < nrOfPlayers; i++) {
                 if (this.players[i].activePlayer === true) {
@@ -41,7 +40,6 @@ class GameManager {
 
             // check for inactive player
             this.removeInactivePlayer();
-
         }
     }
 
@@ -51,32 +49,29 @@ class GameManager {
             this.gameMenu.draw();
         }
         else if (isGameRunning == 1) {
-            
             this.gameArea.draw();
             this.drawPlayers();
-            for (let i = 0; i < nrOfPlayers; i++) {
-                this.players[i].draw();
-            }
+
             fill('black');
             noStroke();
             textAlign(CENTER, CENTER);
             textSize(40);
-            text("press SPACE \n to start", width/2, height/2);
+            text("press SPACE \n to start", width / 2, height / 2);
 
-            if(keyCode === 32){
+            if (keyCode === 32) {
+                this.createEvent();
                 isGameRunning = 2;
-                }
-            } else if (isGameRunning == 2){
+            }
+        } else if (isGameRunning == 2) {
             this.gameArea.draw();
             this.drawPlayers();
-            for (let i = 0; i < nrOfPlayers; i++) {
-                this.players[i].draw();
-            }
             for (const ball of this.balls) {
-                ball.draw();
+                if (ball != undefined) {
+                    ball.draw();
+                }
             }
         }
-        
+
         this.gameSettings.draw();
     }
 
@@ -144,12 +139,16 @@ class GameManager {
 
     public createBall(): void {
         let newBall = new Ball;
+        console.log(this.balls);
+
         this.balls.push(newBall);
     }
 
     createEvent(): void {
-        const newEvent = new Events;
-        this.events.push(newEvent);
+        if (!this.events || this.events.length < 1) {
+            const newEvent = new Events;
+            this.events.push(newEvent);
+        }
     }
 
     rebuildGameArea(): void { }

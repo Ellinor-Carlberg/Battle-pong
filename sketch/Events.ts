@@ -1,35 +1,24 @@
 class Events {
-    public eventsList: Array<number>; // Number array of index nrs, or strings, or objects...
-
     constructor() {
-        this.eventsList = [];
+        this.setEventInterval();
     }
-    update(): void {
-        let ballSpawnInterval = setInterval(this.moreBalls, 5000);
-        if (gameManager.balls.length = 5) {
-            clearInterval(ballSpawnInterval);
+
+    // set interval for adding balls
+    private setEventInterval(): void {
+        if (gameManager.players != undefined) {
+            if (gameManager.players.length < 5) {
+                let ballSpawnInterval = setInterval(() => {
+                    this.moreBalls(ballSpawnInterval);
+                }, 60000);
+            }
         }
     }
 
-    draw(): void { }
-
-    announceEvent(): void { }
-    activateEvent(): void { }
-    countDownToEvent(): void { }
-    // Events
-    reverseButtons(): void { }
-    shrinkPad(): void { }
-    fasterBall(): void { }
-    hideBall(): void { }
-
-    moreBalls(): void {
-        setTimeout(() => {
-            gameManager.createBall();
-            for (let i = 1; i < gameManager.balls.length; i++) {
-                const ball = gameManager.balls[i];
-                ball.ballSpeedX * i;
-                ball.ballSpeedY * i;
-            }
-        }, 60000);
+    // add ball if nr of balls is less than 5
+    private moreBalls(interval: NodeJS.Timeout): void {
+        gameManager.createBall();
+        if (gameManager.balls.length == 5) {
+            clearInterval(interval);
+        }
     }
 }

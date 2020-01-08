@@ -41,6 +41,7 @@ class Ball {
         this.dx = this.ballXPosition - width / 2;
         this.dy = this.ballYPosition - height / 2;
     }
+
     setStartDirection(): void { //Randomizes direction
         this.ballSpeedX = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
         this.ballSpeedY = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
@@ -49,7 +50,6 @@ class Ball {
     // check for ball collision
     private handleBall(): void {
         for (const player of gameManager.players) {
-            // this.checkBall();
             for (let i = 0; i <= player.pad.getPadLength; i++) {
                 if (player.playerXCoordinates[i] && player.playerYCoordinates[i]) {
                     // bounce if ball+pad collision
@@ -60,24 +60,12 @@ class Ball {
                 // outside circle
                 if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) > this.ballRadius + circleSize / 2) {
                     if (gameManager.players.length >= 2) {
-                        let playerObjArr: Array<{}> = [];
-                        let playdist: number[] = []
-                        for (let i = 0; i < gameManager.players.length; i++) {
-                            const player = gameManager.players[i];
-                            let playerObj = {
-                                "ID": player.playerID,
-                                "distance": player.getDistanceToBall(this.ballXPosition, this.ballYPosition)
-                            }
-                            playerObjArr.push(playerObj);
-                            playdist.push(player.getDistanceToBall(this.ballXPosition, this.ballYPosition))
-                        }
-                        this.getDistArr(playerObjArr, playdist);
+                        this.createDistanceList();
                     }
-
                 }
-
+                // game end
                 if (gameManager.players.length === 1) {
-                    this.ballSpeedY = this.ballSpeedX = 0;
+                    // this.ballSpeedY = this.ballSpeedX = 0;
                     this.ballXPosition = width / 2;
                     this.ballYPosition = height / 2;
                 }
@@ -85,18 +73,32 @@ class Ball {
         }
     }
 
-    getDistArr(playerObjArr: Array<{}>, distList: number[]) {
+    // create array of pad-to-ball distances
+    private createDistanceList(): void {
+        let distances: number[] = [];
+        for (let i = 0; i < gameManager.players.length; i++) {
+            const player = gameManager.players[i];
+            distances.push(player.getDistanceToBall(this.ballXPosition, this.ballYPosition));
+        }
+        this.checkPlayerLoss(distances);
+    }
 
-        for (const playerObj in playerObjArr) {
-            if (playerObjArr.hasOwnProperty(playerObj)) {
-
-                if (gameManager.players[playerObj].getDistanceToBall(this.ballXPosition, this.ballYPosition) === Math.min(...distList)) {
-                    gameManager.players[playerObj].removePlayer();
-                    this.ballXPosition = width / 2;
-                    this.ballYPosition = height / 2;
+    // check if player has min pad-to-ball distance, change its' activePlayer status and reset ball
+    private checkPlayerLoss(distances: number[]): void {
+        for (const playerObj in gameManager.players) {
+            if (gameManager.players.hasOwnProperty(playerObj)) {
+                if (gameManager.players[playerObj].getDistanceToBall(this.ballXPosition, this.ballYPosition) === Math.min(...distances)) {
+                    // gameManager.players[playerObj].changeActivePlayer();
+                    this.resetBall();
                 }
             }
         }
+    }
+
+    // reset ball to middle of game area
+    private resetBall(): void {
+        this.ballXPosition = width / 2;
+        this.ballYPosition = height / 2;
     }
 
     setBallSize(diameter: number) {
