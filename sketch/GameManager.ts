@@ -62,7 +62,7 @@ class GameManager {
                 this.drawWinnerAnnouncement();
             }
 
-            if (keyIsDown(32)) {
+            if (keyIsDown(32) && this.players.length > 1) {
                 gameMode = 2;
                 this.createEvent();
             }
