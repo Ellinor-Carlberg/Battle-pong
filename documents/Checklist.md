@@ -14,7 +14,7 @@ Checklist of what to include:
 
 5. Presentation
 
-6. Eventuella skisser?
+6. Eventuella skisser? (i presentation) - KLART
 
 7. Eventuell mer planering?
 
