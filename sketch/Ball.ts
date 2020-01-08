@@ -81,12 +81,12 @@ class Ball {
                     this.ballSpeedY = this.ballSpeedX = 0;
                     this.ballXPosition = width / 2;
                     this.ballYPosition = height / 2;
-                    this.drawWinnerPlayer();
+                    this.drawWinnerAnnouncement();
                 }
             }
         }
     }
-    private drawWinnerPlayer() {
+    private drawWinnerAnnouncement() {
             /** Draw the yellow circle*/ 
             strokeWeight(2)
             stroke('#000000')
