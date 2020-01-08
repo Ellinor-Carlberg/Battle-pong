@@ -1,7 +1,7 @@
 class GameMenu {
-    update() {
+    public update(): void {
     }
-    draw() {
+    public draw(): void {
             this.drawMenu();
             this.drawAddPlayerButton();
             this.drawNewPlayer();
@@ -10,7 +10,7 @@ class GameMenu {
     }
 
     // add new player
-    public handleAddPlayerButton() {
+    public handleAddPlayerButton(): void {
         if (mouseX > (width * .5) + 190 && mouseX < (width * .5) + 290 &&
             mouseY > height * .9 && mouseY < (height * .9) + 45) {
             if (gameManager.players.length < 8) {
@@ -20,9 +20,9 @@ class GameMenu {
         }
     }
 
-    
-    // draw +-button
-    private drawAddPlayerButton() {
+
+    // draw button which helps to add a player
+    private drawAddPlayerButton(): void {
         /** add more players button, need to have a mouseClicked event */
         strokeWeight(3);
         stroke('#000000');
@@ -37,7 +37,7 @@ class GameMenu {
     }
 
     // draw new player on list
-    private drawNewPlayer() {
+    private drawNewPlayer(): void {
         for (const playerObj in gameManager.players) {
             const player = gameManager.players[playerObj];
             // color
@@ -65,7 +65,7 @@ class GameMenu {
     }
 
     // draw player keys
-    private drawKeys(playerID: number) {
+    private drawKeys(playerID: number): void {
         switch (playerID) {
             case 0:
                 /** text left-key player one */
@@ -164,7 +164,7 @@ class GameMenu {
     }
 
 // draw start-button
-private drawStartGameButton() {
+private drawStartGameButton(): void {
     /** start button, need to have a mouseClicked event */
 
     /** black shadow for start button */
@@ -187,7 +187,7 @@ private drawStartGameButton() {
 }
 
     // draw menu elements
-    private drawMenu() {
+    private drawMenu(): void {
         /** Background, (grey and brown) */
 
         /** grey background */
