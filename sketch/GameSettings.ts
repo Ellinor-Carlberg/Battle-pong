@@ -7,16 +7,16 @@ class GameSettings implements GameStatus, MusicStatus {
         this.gameMusic = gameMusic;
     }
 
-    update() {
+    public update(): void {
         this.handleSoundButton();
         this.controlSound();
     }
-    draw() {
+    public draw(): void {
         this.drawSoundButton();
     }
 
     // set volume on soundfile
-    set setSoundVolume(value: number) {
+    private set setSoundVolume(value: number) {
         this.gameMusic.menuMusic.setVolume(value);
     }
     // control volume property value
@@ -81,5 +81,5 @@ class GameSettings implements GameStatus, MusicStatus {
         isGameRunning = 1;
         gameManager.createBall();
     }
-    public quitGame() { }
+    public quitGame(): void { }
 }

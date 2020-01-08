@@ -1,12 +1,12 @@
 class Ball {
     private dx!: number;
     private dy!: number;
-    public ballSpeedX!: number;
-    public ballSpeedY!: number;
+    private ballRadius!: number;
     private startDirection: Array<number>;
     public ballXPosition: number;
     public ballYPosition: number;
-    private ballRadius!: number;
+    public ballSpeedX!: number;
+    public ballSpeedY!: number;
 
     constructor() {
         this.startDirection = [4, -4];
@@ -14,16 +14,16 @@ class Ball {
         this.ballXPosition = width / 2;
         this.ballYPosition = width / 2;
     }
-    update(): void {
+    public update(): void {
         this.setBallSize(circleSize);
     }
-    draw(): void {
+    public draw(): void {
         this.moveBall(); // should be in update() but it only works from here right now
         // this.playerLoss();
         this.drawBall();
     }
 
-    drawBall(): void {
+    public drawBall(): void {
         fill(255, 255, 255);
         stroke(0, 0, 0);
         strokeWeight(2);
@@ -31,7 +31,27 @@ class Ball {
 
         this.handleBall();
     }
+    public setStartDirection(): void { //Randomizes direction
+        this.ballSpeedX = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
+        this.ballSpeedY = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
+    }
+    public getDistArr(playerObjArr: Array<{}>, distList: number[]) {
 
+        for (const playerObj in playerObjArr) {
+            if (playerObjArr.hasOwnProperty(playerObj)) {
+
+                if (gameManager.players[playerObj].getDistanceToBall(this.ballXPosition, this.ballYPosition) === Math.min(...distList)) {
+                    gameManager.players[playerObj].removePlayer();
+                    this.ballXPosition = width / 2;
+                    this.ballYPosition = height / 2;
+                }
+            }
+        }
+    }
+
+    public setBallSize(diameter: number): void {
+        this.ballRadius = diameter / 40;
+    }
     // move ball
     private moveBall(): void {
         this.ballXPosition += this.ballSpeedX;
@@ -41,10 +61,7 @@ class Ball {
         this.dx = this.ballXPosition - width / 2;
         this.dy = this.ballYPosition - height / 2;
     }
-    setStartDirection(): void { //Randomizes direction
-        this.ballSpeedX = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
-        this.ballSpeedY = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
-    }
+    
 
     // check for ball collision
     private handleBall(): void {
@@ -85,23 +102,7 @@ class Ball {
         }
     }
 
-    getDistArr(playerObjArr: Array<{}>, distList: number[]) {
-
-        for (const playerObj in playerObjArr) {
-            if (playerObjArr.hasOwnProperty(playerObj)) {
-
-                if (gameManager.players[playerObj].getDistanceToBall(this.ballXPosition, this.ballYPosition) === Math.min(...distList)) {
-                    gameManager.players[playerObj].removePlayer();
-                    this.ballXPosition = width / 2;
-                    this.ballYPosition = height / 2;
-                }
-            }
-        }
-    }
-
-    setBallSize(diameter: number) {
-        this.ballRadius = diameter / 40;
-    }
+    
 
     // ball bounces
     private bounceBackFromPad(): void {

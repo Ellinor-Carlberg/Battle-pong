@@ -12,9 +12,9 @@ class Pad {
         this.velocity = 0;
     }
 
-    update(): any { }
+    public update(): void { }
 
-    draw(): void {
+    public draw(): void {
     }
 
     // draw player
@@ -56,28 +56,28 @@ class Pad {
 
     }
     // set/get start position
-    set setStartPosition(position: number) {
+    public set setStartPosition(position: number) {
         this.startPosition = position;
     }
-    get getStartPosition(): number {
+    public get getStartPosition(): number {
         return this.startPosition;
     }
     // set/get current position
-    set setCurrentPosition(position: number) {
+    public set setCurrentPosition(position: number) {
         this.currentPosition = position;
     }
-    get getCurrentPosition(): number {
+    public get getCurrentPosition(): number {
         return this.currentPosition;
     }
     // set min/max constrain value
-    set setMinConstrain(minValue: number) {
+    public set setMinConstrain(minValue: number) {
         this.minConstrain = minValue;
     }
-    set setMaxConstrain(maxValue: number) {
+    public set setMaxConstrain(maxValue: number) {
         this.maxConstrain = maxValue;
     }
     // calculate default pad length
-    get getPadLength(): number {
+    public get getPadLength(): number {
         return (360 / nrOfPlayers) / 3;
     }
 }
