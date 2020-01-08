@@ -692,10 +692,10 @@ var Pad = (function () {
     };
     Pad.prototype.calculatePlayerVelocity = function (direction) {
         if (direction === 'left') {
-            this.velocity += 2.5;
+            this.velocity += 2 / nrOfPlayers;
         }
         if (direction === 'right') {
-            this.velocity -= 2.5;
+            this.velocity -= 2 / nrOfPlayers;
         }
         this.currentPosition += this.velocity;
         this.velocity *= 0.4;

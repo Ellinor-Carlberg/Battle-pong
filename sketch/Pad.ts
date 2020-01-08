@@ -39,10 +39,10 @@ class Pad {
     public calculatePlayerVelocity(direction: string): void {
         // check if key is down
         if (direction === 'left') {
-            this.velocity += 2.5;
+            this.velocity += 2/nrOfPlayers;
         }
         if (direction === 'right') {
-            this.velocity -= 2.5;
+            this.velocity -= 2/nrOfPlayers;
         }
 
         // change position
