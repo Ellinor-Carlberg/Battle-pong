@@ -33,11 +33,11 @@ function setup() {
     // create new game manager instance
     gameManager = new GameManager(gameMusic);
 }
+
 function draw() {
     gameManager.update();
     gameManager.draw();
 }
-
 
 // key press event
 function keyPressed() {
@@ -51,15 +51,14 @@ function keyPressed() {
 
 }
 
-
 // hover event
 function mouseMoved(): void {
     const addPlayerButton = mouseX > (width * .5) + 190 && mouseX < (width * .5) + 290 &&
         mouseY > height * .9 && mouseY < (height * .9) + 45;
     const soundButton = dist(mouseX, mouseY, 60, 60) < 40;
 
-    const StartGameButton = mouseX > (width * .5) - 75 && mouseX < (width * .5) + 70 &&
-        mouseY > height * .89 && mouseY < (height * .89) + 50;
+    const StartGameButton = mouseX > (width * .5) - 285 && mouseX < (width * .5) - 185 &&
+        mouseY > height * .9 && mouseY < (height * .9) + 50;
 
     if (addPlayerButton || soundButton || StartGameButton) {
         cursor('pointer');

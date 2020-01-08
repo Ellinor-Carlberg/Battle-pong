@@ -14,6 +14,7 @@ class GameArea {
             return windowWidth - 40;
         }
     }
+    
     //Draw the gameArea(circle)
     private drawDefaultArea(): void {
         background('#777b7e');

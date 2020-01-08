@@ -4,7 +4,7 @@ var Ball = (function () {
         this.startDirection = [4, -4];
         this.setStartDirection();
         this.ballXPosition = width / 2;
-        this.ballYPosition = width / 2;
+        this.ballYPosition = height / 2;
     }
     Ball.prototype.update = function () {
         this.setBallSize(circleSize);
@@ -24,17 +24,6 @@ var Ball = (function () {
         this.ballSpeedX = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
         this.ballSpeedY = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
     };
-    Ball.prototype.getDistArr = function (playerObjArr, distList) {
-        for (var playerObj in playerObjArr) {
-            if (playerObjArr.hasOwnProperty(playerObj)) {
-                if (gameManager.players[playerObj].getDistanceToBall(this.ballXPosition, this.ballYPosition) === Math.min.apply(Math, distList)) {
-                    gameManager.players[playerObj].removePlayer();
-                    this.ballXPosition = width / 2;
-                    this.ballYPosition = height / 2;
-                }
-            }
-        }
-    };
     Ball.prototype.setBallSize = function (diameter) {
         this.ballRadius = diameter / 40;
     };
@@ -50,39 +39,98 @@ var Ball = (function () {
             for (var i = 0; i <= player.pad.getPadLength; i++) {
                 if (player.playerXCoordinates[i] && player.playerYCoordinates[i]) {
                     if (dist(this.ballXPosition, this.ballYPosition, player.playerXCoordinates[i], player.playerYCoordinates[i]) < this.ballRadius + .5) {
-                        this.bounceBackFromPad();
+                        if (i < player.pad.getPadLength / 3 || i > player.pad.getPadLength * 0.67) {
+                            var ballAndPadCollisionPoint = 1;
+                            this.bounceBackFromPad(ballAndPadCollisionPoint);
+                        }
+                        else {
+                            var ballAndPadCollisionPoint = 0;
+                            this.bounceBackFromPad(ballAndPadCollisionPoint);
+                        }
                     }
                 }
                 if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) > this.ballRadius + circleSize / 2) {
                     if (gameManager.players.length >= 2) {
-                        var playerObjArr = [];
-                        var playdist = [];
-                        for (var i_1 = 0; i_1 < gameManager.players.length; i_1++) {
-                            var player_1 = gameManager.players[i_1];
-                            var playerObj = {
-                                "ID": player_1.playerID,
-                                "distance": player_1.getDistanceToBall(this.ballXPosition, this.ballYPosition)
-                            };
-                            playerObjArr.push(playerObj);
-                            playdist.push(player_1.getDistanceToBall(this.ballXPosition, this.ballYPosition));
-                        }
-                        this.getDistArr(playerObjArr, playdist);
+                        this.createDistanceList();
                     }
                 }
+
+            }
+        }
+    };
+    Ball.prototype.createDistanceList = function () {
+        var distances = [];
+        for (var i = 0; i < gameManager.players.length; i++) {
+            var player = gameManager.players[i];
+            distances.push(player.getDistanceToBall(this.ballXPosition, this.ballYPosition));
+        }
+        this.checkPlayerLoss(distances);
+    };
+    Ball.prototype.checkPlayerLoss = function (distances) {
+        for (var playerObj in gameManager.players) {
+            if (gameManager.players.hasOwnProperty(playerObj)) {
+                if (gameManager.players[playerObj].getDistanceToBall(this.ballXPosition, this.ballYPosition) === Math.min.apply(Math, distances)) {
+                    gameManager.players[playerObj].changeActivePlayer();
+                    this.resetBall();
+
                 if (gameManager.players.length === 1) {
                     this.ballSpeedY = this.ballSpeedX = 0;
                     this.ballXPosition = width / 2;
                     this.ballYPosition = height / 2;
+                    this.drawWinnerAnnouncement();
+
                 }
             }
         }
     };
-    Ball.prototype.bounceBackFromPad = function () {
+    Ball.prototype.resetBall = function () {
+        this.ballXPosition = width / 2;
+        this.ballYPosition = height / 2;
+        gameMode = 1;
+
+    Ball.prototype.drawWinnerAnnouncement = function () {
+        strokeWeight(2);
+        stroke('#000000');
+        fill('#F4ed47');
+        circle((width * .5), (height * .5), 500);
+        strokeWeight(2);
+        var winnerText1 = 'CONGRATULATIONS!';
+        textSize(30);
+        fill('#000000');
+        text(winnerText1, (width * .5), (height * .5) - 70);
+        var winnerText2 = 'YOU HAVE WON';
+        textSize(30);
+        fill('#000000');
+        text(winnerText2, (width * .5), (height * .5) - 20);
+        strokeWeight(5);
+        var winnerText3 = 'BATTLE PONG';
+        textSize(50);
+        fill('#000000');
+        text(winnerText3, (width * .5), (height * .5) + 30);
+        strokeWeight(5);
+        var winnerText4 = 'BATTLE PONG';
+        textSize(50);
+        fill('#ff0000');
+        text(winnerText4, (width * .5) + 5, (height * .5) + 27);
+        strokeWeight(0);
+        var winnerText5 = 'Refresh the page to play again';
+        textSize(20);
+        fill('#000000');
+        text(winnerText5, (width * .5), (height * .5) + 100);
+
+    };
+    Ball.prototype.bounceBackFromPad = function (ballAndPadCollisionPoint) {
         if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) >= circleSize / 2 - 5) {
             var velocity = Math.sqrt(this.ballSpeedX * this.ballSpeedX + this.ballSpeedY * this.ballSpeedY);
             var angleToCollisionPoint = Math.atan2(-this.dy, this.dx);
             var oldAngle = Math.atan2(-this.ballSpeedY, this.ballSpeedX);
             var newAngle = 2 * angleToCollisionPoint - oldAngle;
+            if (ballAndPadCollisionPoint == 1) {
+                newAngle = newAngle - 0.3;
+            }
+            else {
+                newAngle = newAngle + 0.3;
+            }
             this.ballSpeedX = -velocity * Math.cos(newAngle);
             this.ballSpeedY = velocity * Math.sin(newAngle);
             var vector = createVector(this.dx, this.dy);
@@ -98,31 +146,25 @@ var Ball = (function () {
 }());
 var Events = (function () {
     function Events() {
-        this.eventsList = [];
+        this.setEventInterval();
     }
-    Events.prototype.update = function () {
-        var ballSpawnInterval = setInterval(this.moreBalls, 5000);
-        if (gameManager.balls.length = 5) {
-            clearInterval(ballSpawnInterval);
+    Events.prototype.setEventInterval = function () {
+        var _this = this;
+        if (gameManager.players != undefined) {
+            if (gameManager.balls.length < 10 && gameMode === 2) {
+                var ballSpawnInterval_1 = setInterval(function () {
+                    _this.addBalls(ballSpawnInterval_1);
+                }, 4250);
+            }
         }
     };
-    Events.prototype.draw = function () { };
-    Events.prototype.announceEvent = function () { };
-    Events.prototype.activateEvent = function () { };
-    Events.prototype.countDownToEvent = function () { };
-    Events.prototype.reverseButtons = function () { };
-    Events.prototype.shrinkPad = function () { };
-    Events.prototype.fasterBall = function () { };
-    Events.prototype.hideBall = function () { };
-    Events.prototype.moreBalls = function () {
-        setTimeout(function () {
-            gameManager.createBall();
-            for (var i = 1; i < gameManager.balls.length; i++) {
-                var ball = gameManager.balls[i];
-                ball.ballSpeedX * i;
-                ball.ballSpeedY * i;
-            }
-        }, 60000);
+    Events.prototype.addBalls = function (interval) {
+        gameManager.createBall();
+        if (gameManager.balls.length == 10 || gameMode === 1) {
+            gameManager.balls.length = 1;
+            gameManager.events.length = 0;
+            clearInterval(interval);
+        }
     };
     return Events;
 }());
@@ -167,15 +209,13 @@ var GameManager = (function () {
             this.setDefaultNrOfPlayers();
         }
         this.gameMenu.update();
-        if (isGameRunning == 1 || isGameRunning == 2) {
+        if (gameMode == 1 || gameMode == 2) {
             this.gameArea.update();
             for (var _i = 0, _a = this.balls; _i < _a.length; _i++) {
                 var ball = _a[_i];
-                ball.update();
-            }
-            for (var _b = 0, _c = this.events; _b < _c.length; _b++) {
-                var event_1 = _c[_b];
-                event_1.update();
+                if (ball != undefined) {
+                    ball.update();
+                }
             }
             for (var i = 0; i < nrOfPlayers; i++) {
                 if (this.players[i].activePlayer === true) {
@@ -186,33 +226,40 @@ var GameManager = (function () {
         }
     };
     GameManager.prototype.draw = function () {
-        if (isGameRunning == 0) {
+        if (gameMode == 0) {
             this.gameMenu.draw();
         }
-        else if (isGameRunning == 1) {
+        else if (gameMode == 1) {
             this.gameArea.draw();
             this.drawPlayers();
-            for (var i = 0; i < nrOfPlayers; i++) {
-                this.players[i].draw();
-            }
             fill('black');
             noStroke();
             textAlign(CENTER, CENTER);
             textSize(40);
             text("press SPACE \n to start", width / 2, height / 2);
+
+            if (this.players.length === 1) {
+                this.drawWinnerAnnouncement();
+            }
+            if (keyIsDown(32) && this.players.length > 1) {
+                gameMode = 2;
+                this.createEvent();
+
             if (keyCode === 32) {
-                isGameRunning = 2;
+                gameMode = 2;
+
             }
         }
-        else if (isGameRunning == 2) {
+        else if (gameMode == 2) {
             this.gameArea.draw();
             this.drawPlayers();
-            for (var i = 0; i < nrOfPlayers; i++) {
-                this.players[i].draw();
-            }
-            for (var _i = 0, _a = this.balls; _i < _a.length; _i++) {
-                var ball = _a[_i];
-                ball.draw();
+            if (this.players.length > 1) {
+                for (var _i = 0, _a = this.balls; _i < _a.length; _i++) {
+                    var ball = _a[_i];
+                    if (ball != undefined) {
+                        ball.draw();
+                    }
+                }
             }
         }
         this.gameSettings.draw();
@@ -223,6 +270,9 @@ var GameManager = (function () {
             if (player.activePlayer === false) {
                 this.pads.splice(i, 1);
                 this.players.splice(i, 1);
+                this.balls.length = 1;
+                this.events.length = 0;
+                gameMode = 1;
             }
             if (this.players.length < nrOfPlayers) {
                 nrOfPlayers--;
@@ -244,8 +294,38 @@ var GameManager = (function () {
             player.setConstrainValues();
         }
     };
+    GameManager.prototype.drawWinnerAnnouncement = function () {
+        strokeWeight(2);
+        stroke('#000000');
+        fill('#F4ed47');
+        circle((width * .5), (height * .5), 500);
+        strokeWeight(2);
+        var winnerText1 = 'CONGRATULATIONS!';
+        textSize(30);
+        fill('#000000');
+        text(winnerText1, (width * .5), (height * .5) - 70);
+        var winnerText2 = 'YOU HAVE WON';
+        textSize(30);
+        fill('#000000');
+        text(winnerText2, (width * .5), (height * .5) - 20);
+        strokeWeight(5);
+        var winnerText3 = 'BATTLE PONG';
+        textSize(50);
+        fill('#000000');
+        text(winnerText3, (width * .5), (height * .5) + 30);
+        strokeWeight(5);
+        var winnerText4 = 'BATTLE PONG';
+        textSize(50);
+        fill('#ff0000');
+        text(winnerText4, (width * .5) + 5, (height * .5) + 27);
+        strokeWeight(0);
+        var winnerText5 = 'Refresh the page to play again';
+        textSize(20);
+        fill('#000000');
+        text(winnerText5, (width * .5), (height * .5) + 100);
+    };
     GameManager.prototype.drawPlayers = function () {
-        if ((this.players && isGameRunning == 1) || (this.players && isGameRunning == 2)) {
+        if ((this.players && gameMode == 1) || (this.players && gameMode == 2)) {
             for (var _i = 0, _a = this.players; _i < _a.length; _i++) {
                 var player = _a[_i];
                 player.draw();
@@ -265,10 +345,15 @@ var GameManager = (function () {
         this.balls.push(newBall);
     };
     GameManager.prototype.createEvent = function () {
-        var newEvent = new Events;
-        this.events.push(newEvent);
+        if (!this.events || this.events.length < 1 || this.players.length > 1) {
+            var newEvent = new Events;
+            this.events.push(newEvent);
+        }
+        else {
+            this.events.length = 0;
+            this.balls.length = 0;
+        }
     };
-    GameManager.prototype.rebuildGameArea = function () { };
     GameManager.prototype.setDefaultNrOfPlayers = function () {
         nrOfPlayers = 2;
         for (var i = 0; i < nrOfPlayers; i++) {
@@ -298,6 +383,10 @@ var GameMenu = (function () {
         }
     };
     GameMenu.prototype.drawAddPlayerButton = function () {
+        strokeWeight(3);
+        stroke('#000000');
+        fill('#000000');
+        rect((width * .5) + 195, height * .91, 100, 45, 15);
         strokeWeight(3);
         stroke('#000000');
         fill('#ffffff');
@@ -412,15 +501,15 @@ var GameMenu = (function () {
         strokeWeight(3);
         stroke('#000000');
         fill('#000000');
-        rect((width * .5) - 75, height * .89, 140, 50, 20);
+        rect((width * .5) - 280, height * .91, 100, 45, 15);
         strokeWeight(3);
         stroke('#000000');
         fill('#F4ed47');
-        rect((width * .5) - 70, height * .89, 140, 50, 20);
+        rect((width * .5) - 285, height * .9, 100, 45, 15);
         var startButton = 'START';
-        textSize(30);
+        textSize(28);
         fill('#000000');
-        text(startButton, (width * .5) - 52, (height * .89) + 35);
+        text(startButton, (width * .48) - 250, (height * .897) + 35);
     };
     GameMenu.prototype.drawMenu = function () {
         background('#777b7e');
@@ -517,19 +606,10 @@ var GameSettings = (function () {
             }
         }
     };
-    GameSettings.prototype.gameStatus = function () {
-        if (1) {
-            this.startGame();
-        }
-        else if (2) {
-            this.quitGame();
-        }
-    };
     GameSettings.prototype.startGame = function () {
-        isGameRunning = 1;
+        gameMode = 1;
         gameManager.createBall();
     };
-    GameSettings.prototype.quitGame = function () { };
     return GameSettings;
 }());
 var Player = (function () {
@@ -545,7 +625,7 @@ var Player = (function () {
     }
     Player.prototype.update = function () {
         this.setKeys();
-        if (isGameRunning === 1 || isGameRunning === 2) {
+        if (gameMode === 1 || gameMode === 2) {
             if (this.pad.currentPosition == undefined && this.pad.startPosition == undefined) {
                 gameManager.setDefaultPositions();
             }
@@ -556,7 +636,7 @@ var Player = (function () {
     Player.prototype.draw = function () {
         this.pad.drawPlayer(this.playerColor);
     };
-    Player.prototype.removePlayer = function () {
+    Player.prototype.changeActivePlayer = function () {
         this.activePlayer = false;
     };
     Player.prototype.getPlayerCoordinates = function () {
@@ -662,9 +742,6 @@ var Pad = (function () {
     function Pad() {
         this.velocity = 0;
     }
-    Pad.prototype.update = function () { };
-    Pad.prototype.draw = function () {
-    };
     Pad.prototype.drawPlayer = function (color) {
         stroke(0);
         noFill();
@@ -741,14 +818,14 @@ var Pad = (function () {
 }());
 var gameManager;
 var gameMusic;
-var isGameRunning;
+var gameMode;
 var gameRestart;
 var circleSize;
 var nrOfPlayers;
 var img;
 var img2;
 window.addEventListener('load', function () {
-    isGameRunning = 0;
+    gameMode = 0;
 });
 function preload() {
     img = loadImage('./assets/images/battle_pong.svg');
@@ -772,8 +849,8 @@ function mouseMoved() {
     var addPlayerButton = mouseX > (width * .5) + 190 && mouseX < (width * .5) + 290 &&
         mouseY > height * .9 && mouseY < (height * .9) + 45;
     var soundButton = dist(mouseX, mouseY, 60, 60) < 40;
-    var StartGameButton = mouseX > (width * .5) - 75 && mouseX < (width * .5) + 70 &&
-        mouseY > height * .89 && mouseY < (height * .89) + 50;
+    var StartGameButton = mouseX > (width * .5) - 285 && mouseX < (width * .5) - 185 &&
+        mouseY > height * .9 && mouseY < (height * .9) + 50;
     if (addPlayerButton || soundButton || StartGameButton) {
         cursor('pointer');
     }
@@ -782,7 +859,7 @@ function mouseMoved() {
     }
 }
 function mousePressed() {
-    if (isGameRunning == 0 && gameManager.players.length < 8) {
+    if (gameMode == 0 && gameManager.players.length < 8) {
         gameManager.gameMenu.handleAddPlayerButton();
         for (var playerObj in gameManager.players) {
             if (gameManager.players.hasOwnProperty(playerObj)) {
@@ -791,12 +868,12 @@ function mousePressed() {
             }
         }
     }
-    if (isGameRunning == 0 && mouseX > (width * .5) - 75 && mouseX < (width * .5) + 70 &&
+    if (gameMode == 0 && mouseX > (width * .5) - 75 && mouseX < (width * .5) + 70 &&
         mouseY > height * .89 && mouseY < (height * .89) + 50) {
         clear();
         gameManager.gameSettings.startGame();
     }
-    else if (isGameRunning == 1 || isGameRunning == 2) {
+    else if (gameMode == 1 || gameMode == 2) {
     }
     gameManager.gameSettings.update();
 }
