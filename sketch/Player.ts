@@ -6,6 +6,8 @@ class Player {
     private playerButtonRight!: number;
     public playerXCoordinates: number[];
     public playerYCoordinates: number[];
+    public playerXArea: number[];
+    public playerYArea: number[];
     public pad: Pad;
 
     constructor() {
@@ -13,6 +15,8 @@ class Player {
         this.playerColor = this.getPlayerColor;
         this.playerXCoordinates = [];
         this.playerYCoordinates = [];
+        this.playerXArea = [];
+        this.playerYArea = [];
         this.pad = new Pad;
     }
 
@@ -31,19 +35,34 @@ class Player {
     draw() {
         this.pad.drawPlayer(this.playerColor);
     }
-
-    hitPlayer() { }
-
     // make player inactive
     removePlayer() {
         this.activePlayer = false;
     }
 
     getPlayerCoordinates() {
-        for(let i = 0; i <= this.pad.getPadLength; i++){
+        for (let i = 0; i <= this.pad.getPadLength; i++) {
             this.playerXCoordinates[i] = (circleSize / 2) * Math.cos(((this.pad.getCurrentPosition + i) * Math.PI / 180)) + (width / 2);
             this.playerYCoordinates[i] = (circleSize / 2) * Math.sin(((this.pad.getCurrentPosition + i) * Math.PI / 180)) + (height / 2);
         }
+    }
+
+    get getPlayerMinCoordinates() {
+        return {
+            x: (circleSize / 2) * Math.cos(((this.pad.minConstrain) * Math.PI / 180)) + (width / 2),
+            y: (circleSize / 2) * Math.sin(((this.pad.minConstrain) * Math.PI / 180)) + (height / 2)
+        }
+    }
+    get getPlayerMaxCoordinates() {
+        return {
+            x: (circleSize / 2) * Math.cos(((this.pad.getStartPosition - 5 + (this.pad.getPadLength * 3)) * Math.PI / 180)) + (width / 2),
+            y: (circleSize / 2) * Math.sin(((this.pad.getStartPosition - 5+ (this.pad.getPadLength * 3)) * Math.PI / 180)) + (height / 2)
+        }
+    }
+
+    getDistanceToBall(ballX: number, ballY: number) {
+        let distance = dist(ballX, ballY, this.getPlayerMinCoordinates.x, this.getPlayerMinCoordinates.y) + dist(ballX, ballY, this.getPlayerMaxCoordinates.x, this.getPlayerMaxCoordinates.y);
+        return distance;
     }
 
     // generate random color
@@ -67,8 +86,8 @@ class Player {
 
     // set constrain values
     public setConstrainValues() {
-        this.pad.setMinValue = this.pad.getStartPosition - this.pad.getPadLength;
-        this.pad.setMaxValue = (this.pad.getStartPosition + this.pad.getPadLength) - 1;
+        this.pad.setMinConstrain = this.pad.getStartPosition;
+        this.pad.setMaxConstrain = (this.pad.getStartPosition + (this.pad.getPadLength * 2)) - 1;
     }
 
     // set start position and default current position

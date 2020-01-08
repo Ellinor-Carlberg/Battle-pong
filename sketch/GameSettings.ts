@@ -1,12 +1,10 @@
 class GameSettings implements GameStatus, MusicStatus {
     private gameMusic: GameMusic;
     public mutedMusic: boolean;
-    private gameEvents: number[];
 
     constructor(gameMusic: GameMusic) {
         this.mutedMusic = false;
         this.gameMusic = gameMusic;
-        this.gameEvents = [];
     }
 
     update() {
@@ -31,7 +29,7 @@ class GameSettings implements GameStatus, MusicStatus {
         }
     }
     // draw and handle sound button interaction
-    private drawSoundButton() {
+    private drawSoundButton(): void {
         /** sound button in top left corner, need to have a mouseClicked event 
         get it overlined when clicked  */
 
@@ -60,7 +58,7 @@ class GameSettings implements GameStatus, MusicStatus {
             line(40, 90, 80, 30);
         }
     }
-    private handleSoundButton() {
+    private handleSoundButton(): void {
         if (dist(mouseX, mouseY, 60, 60) < 40) {
             if (this.mutedMusic === false) {
                 this.mutedMusic = true;
@@ -79,9 +77,9 @@ class GameSettings implements GameStatus, MusicStatus {
             this.quitGame();
         }
     }
-    private controlEvents(): void { }
-    public startGame() { 
+    public startGame(): void { 
         isGameRunning = 1;
+        gameManager.createBall();
     }
     public quitGame() { }
 }

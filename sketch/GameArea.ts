@@ -1,6 +1,7 @@
-
 class GameArea {
-    update(): void { }
+    update(): void {
+        circleSize = this.calculateCircleSize();
+    }
     draw(): void {
         this.drawDefaultArea();
     }
@@ -16,10 +17,9 @@ class GameArea {
     // calculate game area size
     public calculateCircleSize(): number {
         if (windowWidth >= windowHeight) {
-            circleSize = windowHeight - 40;
+            return windowHeight - 40;
         } else {
-            circleSize = windowWidth - 40;
+            return windowWidth - 40;
         }
-        return circleSize;
     }
 }
