@@ -2,6 +2,7 @@ class GameArea {
     public update(): void {
         circleSize = this.calculateCircleSize();
     }
+
     public draw(): void {
         this.drawDefaultArea();
     }
@@ -22,6 +23,5 @@ class GameArea {
         stroke(0, 0, 0);
         strokeWeight(1);
         ellipse(width / 2, height / 2, circleSize, circleSize);
-
     }
 }

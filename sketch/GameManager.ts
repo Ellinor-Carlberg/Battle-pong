@@ -17,19 +17,19 @@ class GameManager {
         this.pads = [];
     }
 
-    // controls the number of players
     public update(): void {
+        // adds 2 players if nr of players is undefined/0
         if (!nrOfPlayers) {
             this.setDefaultNrOfPlayers();
         }
-        this.gameMenu.update();
-        if (gameMode == 1 || gameMode == 2) {
+        if (gameMode == 1 || gameMode == 2) {
             this.gameArea.update();
             for (const ball of this.balls) {
                 if (ball != undefined) {
                     ball.update();
                 }
             }
+            // update active players
             for (let i = 0; i < nrOfPlayers; i++) {
                 if (this.players[i].activePlayer === true) {
                     this.players[i].update();
@@ -48,7 +48,7 @@ class GameManager {
         else if (gameMode == 1) {
             this.gameArea.draw();
             this.drawPlayers();
-            // draws the "relese ball"-text
+            // draws the "release ball"-text
             fill('black');
             noStroke();
             textAlign(CENTER, CENTER);
@@ -57,11 +57,11 @@ class GameManager {
             // draws winner announcement
             if (this.players.length === 1) {
                 this.drawWinnerAnnouncement();
-            } 
+            }
             // Press space to start
             if (keyIsDown(32) && this.players.length > 1) {
                 gameMode = 2;
-                this.createEvent();
+                this.handleEvents();
             }
         } else if (gameMode == 2) {
             this.gameArea.draw();
@@ -74,23 +74,25 @@ class GameManager {
                 }
             }
         }
-
+        // draw sound button
         this.gameSettings.draw();
     }
-    
-// remove player with activePlayer = false
+
+    // remove player with activePlayer = false
     public removeInactivePlayer(): void {
         for (let i = 0; i < this.players.length; i++) {
             const player = this.players[i];
             if (player.activePlayer === false) {
+                // remove player and pad
                 this.pads.splice(i, 1);
                 this.players.splice(i, 1);
+                // reset ball(s) and event
                 this.balls.length = 1;
                 this.events.length = 0;
                 gameMode = 1;
             }
 
-            // if nr of players has changed, reset positions
+            // reset pad positions when player has been removed
             if (this.players.length < nrOfPlayers) {
                 nrOfPlayers--;
                 this.setDefaultPositions();
@@ -98,17 +100,15 @@ class GameManager {
         }
     }
 
+    // set default pad position values
     public setDefaultPositions(): void {
         for (let i = 0; i < this.players.length; i++) {
             const player = this.players[i];
             if (i === 0) {
-                // 0 is not read as number so it is set manually
                 player.pad.setCurrentPosition = 0;
                 player.pad.setStartPosition = 0;
             }
             else {
-                // position = full circle divided by nr of players, multiplied by playerID
-                // or else each player ends up at the same position
                 player.pad.setCurrentPosition = (360 / nrOfPlayers) * i;
                 player.pad.setStartPosition = (360 / nrOfPlayers) * i;
             }
@@ -116,7 +116,7 @@ class GameManager {
         }
     }
 
-    private drawWinnerAnnouncement() {
+    private drawWinnerAnnouncement(): void {
         /** Draw the yellow circle*/
         strokeWeight(2)
         stroke('#000000')
@@ -180,12 +180,14 @@ class GameManager {
         this.balls.push(newBall);
     }
 
-    // create event
-    public createEvent(): void {
+    // add event or reset events
+    public handleEvents(): void {
+        // add event if event doesn't exist or more than 1 player
         if (!this.events || this.events.length < 1 || this.players.length > 1) {
             const newEvent = new Events;
             this.events.push(newEvent);
         }
+        // reset event and ball if requirements are not met
         else {
             this.events.length = 0;
             this.balls.length = 0;

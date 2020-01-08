@@ -1,4 +1,4 @@
-class GameSettings implements GameStatus, MusicStatus {
+class GameSettings {
     private gameMusic: GameMusic;
     public mutedMusic: boolean;
 
@@ -19,6 +19,7 @@ class GameSettings implements GameStatus, MusicStatus {
     private set setSoundVolume(value: number) {
         this.gameMusic.menuMusic.setVolume(value);
     }
+
     // control volume property value
     private controlSound(): void {
         if (this.mutedMusic === true) {
@@ -28,10 +29,9 @@ class GameSettings implements GameStatus, MusicStatus {
             this.setSoundVolume = 0.2;
         }
     }
+
     // draw and handle sound button interaction
     private drawSoundButton(): void {
-        /** sound button in top left corner, need to have a mouseClicked event 
-        get it overlined when clicked  */
 
         /** the round button */
         strokeWeight(3)
@@ -58,6 +58,8 @@ class GameSettings implements GameStatus, MusicStatus {
             line(40, 90, 80, 30);
         }
     }
+
+    // toggles muted music property
     private handleSoundButton(): void {
         if (dist(mouseX, mouseY, 60, 60) < 40) {
             if (this.mutedMusic === false) {
@@ -68,6 +70,8 @@ class GameSettings implements GameStatus, MusicStatus {
             }
         }
     }
+
+    // start game and then create ball
     public startGame(): void { 
         gameMode = 1;
         gameManager.createBall();

@@ -59,7 +59,7 @@ class Ball {
                 if (player.playerXCoordinates[i] && player.playerYCoordinates[i]) {
                     // bounce if ball + pad collision
                     if (dist(this.ballXPosition, this.ballYPosition, player.playerXCoordinates[i], player.playerYCoordinates[i]) < this.ballRadius + .5) {
-                        //detectcs where on the pad it bounces (it is possible to add more detection-spots, just slice the pad in more parts)
+                        //detects where on the pad it bounces (it is possible to add more detection-spots, just slice the pad in more parts)
                         if (i < player.pad.getPadLength / 3 || i > player.pad.getPadLength * 0.67) {
                             let ballAndPadCollisionPoint = 1;
                             this.bounceBackFromPad(ballAndPadCollisionPoint);
@@ -69,7 +69,7 @@ class Ball {
                         }
                     }
                 }
-                // ball outside game area
+                // ball is outside game area
                 if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) > this.ballRadius + circleSize / 2) {
                     if (gameManager.players.length >= 2) {
                         this.createDistanceList();
@@ -89,7 +89,7 @@ class Ball {
         this.checkPlayerLoss(distances);
     }
 
-    // change activePlayer status on player with min pad-to-ball distance
+    // change status on player with min pad-to-ball distance
     private checkPlayerLoss(distances: number[]): void {
         for (const playerObj in gameManager.players) {
             if (gameManager.players.hasOwnProperty(playerObj)) {
