@@ -147,7 +147,7 @@ class Ball {
     private resetBall(): void {
         this.ballXPosition = width / 2;
         this.ballYPosition = height / 2;
-        isGameRunning = 1;
+        gameMode = 1;
     }
 
     setBallSize(diameter: number) {

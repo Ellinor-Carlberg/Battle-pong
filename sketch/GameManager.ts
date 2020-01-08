@@ -86,7 +86,7 @@ class GameManager {
                 this.players.splice(i, 1);
                 this.balls.length = 1;
                 this.events.length = 0;
-                isGameRunning = 1;
+                gameMode = 1;
             }
 
             // if nr of players has changed, reset positions
