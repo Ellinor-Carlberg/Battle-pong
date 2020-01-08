@@ -54,7 +54,6 @@ var Ball = (function () {
                         this.createDistanceList();
                     }
                 }
-
             }
         }
     };
@@ -72,13 +71,6 @@ var Ball = (function () {
                 if (gameManager.players[playerObj].getDistanceToBall(this.ballXPosition, this.ballYPosition) === Math.min.apply(Math, distances)) {
                     gameManager.players[playerObj].changeActivePlayer();
                     this.resetBall();
-
-                if (gameManager.players.length === 1) {
-                    this.ballSpeedY = this.ballSpeedX = 0;
-                    this.ballXPosition = width / 2;
-                    this.ballYPosition = height / 2;
-                    this.drawWinnerAnnouncement();
-
                 }
             }
         }
@@ -87,37 +79,6 @@ var Ball = (function () {
         this.ballXPosition = width / 2;
         this.ballYPosition = height / 2;
         gameMode = 1;
-
-    Ball.prototype.drawWinnerAnnouncement = function () {
-        strokeWeight(2);
-        stroke('#000000');
-        fill('#F4ed47');
-        circle((width * .5), (height * .5), 500);
-        strokeWeight(2);
-        var winnerText1 = 'CONGRATULATIONS!';
-        textSize(30);
-        fill('#000000');
-        text(winnerText1, (width * .5), (height * .5) - 70);
-        var winnerText2 = 'YOU HAVE WON';
-        textSize(30);
-        fill('#000000');
-        text(winnerText2, (width * .5), (height * .5) - 20);
-        strokeWeight(5);
-        var winnerText3 = 'BATTLE PONG';
-        textSize(50);
-        fill('#000000');
-        text(winnerText3, (width * .5), (height * .5) + 30);
-        strokeWeight(5);
-        var winnerText4 = 'BATTLE PONG';
-        textSize(50);
-        fill('#ff0000');
-        text(winnerText4, (width * .5) + 5, (height * .5) + 27);
-        strokeWeight(0);
-        var winnerText5 = 'Refresh the page to play again';
-        textSize(20);
-        fill('#000000');
-        text(winnerText5, (width * .5), (height * .5) + 100);
-
     };
     Ball.prototype.bounceBackFromPad = function (ballAndPadCollisionPoint) {
         if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) >= circleSize / 2 - 5) {
@@ -237,17 +198,12 @@ var GameManager = (function () {
             textAlign(CENTER, CENTER);
             textSize(40);
             text("press SPACE \n to start", width / 2, height / 2);
-
             if (this.players.length === 1) {
                 this.drawWinnerAnnouncement();
             }
             if (keyIsDown(32) && this.players.length > 1) {
                 gameMode = 2;
                 this.createEvent();
-
-            if (keyCode === 32) {
-                gameMode = 2;
-
             }
         }
         else if (gameMode == 2) {
@@ -868,8 +824,8 @@ function mousePressed() {
             }
         }
     }
-    if (gameMode == 0 && mouseX > (width * .5) - 75 && mouseX < (width * .5) + 70 &&
-        mouseY > height * .89 && mouseY < (height * .89) + 50) {
+    if (gameMode == 0 && mouseX > (width * .5) - 285 && mouseX < (width * .5) - 185 &&
+        mouseY > height * .9 && mouseY < (height * .9) + 50) {
         clear();
         gameManager.gameSettings.startGame();
     }
