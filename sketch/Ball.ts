@@ -31,7 +31,6 @@ class Ball {
 
         this.handleBall();
     }
-
     // move ball
     private moveBall(): void {
         this.ballXPosition += this.ballSpeedX;
@@ -82,7 +81,6 @@ class Ball {
                     }
 
                 }
-
                 if (gameManager.players.length === 1) {
                     this.ballSpeedY = this.ballSpeedX = 0;
                     this.ballXPosition = width / 2;
