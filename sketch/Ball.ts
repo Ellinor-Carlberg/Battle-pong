@@ -54,7 +54,7 @@ class Ball {
                 if (player.playerXCoordinates[i] && player.playerYCoordinates[i]) {
                     // bounce if ball + pad collision
                     if (dist(this.ballXPosition, this.ballYPosition, player.playerXCoordinates[i], player.playerYCoordinates[i]) < this.ballRadius + .5) {
-                        //detectcs where on the pad it bounces (it is possible to add more, just slice the pad in more parts)
+                        //detectcs where on the pad it bounces (it is possible to add more detection-spots, just slice the pad in more parts)
                         if(i < player.pad.getPadLength/3 || i > player.pad.getPadLength*0.67){
                             let ballAndPadCollisionPoint = 1;
                             this.bounceBackFromPad(ballAndPadCollisionPoint);
