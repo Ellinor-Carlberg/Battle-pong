@@ -2,7 +2,7 @@ class Player {
     public playerID: number = gameManager.players.length;
     public activePlayer: boolean;
     public playerColor: p5.Color;
-    public playerButtonLeft!: number;
+    private playerButtonLeft!: number;
     public playerXCoordinates: number[];
     public playerYCoordinates: number[];
     public playerXArea: number[];
@@ -24,11 +24,11 @@ class Player {
         this.setKeys();
 
         if (gameMode === 1 || gameMode === 2) {
-            // set positions if they're unset
+            // set positions if unset
             if (this.pad.currentPosition == undefined && this.pad.startPosition == undefined) {
                 gameManager.setDefaultPositions();
             }
-            this.getPlayerCoordinates();
+            this.getPadCoordinates();
             this.handlePlayerButtons();
         }
     }
@@ -36,19 +36,22 @@ class Player {
     public draw(): void {
         this.pad.drawPlayer(this.playerColor);
     }
+
     // make player inactive
     public changeActivePlayer(): void {
         this.activePlayer = false;
     }
 
-    public getPlayerCoordinates(): void {
+    // calculate pad coordinates
+    public getPadCoordinates(): void {
         for (let i = 0; i <= this.pad.getPadLength; i++) {
             this.playerXCoordinates[i] = (circleSize / 2) * Math.cos(((this.pad.getCurrentPosition + i) * Math.PI / 180)) + (width / 2);
             this.playerYCoordinates[i] = (circleSize / 2) * Math.sin(((this.pad.getCurrentPosition + i) * Math.PI / 180)) + (height / 2);
         }
     }
 
-    public  getDistanceToBall(ballX: number, ballY: number): number {
+    // calculate distance between ball and pad constrain values
+    public getDistanceToBall(ballX: number, ballY: number): number {
         let distance = dist(ballX, ballY, this.getPlayerMinCoordinates.x, this.getPlayerMinCoordinates.y) + dist(ballX, ballY, this.getPlayerMaxCoordinates.x, this.getPlayerMaxCoordinates.y);
         return distance;
     }
@@ -89,22 +92,6 @@ class Player {
     public setConstrainValues(): void {
         this.pad.setMinConstrain = this.pad.getStartPosition;
         this.pad.setMaxConstrain = (this.pad.getStartPosition + (this.pad.getPadLength * 2)) - 1;
-    }
-
-    // set start position and default current position
-    public setDefaultPositionss(): void {
-        if (this.playerID === 0) {
-            // 0 is not read as number so it is set manually
-            this.pad.setCurrentPosition = 0;
-            this.pad.setStartPosition = 0;
-        }
-        else {
-            // position = full circle divided by nr of players, multiplied by playerID
-            // or else each player ends up at the same position
-            this.pad.setCurrentPosition = (360 / nrOfPlayers) * this.playerID;
-            this.pad.setStartPosition = (360 / nrOfPlayers) * this.playerID;
-        }
-        this.setConstrainValues();
     }
 
     // set player buttons

@@ -1,12 +1,9 @@
 class GameMenu {
-    public update(): void {
-    }
     public draw(): void {
-            this.drawMenu();
-            this.drawAddPlayerButton();
-            this.drawNewPlayer();
-            this.drawStartGameButton();
-            
+        this.drawMenu();
+        this.drawAddPlayerButton();
+        this.drawNewPlayer();
+        this.drawStartGameButton();
     }
 
     // add new player
@@ -162,35 +159,34 @@ class GameMenu {
                 let p8RightKey = 'M';
                 textSize(30);
                 fill('#000000');
-                text(p8RightKey, (width * .5) + 264, 652);
 
+                text(p8RightKey, (width * .5) + 264, 652);
                 break;
         }
     }
 
-// draw start-button
-private drawStartGameButton(): void {
-    /** start button, need to have a mouseClicked event */
+    // draw start-button
+    private drawStartGameButton(): void {
 
-    /** black shadow for start button */
-    strokeWeight(3)
-    stroke('#000000')
-    fill('#000000');
-    rect((width * .5) -280, height * .91, 100, 45, 15);
-    
-    /** yellow start button */
-    strokeWeight(3)
-    stroke('#000000')
-    fill('#F4ed47');
-    rect((width * .5) -285, height * .9, 100, 45, 15);
+        /** black shadow for start button */
+        strokeWeight(3);
+        stroke('#000000');
+        fill('#000000');
+        rect((width * .5) - 280, height * .91, 100, 45, 15);
+
+        /** yellow start button */
+        strokeWeight(3);
+        stroke('#000000');
+        fill('#F4ed47');
+        rect((width * .5) - 285, height * .9, 100, 45, 15);
 
 
-    /** text in start button */
-    let startButton = 'START'
-    textSize(28);
-    fill('#000000');
-    text(startButton, (width * .48) -250, (height * .897) +35)
-}
+        /** text in start button */
+        let startButton = 'START'
+        textSize(28);
+        fill('#000000');
+        text(startButton, (width * .48) - 250, (height * .897) + 35);
+    }
 
     // draw menu elements
     private drawMenu(): void {
@@ -251,7 +247,6 @@ private drawStartGameButton(): void {
         line(0, 90, width, 90);
 
         /**headline Battle-Pong svg */
-        image(img, width * .5 - (img.width * 0.5), 20)
-    
+        image(headerImage, width * .5 - (headerImage.width * 0.5), 20)
     }
 }
