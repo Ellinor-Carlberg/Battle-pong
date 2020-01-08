@@ -23,6 +23,13 @@ class GameMenu {
 
     // draw button which helps to add a player
     private drawAddPlayerButton(): void {
+
+        /**shadow box for add more players button */
+        strokeWeight(3)
+        stroke('#000000')
+        fill('#000000');
+        rect((width * .5) + 195, height * .91, 100, 45, 15);
+
         /** add more players button, need to have a mouseClicked event */
         strokeWeight(3);
         stroke('#000000');
@@ -171,19 +178,20 @@ private drawStartGameButton(): void {
     strokeWeight(3)
     stroke('#000000')
     fill('#000000');
-    rect((width * .5) -75, height * .89, 140, 50, 20)
-
+    rect((width * .5) -280, height * .91, 100, 45, 15);
+    
     /** yellow start button */
     strokeWeight(3)
     stroke('#000000')
     fill('#F4ed47');
-    rect((width * .5) -70, height * .89, 140, 50, 20)
+    rect((width * .5) -285, height * .9, 100, 45, 15);
+
 
     /** text in start button */
     let startButton = 'START'
-    textSize(30);
+    textSize(28);
     fill('#000000');
-    text(startButton, (width * .5) -52, (height * .89) +35)
+    text(startButton, (width * .48) -250, (height * .897) +35)
 }
 
     // draw menu elements
