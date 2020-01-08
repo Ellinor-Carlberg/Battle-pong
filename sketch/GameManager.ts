@@ -58,6 +58,10 @@ class GameManager {
             textSize(40);
             text("press SPACE \n to start", width / 2, height / 2);
 
+            if (this.players.length === 1) {
+                this.drawWinnerAnnouncement();
+            }
+
             if (keyIsDown(32)) {
                 gameMode = 2;
                 this.createEvent();
@@ -115,8 +119,45 @@ class GameManager {
         }
     }
 
-    // draw each player
+    private drawWinnerAnnouncement() {
+        /** Draw the yellow circle*/
+        strokeWeight(2)
+        stroke('#000000')
+        fill('#F4ed47');
+        circle((width * .5), (height * .5), 500)
 
+        /** text*/
+        strokeWeight(2)
+        let winnerText1 = 'CONGRATULATIONS!'
+        textSize(30);
+        fill('#000000');
+        text(winnerText1, (width * .5), (height * .5) - 70)
+
+        let winnerText2 = 'YOU HAVE WON'
+        textSize(30);
+        fill('#000000');
+        text(winnerText2, (width * .5), (height * .5) - 20)
+
+        strokeWeight(5)
+        let winnerText3 = 'BATTLE PONG'
+        textSize(50);
+        fill('#000000');
+        text(winnerText3, (width * .5), (height * .5) + 30)
+
+        strokeWeight(5)
+        let winnerText4 = 'BATTLE PONG'
+        textSize(50);
+        fill('#ff0000');
+        text(winnerText4, (width * .5) + 5, (height * .5) + 27)
+
+        strokeWeight(0)
+        let winnerText5 = 'Refresh the page to play again'
+        textSize(20);
+        fill('#000000');
+        text(winnerText5, (width * .5), (height * .5) + 100)
+    }
+
+    // draw each player
     public drawPlayers(): void {
         if ((this.players && gameMode == 1) || (this.players && gameMode == 2)) {
             for (const player of this.players) {

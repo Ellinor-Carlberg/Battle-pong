@@ -39,6 +39,7 @@ class Ball {
     public setBallSize(diameter: number): void {
         this.ballRadius = diameter / 40;
     }
+
     // move ball
     private moveBall(): void {
         this.ballXPosition += this.ballSpeedX;
@@ -48,7 +49,7 @@ class Ball {
         this.dx = this.ballXPosition - width / 2;
         this.dy = this.ballYPosition - height / 2;
     }
-    
+
 
     // check for ball collision
     private handleBall(): void {
@@ -58,7 +59,7 @@ class Ball {
                     // bounce if ball + pad collision
                     if (dist(this.ballXPosition, this.ballYPosition, player.playerXCoordinates[i], player.playerYCoordinates[i]) < this.ballRadius + .5) {
                         //detectcs where on the pad it bounces (it is possible to add more detection-spots, just slice the pad in more parts)
-                        if(i < player.pad.getPadLength/3 || i > player.pad.getPadLength*0.67){
+                        if (i < player.pad.getPadLength / 3 || i > player.pad.getPadLength * 0.67) {
                             let ballAndPadCollisionPoint = 1;
                             this.bounceBackFromPad(ballAndPadCollisionPoint);
                         } else {
@@ -73,52 +74,10 @@ class Ball {
                         this.createDistanceList();
                     }
                 }
-                // game end
-                if (gameManager.players.length === 1) {
-                    this.ballXPosition = width / 2;
-                    this.ballYPosition = height / 2;
-                    this.drawWinnerAnnouncement();
-                }
             }
         }
     }
-    private drawWinnerAnnouncement() {
-            /** Draw the yellow circle*/ 
-            strokeWeight(2)
-            stroke('#000000')
-            fill('#F4ed47');
-            circle((width * .5), (height * .5), 500)
-        
-             /** text*/ 
-           strokeWeight(2)
-            let winnerText1 = 'CONGRATULATIONS!'
-            textSize(30);
-            fill('#000000');
-            text(winnerText1, (width * .5), (height * .5) -70)
-        
-            let winnerText2 = 'YOU HAVE WON'
-            textSize(30);
-            fill('#000000');
-            text(winnerText2, (width * .5), (height * .5) -20)
-        
-            strokeWeight(5)
-            let winnerText3 = 'BATTLE PONG'
-            textSize(50);
-            fill('#000000');
-            text(winnerText3, (width * .5), (height * .5) +30)
-        
-            strokeWeight(5)
-            let winnerText4 = 'BATTLE PONG'
-            textSize(50);
-            fill('#ff0000');
-            text(winnerText4, (width * .5) +5, (height * .5) +27)
-        
-            strokeWeight(0)
-            let winnerText5 = 'Refresh the page to play again'
-            textSize(20);
-            fill('#000000');
-            text(winnerText5, (width * .5), (height * .5) +100)
-}
+    
 
 
     // create array of pad-to-ball distances
@@ -150,12 +109,6 @@ class Ball {
         gameMode = 1;
     }
 
-    setBallSize(diameter: number) {
-        this.ballRadius = diameter / 40;
-    }
-
-    
-
     // ball bounces
     private bounceBackFromPad(ballAndPadCollisionPoint: number): void {
         if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) >= circleSize / 2 - 5) {
@@ -163,7 +116,7 @@ class Ball {
             let angleToCollisionPoint = Math.atan2(-this.dy, this.dx);
             let oldAngle = Math.atan2(-this.ballSpeedY, this.ballSpeedX);
             let newAngle = 2 * angleToCollisionPoint - oldAngle;
-            if (ballAndPadCollisionPoint == 1){
+            if (ballAndPadCollisionPoint == 1) {
                 newAngle = newAngle - 0.3;
             } else {
                 newAngle = newAngle + 0.3;
