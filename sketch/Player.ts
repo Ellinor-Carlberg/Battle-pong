@@ -23,7 +23,7 @@ class Player {
     update() {
         this.setKeys();
 
-        if (isGameRunning === 1 || isGameRunning === 2) {
+        if (gameMode === 1 || gameMode === 2) {
             // set positions if they're unset
             if (this.pad.currentPosition == undefined && this.pad.startPosition == undefined) {
                 gameManager.setDefaultPositions();

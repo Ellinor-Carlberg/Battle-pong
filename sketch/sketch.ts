@@ -1,7 +1,7 @@
 // global variables
 let gameManager: GameManager;
 let gameMusic: GameMusic;
-let isGameRunning: number;
+let gameMode: number;
 let gameRestart: number;
 let circleSize: number;
 let nrOfPlayers: number;
@@ -9,7 +9,7 @@ let img: p5.Image;
 let img2: p5.Image;
 
 window.addEventListener('load', () => {
-    isGameRunning = 0;
+    gameMode = 0;
 })
 
 function preload() {
@@ -44,7 +44,7 @@ function keyPressed() {
     // just for testing
     // when 1st player presses on left button, remove player
     // for (let i = 0; i < gameManager.players.length; i++) {
-    //     if (keyCode === gameManager.players[0].playerButtonLeft && isGameRunning == 1 && gameManager.players.length > 1) {
+    //     if (keyCode === gameManager.players[0].playerButtonLeft && gameMode == 1 && gameManager.players.length > 1) {
     //         gameManager.players[0].removePlayer();
     //     }
     // }
@@ -72,7 +72,7 @@ function mouseMoved(): void {
 // mouse on click/press interactions called here
 function mousePressed(): void {
     // mouse click/press events on game menu
-    if (isGameRunning == 0 && gameManager.players.length < 8) {
+    if (gameMode == 0 && gameManager.players.length < 8) {
         gameManager.gameMenu.handleAddPlayerButton();
 
         // set keys after each player is created
@@ -85,14 +85,14 @@ function mousePressed(): void {
     }
 
     // mouse click/press events on start button
-    if (isGameRunning == 0 && mouseX > (width * .5) - 75 && mouseX < (width * .5) + 70 &&
+    if (gameMode == 0 && mouseX > (width * .5) - 75 && mouseX < (width * .5) + 70 &&
         mouseY > height * .89 && mouseY < (height * .89) + 50) {
         clear();
         gameManager.gameSettings.startGame();
     }
 
     // etc mouse click/press events in game area, not player buttons
-    else if (isGameRunning == 1 || isGameRunning == 2) {
+    else if (gameMode == 1 || gameMode == 2) {
     }
     // mute music and draw line on click
     gameManager.gameSettings.update();

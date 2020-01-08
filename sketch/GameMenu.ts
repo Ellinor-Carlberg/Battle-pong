@@ -6,6 +6,7 @@ class GameMenu {
             this.drawAddPlayerButton();
             this.drawNewPlayer();
             this.drawStartGameButton();
+            
     }
 
     // add new player
@@ -19,6 +20,7 @@ class GameMenu {
         }
     }
 
+    
     // draw +-button
     private drawAddPlayerButton() {
         /** add more players button, need to have a mouseClicked event */
