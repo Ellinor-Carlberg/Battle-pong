@@ -9,10 +9,10 @@ class Ball {
     private ballRadius!: number;
 
     constructor() {
-        this.startDirection = [2, -2];
+        this.startDirection = [4, -4];
         this.setStartDirection();
         this.ballXPosition = width / 2;
-        this.ballYPosition = width / 2;
+        this.ballYPosition = height / 2;
     }
     update(): void {
         this.setBallSize(circleSize);

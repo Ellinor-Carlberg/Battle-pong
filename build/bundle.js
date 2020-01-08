@@ -1,10 +1,10 @@
 "use strict";
 var Ball = (function () {
     function Ball() {
-        this.startDirection = [2, -2];
+        this.startDirection = [4, -4];
         this.setStartDirection();
         this.ballXPosition = width / 2;
-        this.ballYPosition = width / 2;
+        this.ballYPosition = height / 2;
     }
     Ball.prototype.update = function () {
         this.setBallSize(circleSize);
