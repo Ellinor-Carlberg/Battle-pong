@@ -17,7 +17,7 @@ class GameManager {
         this.pads = [];
     }
 
-    update(): void {
+    public update(): void {
         if (!nrOfPlayers) {
             this.setDefaultNrOfPlayers();
         }
@@ -45,7 +45,7 @@ class GameManager {
         }
     }
 
-    draw() {
+    public draw(): void {
         // draw menu
         if (gameMode == 0) {
             this.gameMenu.draw();
@@ -80,7 +80,7 @@ class GameManager {
         this.gameSettings.draw();
     }
 
-    removeInactivePlayer(): void {
+    public removeInactivePlayer(): void {
         for (let i = 0; i < this.players.length; i++) {
             const player = this.players[i];
             if (player.activePlayer === false) {
@@ -96,7 +96,7 @@ class GameManager {
         }
     }
 
-    setDefaultPositions() {
+    public setDefaultPositions(): void {
         for (let i = 0; i < this.players.length; i++) {
             const player = this.players[i];
             if (i === 0) {
@@ -114,17 +114,9 @@ class GameManager {
         }
     }
 
-    // set and add default nr of players at start
-    private setDefaultNrOfPlayers() {
-        nrOfPlayers = 2;
-
-        for (let i = 0; i < nrOfPlayers; i++) {
-            this.createPlayer();
-        }
-    }
-
     // draw each player
-    drawPlayers() {
+
+    public drawPlayers(): void {
         if ((this.players && gameMode == 1) || (this.players && gameMode == 2)) {
             for (const player of this.players) {
                 player.draw();
@@ -133,7 +125,7 @@ class GameManager {
     }
 
     // add player and pad to each list
-    public createPlayer() {
+    public createPlayer(): void {
         let newPlayer = new Player;
         this.players.push(newPlayer);
 
@@ -148,10 +140,19 @@ class GameManager {
         this.balls.push(newBall);
     }
 
-    createEvent(): void {
+     public createEvent(): void {
         const newEvent = new Events;
         this.events.push(newEvent);
     }
 
-    rebuildGameArea(): void { }
+    public rebuildGameArea(): void { }
+
+    // set and add default nr of players at start
+    private setDefaultNrOfPlayers(): void {
+        nrOfPlayers = 2;
+
+        for (let i = 0; i < nrOfPlayers; i++) {
+            this.createPlayer();
+        }
+    }
 }

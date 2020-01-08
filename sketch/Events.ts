@@ -4,25 +4,25 @@ class Events {
     constructor() {
         this.eventsList = [];
     }
-    update(): void {
+    public update(): void {
         let ballSpawnInterval = setInterval(this.moreBalls, 5000);
         if (gameManager.balls.length = 5) {
             clearInterval(ballSpawnInterval);
         }
     }
 
-    draw(): void { }
+    public draw(): void { }
 
-    announceEvent(): void { }
-    activateEvent(): void { }
-    countDownToEvent(): void { }
+    public announceEvent(): void { }
+    public activateEvent(): void { }
+    public countDownToEvent(): void { }
     // Events
-    reverseButtons(): void { }
-    shrinkPad(): void { }
-    fasterBall(): void { }
-    hideBall(): void { }
+    public reverseButtons(): void { }
+    public shrinkPad(): void { }
+    public fasterBall(): void { }
+    public hideBall(): void { }
 
-    moreBalls(): void {
+    public moreBalls(): void {
         setTimeout(() => {
             gameManager.createBall();
             for (let i = 1; i < gameManager.balls.length; i++) {
