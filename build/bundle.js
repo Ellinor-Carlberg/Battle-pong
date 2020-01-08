@@ -4,7 +4,7 @@ var Ball = (function () {
         this.startDirection = [4, -4];
         this.setStartDirection();
         this.ballXPosition = width / 2;
-        this.ballYPosition = height / 2;
+        this.ballYPosition = width / 2;
     }
     Ball.prototype.update = function () {
         this.setBallSize(circleSize);
@@ -20,15 +20,29 @@ var Ball = (function () {
         ellipse(this.ballXPosition, this.ballYPosition, this.ballRadius * 2, this.ballRadius * 2);
         this.handleBall();
     };
+    Ball.prototype.setStartDirection = function () {
+        this.ballSpeedX = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
+        this.ballSpeedY = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
+    };
+    Ball.prototype.getDistArr = function (playerObjArr, distList) {
+        for (var playerObj in playerObjArr) {
+            if (playerObjArr.hasOwnProperty(playerObj)) {
+                if (gameManager.players[playerObj].getDistanceToBall(this.ballXPosition, this.ballYPosition) === Math.min.apply(Math, distList)) {
+                    gameManager.players[playerObj].removePlayer();
+                    this.ballXPosition = width / 2;
+                    this.ballYPosition = height / 2;
+                }
+            }
+        }
+    };
+    Ball.prototype.setBallSize = function (diameter) {
+        this.ballRadius = diameter / 40;
+    };
     Ball.prototype.moveBall = function () {
         this.ballXPosition += this.ballSpeedX;
         this.ballYPosition += this.ballSpeedY;
         this.dx = this.ballXPosition - width / 2;
         this.dy = this.ballYPosition - height / 2;
-    };
-    Ball.prototype.setStartDirection = function () {
-        this.ballSpeedX = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
-        this.ballSpeedY = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
     };
     Ball.prototype.handleBall = function () {
         for (var _i = 0, _a = gameManager.players; _i < _a.length; _i++) {
@@ -36,14 +50,7 @@ var Ball = (function () {
             for (var i = 0; i <= player.pad.getPadLength; i++) {
                 if (player.playerXCoordinates[i] && player.playerYCoordinates[i]) {
                     if (dist(this.ballXPosition, this.ballYPosition, player.playerXCoordinates[i], player.playerYCoordinates[i]) < this.ballRadius + .5) {
-                        if (i < player.pad.getPadLength / 3 || i > player.pad.getPadLength * 0.67) {
-                            var ballAndPadCollisionPoint = 1;
-                            this.bounceBackFromPad(ballAndPadCollisionPoint);
-                        }
-                        else {
-                            var ballAndPadCollisionPoint = 0;
-                            this.bounceBackFromPad(ballAndPadCollisionPoint);
-                        }
+                        this.bounceBackFromPad();
                     }
                 }
                 if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) > this.ballRadius + circleSize / 2) {
@@ -70,32 +77,12 @@ var Ball = (function () {
             }
         }
     };
-    Ball.prototype.getDistArr = function (playerObjArr, distList) {
-        for (var playerObj in playerObjArr) {
-            if (playerObjArr.hasOwnProperty(playerObj)) {
-                if (gameManager.players[playerObj].getDistanceToBall(this.ballXPosition, this.ballYPosition) === Math.min.apply(Math, distList)) {
-                    gameManager.players[playerObj].removePlayer();
-                    this.ballXPosition = width / 2;
-                    this.ballYPosition = height / 2;
-                }
-            }
-        }
-    };
-    Ball.prototype.setBallSize = function (diameter) {
-        this.ballRadius = diameter / 40;
-    };
-    Ball.prototype.bounceBackFromPad = function (ballAndPadCollisionPoint) {
+    Ball.prototype.bounceBackFromPad = function () {
         if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) >= circleSize / 2 - 5) {
             var velocity = Math.sqrt(this.ballSpeedX * this.ballSpeedX + this.ballSpeedY * this.ballSpeedY);
             var angleToCollisionPoint = Math.atan2(-this.dy, this.dx);
             var oldAngle = Math.atan2(-this.ballSpeedY, this.ballSpeedX);
             var newAngle = 2 * angleToCollisionPoint - oldAngle;
-            if (ballAndPadCollisionPoint == 1) {
-                newAngle = newAngle - 0.3;
-            }
-            else {
-                newAngle = newAngle + 0.3;
-            }
             this.ballSpeedX = -velocity * Math.cos(newAngle);
             this.ballSpeedY = velocity * Math.sin(newAngle);
             var vector = createVector(this.dx, this.dy);
@@ -148,13 +135,6 @@ var GameArea = (function () {
     GameArea.prototype.draw = function () {
         this.drawDefaultArea();
     };
-    GameArea.prototype.drawDefaultArea = function () {
-        background('#777b7e');
-        noFill();
-        stroke(0, 0, 0);
-        strokeWeight(1);
-        ellipse(width / 2, height / 2, circleSize, circleSize);
-    };
     GameArea.prototype.calculateCircleSize = function () {
         if (windowWidth >= windowHeight) {
             return windowHeight - 40;
@@ -162,6 +142,13 @@ var GameArea = (function () {
         else {
             return windowWidth - 40;
         }
+    };
+    GameArea.prototype.drawDefaultArea = function () {
+        background('#777b7e');
+        noFill();
+        stroke(0, 0, 0);
+        strokeWeight(1);
+        ellipse(width / 2, height / 2, circleSize, circleSize);
     };
     return GameArea;
 }());
@@ -257,12 +244,6 @@ var GameManager = (function () {
             player.setConstrainValues();
         }
     };
-    GameManager.prototype.setDefaultNrOfPlayers = function () {
-        nrOfPlayers = 2;
-        for (var i = 0; i < nrOfPlayers; i++) {
-            this.createPlayer();
-        }
-    };
     GameManager.prototype.drawPlayers = function () {
         if ((this.players && isGameRunning == 1) || (this.players && isGameRunning == 2)) {
             for (var _i = 0, _a = this.players; _i < _a.length; _i++) {
@@ -288,6 +269,12 @@ var GameManager = (function () {
         this.events.push(newEvent);
     };
     GameManager.prototype.rebuildGameArea = function () { };
+    GameManager.prototype.setDefaultNrOfPlayers = function () {
+        nrOfPlayers = 2;
+        for (var i = 0; i < nrOfPlayers; i++) {
+            this.createPlayer();
+        }
+    };
     return GameManager;
 }());
 var GameMenu = (function () {
@@ -578,6 +565,10 @@ var Player = (function () {
             this.playerYCoordinates[i] = (circleSize / 2) * Math.sin(((this.pad.getCurrentPosition + i) * Math.PI / 180)) + (height / 2);
         }
     };
+    Player.prototype.getDistanceToBall = function (ballX, ballY) {
+        var distance = dist(ballX, ballY, this.getPlayerMinCoordinates.x, this.getPlayerMinCoordinates.y) + dist(ballX, ballY, this.getPlayerMaxCoordinates.x, this.getPlayerMaxCoordinates.y);
+        return distance;
+    };
     Object.defineProperty(Player.prototype, "getPlayerMinCoordinates", {
         get: function () {
             return {
@@ -598,10 +589,6 @@ var Player = (function () {
         enumerable: true,
         configurable: true
     });
-    Player.prototype.getDistanceToBall = function (ballX, ballY) {
-        var distance = dist(ballX, ballY, this.getPlayerMinCoordinates.x, this.getPlayerMinCoordinates.y) + dist(ballX, ballY, this.getPlayerMaxCoordinates.x, this.getPlayerMaxCoordinates.y);
-        return distance;
-    };
     Object.defineProperty(Player.prototype, "getPlayerColor", {
         get: function () {
             var r = random(0, 255);

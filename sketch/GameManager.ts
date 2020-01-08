@@ -17,14 +17,14 @@ class GameManager {
         this.pads = [];
     }
 
-    update(): void {
+    public update(): void {
         if (!nrOfPlayers) {
             this.setDefaultNrOfPlayers();
         }
 
         this.gameMenu.update();
 
-        if (isGameRunning == 1 || isGameRunning == 2) {
+        if (gameMode == 1 || gameMode == 2) {
             this.gameArea.update();
 
             for (const ball of this.balls) {
@@ -43,12 +43,12 @@ class GameManager {
         }
     }
 
-    draw() {
+    public draw(): void {
         // draw menu
-        if (isGameRunning == 0) {
+        if (gameMode == 0) {
             this.gameMenu.draw();
         }
-        else if (isGameRunning == 1) {
+        else if (gameMode == 1) {
             this.gameArea.draw();
             this.drawPlayers();
 
@@ -59,11 +59,11 @@ class GameManager {
             text("press SPACE \n to start", width / 2, height / 2);
 
             if (keyIsDown(32)) {
-                isGameRunning = 2;
+                gameMode = 2;
                 this.createEvent();
             }
 
-        } else if (isGameRunning == 2) {
+        } else if (gameMode == 2) {
             this.gameArea.draw();
             this.drawPlayers();
             if (this.players.length > 1) {
@@ -77,9 +77,8 @@ class GameManager {
 
         this.gameSettings.draw();
     }
-
-    // remove player with activePlayer = false
-    removeInactivePlayer(): void {
+// remove player with activePlayer = false
+    public removeInactivePlayer(): void {
         for (let i = 0; i < this.players.length; i++) {
             const player = this.players[i];
             if (player.activePlayer === false) {
@@ -89,6 +88,7 @@ class GameManager {
                 this.events.length = 0;
                 isGameRunning = 1;
             }
+
             // if nr of players has changed, reset positions
             if (this.players.length < nrOfPlayers) {
                 nrOfPlayers--;
@@ -97,8 +97,7 @@ class GameManager {
         }
     }
 
-    // set default positions
-    setDefaultPositions() {
+    public setDefaultPositions(): void {
         for (let i = 0; i < this.players.length; i++) {
             const player = this.players[i];
             if (i === 0) {
@@ -116,17 +115,10 @@ class GameManager {
         }
     }
 
-    // set and add default nr of players at game start
-    private setDefaultNrOfPlayers() {
-        nrOfPlayers = 2;
-        for (let i = 0; i < nrOfPlayers; i++) {
-            this.createPlayer();
-        }
-    }
-
     // draw each player
-    drawPlayers() {
-        if ((this.players && isGameRunning == 1) || (this.players && isGameRunning == 2)) {
+
+    public drawPlayers(): void {
+        if ((this.players && gameMode == 1) || (this.players && gameMode == 2)) {
             for (const player of this.players) {
                 player.draw();
             }
@@ -134,7 +126,7 @@ class GameManager {
     }
 
     // add player and pad to each list
-    public createPlayer() {
+    public createPlayer(): void {
         let newPlayer = new Player;
         this.players.push(newPlayer);
 
@@ -151,7 +143,7 @@ class GameManager {
     }
 
     // create event
-    createEvent(): void {
+    public createEvent(): void {
         if (!this.events || this.events.length < 1 || this.players.length > 1) {
             const newEvent = new Events;
             this.events.push(newEvent);
@@ -159,6 +151,14 @@ class GameManager {
         else {
             this.events.length = 0;
             this.balls.length = 0;
+        }
+    }
+
+    // set and add default nr of players at game start
+    private setDefaultNrOfPlayers() {
+        nrOfPlayers = 2;
+        for (let i = 0; i < nrOfPlayers; i++) {
+            this.createPlayer();
         }
     }
 }
