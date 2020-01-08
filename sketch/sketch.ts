@@ -84,8 +84,8 @@ function mousePressed(): void {
     }
 
     // mouse click/press events on start button
-    if (gameMode == 0 && mouseX > (width * .5) - 75 && mouseX < (width * .5) + 70 &&
-        mouseY > height * .89 && mouseY < (height * .89) + 50) {
+    if (gameMode == 0 && mouseX > (width * .5) - 285 && mouseX < (width * .5) - 185 &&
+        mouseY > height * .9 && mouseY < (height * .9) + 50) {
         clear();
         gameManager.gameSettings.startGame();
     }
