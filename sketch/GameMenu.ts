@@ -20,7 +20,6 @@ class GameMenu {
         }
     }
 
-
     // draw button which helps to add a player
     private drawAddPlayerButton(): void {
         /** add more players button, need to have a mouseClicked event */
@@ -28,7 +27,6 @@ class GameMenu {
         stroke('#000000');
         fill('#ffffff');
         rect((width * .5) + 190, height * .9, 100, 45, 15);
-
         /** "+"-sign in add more player button */
         let s = '+';
         textSize(30);

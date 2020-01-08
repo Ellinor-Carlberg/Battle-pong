@@ -17,16 +17,14 @@ class GameManager {
         this.pads = [];
     }
 
+    // controls the number of players
     public update(): void {
         if (!nrOfPlayers) {
             this.setDefaultNrOfPlayers();
         }
-
         this.gameMenu.update();
-
         if (gameMode == 1 || gameMode == 2) {
             this.gameArea.update();
-
             for (const ball of this.balls) {
                 if (ball != undefined) {
                     ball.update();
@@ -37,7 +35,6 @@ class GameManager {
                     this.players[i].update();
                 }
             }
-
             // check for inactive player
             this.removeInactivePlayer();
         }
@@ -51,22 +48,21 @@ class GameManager {
         else if (gameMode == 1) {
             this.gameArea.draw();
             this.drawPlayers();
-
+            // draws the "relese ball"-text
             fill('black');
             noStroke();
             textAlign(CENTER, CENTER);
             textSize(40);
             text("press SPACE \n to start", width / 2, height / 2);
-
+            // draws winner announcement
             if (this.players.length === 1) {
                 this.drawWinnerAnnouncement();
-            }
-
+            } 
+            // Press space to start
             if (keyIsDown(32) && this.players.length > 1) {
                 gameMode = 2;
                 this.createEvent();
             }
-
         } else if (gameMode == 2) {
             this.gameArea.draw();
             this.drawPlayers();
@@ -81,6 +77,7 @@ class GameManager {
 
         this.gameSettings.draw();
     }
+    
 // remove player with activePlayer = false
     public removeInactivePlayer(): void {
         for (let i = 0; i < this.players.length; i++) {
