@@ -12,7 +12,7 @@ class Pad {
         this.velocity = 0;
     }
 
-    // draw player
+    // draw pad
     public drawPlayer(color: p5.Color): void {
         stroke(0);
         noFill();
@@ -35,7 +35,6 @@ class Pad {
         if (direction === 'right') {
             this.velocity -= 2.5;
         }
-
         // change position
         this.currentPosition += this.velocity;
 
@@ -46,6 +45,7 @@ class Pad {
         this.currentPosition = constrain(this.currentPosition, this.minConstrain, this.maxConstrain);
 
     }
+    
     // set/get start position
     public set setStartPosition(position: number) {
         this.startPosition = position;
