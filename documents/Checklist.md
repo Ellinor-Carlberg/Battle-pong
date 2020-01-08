@@ -6,7 +6,7 @@ Checklist of what to include:
 
 1. Gruppkontrakt
 
-2. Spelidé
+2. Spelidé - KLART
 
 3. Klassdiagram (UML)
 
