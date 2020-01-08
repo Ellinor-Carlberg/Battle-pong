@@ -29,7 +29,6 @@ class Player {
                 gameManager.setDefaultPositions();
             }
             this.getPlayerCoordinates();
-            this.getPlayerConstrainCoordinates();
             this.handlePlayerButtons();
         }
     }
@@ -64,14 +63,6 @@ class Player {
     getDistanceToBall(ballX: number, ballY: number) {
         let distance = dist(ballX, ballY, this.getPlayerMinCoordinates.x, this.getPlayerMinCoordinates.y) + dist(ballX, ballY, this.getPlayerMaxCoordinates.x, this.getPlayerMaxCoordinates.y);
         return distance;
-    }
-
-    getPlayerConstrainCoordinates() {
-
-        // if (mouseIsPressed) {
-        //     console.log(this.getPlayerMinCoordinates, this.getPlayerMaxCoordinates);
-        //     console.log('ID', this.playerID, 'mouseX', mouseX, 'mouseY', mouseY)
-        // }
     }
 
     // generate random color

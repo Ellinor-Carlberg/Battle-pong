@@ -1,11 +1,9 @@
-let hello: number = 0;
-let arcis;
 class Ball {
     private dx!: number;
     private dy!: number;
-    private ballSpeedX!: number;
-    private ballSpeedY!: number;
-    private startDirection: Array <number>;
+    public ballSpeedX!: number;
+    public ballSpeedY!: number;
+    private startDirection: Array<number>;
     public ballXPosition: number;
     public ballYPosition: number;
     private ballRadius!: number;
@@ -23,11 +21,6 @@ class Ball {
         this.moveBall(); // should be in update() but it only works from here right now
         // this.playerLoss();
         this.drawBall();
-
-        /*
-        if (hello != 1) {
-             this.drawws()
-         }*/
     }
 
     drawBall(): void {
@@ -64,26 +57,43 @@ class Ball {
                         this.bounceBackFromPad();
                     }
                 }
-            }
-            if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) > this.ballRadius + circleSize / 2) {
-                let distances: number[];
-                distances = [];
-                Math.max(...distances)
-                for (let i = 0; i < gameManager.players.length; i++) {
-                    const player = gameManager.players[i];
-                    Math.max(...distances)
-                    let distanceToBall = player.getDistanceToBall(this.ballXPosition, this.ballYPosition)
-                    distances.push(distanceToBall);
+                // outside circle
+                if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) > this.ballRadius + circleSize / 2) {
+                    if (gameManager.players.length >= 2) {
+                        let playerObjArr: Array<{}> = [];
+                        let playdist: number[] = []
+                        for (let i = 0; i < gameManager.players.length; i++) {
+                            const player = gameManager.players[i];
+                            let playerObj = {
+                                "ID": player.playerID,
+                                "distance": player.getDistanceToBall(this.ballXPosition, this.ballYPosition)
+                            }
+                            playerObjArr.push(playerObj);
+                            playdist.push(player.getDistanceToBall(this.ballXPosition, this.ballYPosition))
+                        }
+                        this.getDistArr(playerObjArr, playdist);
+                    }
 
                 }
-                if (distances.length = gameManager.players.length) {
-                    for (const player of gameManager.players) {
-                        if (distances[player.playerID] === Math.min(...distances)) {
-                            gameManager.players[player.playerID].removePlayer();
-                        }
-                        this.ballXPosition = innerWidth / 2;
-                        this.ballYPosition = innerHeight / 2;
-                    }
+
+                if (gameManager.players.length === 1) {
+                    this.ballSpeedY = this.ballSpeedX = 0;
+                    this.ballXPosition = width / 2;
+                    this.ballYPosition = height / 2;
+                }
+            }
+        }
+    }
+
+    getDistArr(playerObjArr: Array<{}>, distList: number[]) {
+
+        for (const playerObj in playerObjArr) {
+            if (playerObjArr.hasOwnProperty(playerObj)) {
+
+                if (gameManager.players[playerObj].getDistanceToBall(this.ballXPosition, this.ballYPosition) === Math.min(...distList)) {
+                    gameManager.players[playerObj].removePlayer();
+                    this.ballXPosition = width / 2;
+                    this.ballYPosition = height / 2;
                 }
             }
         }
@@ -116,16 +126,3 @@ class Ball {
         }
     }
 }
-/*
-if (this.ballYPosition < height / 2) {
-    gameRestart = 1;
-    this.ballXPosition = innerWidth / 2;
-    this.ballYPosition = innerHeight / 2;
-}
-if (this.ballYPosition > height / 2) {
-    gameRestart = 1;
-    this.ballXPosition = innerWidth / 2;
-    this.ballYPosition = innerHeight / 2;
-}
-*/
-*/

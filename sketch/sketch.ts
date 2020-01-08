@@ -28,8 +28,8 @@ function setup() {
     angleMode(DEGREES);
 
     // play menu music on page load
-    gameMusic.menuMusic.loop();
-    gameMusic.menuMusic.play();
+    // gameMusic.menuMusic.loop();
+    // gameMusic.menuMusic.play();
     // create new game manager instance
     gameManager = new GameManager(gameMusic);
 }

@@ -37,8 +37,6 @@ class GameManager {
                 if (this.players[i].activePlayer === true) {
                     this.players[i].update();
                 }
-                // console.log('ID: ', this.players[i].playerID, 'Max: ', this.players[i].pad.maxConstrain, 'Min: ', this.players[i].pad.minConstrain);
-
             }
 
             // check for inactive player
@@ -147,11 +145,6 @@ class GameManager {
     public createBall(): void {
         let newBall = new Ball;
         this.balls.push(newBall);
-    }
-
-    createEvent(): void {
-        const newEvent = new Events;
-        this.events.push(newEvent);
     }
 
     createEvent(): void {
