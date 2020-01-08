@@ -14,8 +14,8 @@ class Pad {
 
     // draw pad
     public drawPlayer(color: p5.Color): void {
-        stroke(0);
         noFill();
+        stroke(0);
         strokeWeight(9);
         arc(width / 2, height / 2, circleSize, circleSize, this.currentPosition, this.currentPosition + this.getPadLength);
         stroke(color);
@@ -28,7 +28,7 @@ class Pad {
 
     // calculate velocity
     public calculatePlayerVelocity(direction: string): void {
-        // check if key is down
+        // check which key is down
         if (direction === 'left') {
             this.velocity += 2.5;
         }
@@ -43,7 +43,6 @@ class Pad {
 
         // constrain pad
         this.currentPosition = constrain(this.currentPosition, this.minConstrain, this.maxConstrain);
-
     }
     
     // set/get start position
