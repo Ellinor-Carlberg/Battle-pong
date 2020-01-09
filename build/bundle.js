@@ -115,7 +115,7 @@ var Events = (function () {
             if (gameManager.balls.length < 10 && gameMode === 2) {
                 var ballSpawnInterval_1 = setInterval(function () {
                     _this.addBalls(ballSpawnInterval_1);
-                }, 2000);
+                }, 35000);
             }
         }
     };
