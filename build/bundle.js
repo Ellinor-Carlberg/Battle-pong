@@ -1,7 +1,7 @@
 "use strict";
 var Ball = (function () {
     function Ball() {
-        this.startDirection = [4, -4];
+        this.startDirection = [3, -3];
         this.setStartDirection();
         this.ballXPosition = width / 2;
         this.ballYPosition = height / 2;
@@ -169,7 +169,6 @@ var GameManager = (function () {
         if (!nrOfPlayers) {
             this.setDefaultNrOfPlayers();
         }
-        this.gameMenu.update();
         if (gameMode == 1 || gameMode == 2) {
             this.gameArea.update();
             for (var _i = 0, _a = this.balls; _i < _a.length; _i++) {
@@ -203,7 +202,7 @@ var GameManager = (function () {
             }
             if (keyIsDown(32) && this.players.length > 1) {
                 gameMode = 2;
-                this.createEvent();
+                this.handleEvents();
             }
         }
         else if (gameMode == 2) {
@@ -300,7 +299,7 @@ var GameManager = (function () {
         var newBall = new Ball;
         this.balls.push(newBall);
     };
-    GameManager.prototype.createEvent = function () {
+    GameManager.prototype.handleEvents = function () {
         if (!this.events || this.events.length < 1 || this.players.length > 1) {
             var newEvent = new Events;
             this.events.push(newEvent);
@@ -321,8 +320,6 @@ var GameManager = (function () {
 var GameMenu = (function () {
     function GameMenu() {
     }
-    GameMenu.prototype.update = function () {
-    };
     GameMenu.prototype.draw = function () {
         this.drawMenu();
         this.drawAddPlayerButton();
@@ -502,7 +499,7 @@ var GameMenu = (function () {
         strokeWeight(2);
         stroke('#000000');
         line(0, 90, width, 90);
-        image(img, width * .5 - (img.width * 0.5), 20);
+        image(headerImage, width * .5 - (headerImage.width * 0.5), 20);
     };
     return GameMenu;
 }());
@@ -585,7 +582,7 @@ var Player = (function () {
             if (this.pad.currentPosition == undefined && this.pad.startPosition == undefined) {
                 gameManager.setDefaultPositions();
             }
-            this.getPlayerCoordinates();
+            this.getPadCoordinates();
             this.handlePlayerButtons();
         }
     };
@@ -595,7 +592,7 @@ var Player = (function () {
     Player.prototype.changeActivePlayer = function () {
         this.activePlayer = false;
     };
-    Player.prototype.getPlayerCoordinates = function () {
+    Player.prototype.getPadCoordinates = function () {
         for (var i = 0; i <= this.pad.getPadLength; i++) {
             this.playerXCoordinates[i] = (circleSize / 2) * Math.cos(((this.pad.getCurrentPosition + i) * Math.PI / 180)) + (width / 2);
             this.playerYCoordinates[i] = (circleSize / 2) * Math.sin(((this.pad.getCurrentPosition + i) * Math.PI / 180)) + (height / 2);
@@ -648,17 +645,6 @@ var Player = (function () {
         this.pad.setMinConstrain = this.pad.getStartPosition;
         this.pad.setMaxConstrain = (this.pad.getStartPosition + (this.pad.getPadLength * 2)) - 1;
     };
-    Player.prototype.setDefaultPositionss = function () {
-        if (this.playerID === 0) {
-            this.pad.setCurrentPosition = 0;
-            this.pad.setStartPosition = 0;
-        }
-        else {
-            this.pad.setCurrentPosition = (360 / nrOfPlayers) * this.playerID;
-            this.pad.setStartPosition = (360 / nrOfPlayers) * this.playerID;
-        }
-        this.setConstrainValues();
-    };
     Player.prototype.setKeys = function () {
         if (!this.playerButtonRight) {
             var allKeyPairs = Object.entries(this.getKeys)[this.playerID];
@@ -699,8 +685,8 @@ var Pad = (function () {
         this.velocity = 0;
     }
     Pad.prototype.drawPlayer = function (color) {
-        stroke(0);
         noFill();
+        stroke(0);
         strokeWeight(9);
         arc(width / 2, height / 2, circleSize, circleSize, this.currentPosition, this.currentPosition + this.getPadLength);
         stroke(color);
@@ -775,31 +761,29 @@ var Pad = (function () {
 var gameManager;
 var gameMusic;
 var gameMode;
-var gameRestart;
 var circleSize;
 var nrOfPlayers;
-var img;
-var img2;
+var headerImage;
 window.addEventListener('load', function () {
     gameMode = 0;
 });
 function preload() {
-    img = loadImage('./assets/images/battle_pong.svg');
+    headerImage = loadImage('./assets/images/battle_pong.svg');
     soundFormats('wav');
     gameMusic = { menuMusic: window.loadSound('./assets/music/menu-music.wav') };
 }
 function setup() {
-    createCanvas(windowWidth, windowHeight, "p2d");
+    createCanvas(windowWidth, windowHeight);
     frameRate(60);
     fullscreen();
     angleMode(DEGREES);
+    gameMusic.menuMusic.setVolume(0.2);
+    gameMusic.menuMusic.loop();
     gameManager = new GameManager(gameMusic);
 }
 function draw() {
     gameManager.update();
     gameManager.draw();
-}
-function keyPressed() {
 }
 function mouseMoved() {
     var addPlayerButton = mouseX > (width * .5) + 190 && mouseX < (width * .5) + 290 &&
@@ -828,8 +812,6 @@ function mousePressed() {
         mouseY > height * .9 && mouseY < (height * .9) + 50) {
         clear();
         gameManager.gameSettings.startGame();
-    }
-    else if (gameMode == 1 || gameMode == 2) {
     }
     gameManager.gameSettings.update();
 }
