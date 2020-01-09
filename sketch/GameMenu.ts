@@ -185,7 +185,7 @@ class GameMenu {
         let startButton = 'START'
         textSize(28);
         fill('#000000');
-        text(startButton, (width * .48) - 250, (height * .897) + 35);
+        text(startButton, (width * .5) - 280, (height * .897) + 35);
     }
 
     // draw menu elements

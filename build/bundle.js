@@ -462,7 +462,7 @@ var GameMenu = (function () {
         var startButton = 'START';
         textSize(28);
         fill('#000000');
-        text(startButton, (width * .48) - 250, (height * .897) + 35);
+        text(startButton, (width * .5) - 280, (height * .897) + 35);
     };
     GameMenu.prototype.drawMenu = function () {
         background('#777b7e');
