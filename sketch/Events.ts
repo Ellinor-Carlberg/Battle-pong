@@ -9,7 +9,7 @@ class Events {
             if (gameManager.balls.length < 10 && gameMode === 2) {
                 let ballSpawnInterval = setInterval(() => {
                     this.addBalls(ballSpawnInterval);
-                }, 50000);
+                }, 35000);
             }
         }
     }
