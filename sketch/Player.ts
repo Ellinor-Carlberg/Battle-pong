@@ -65,17 +65,39 @@ class Player {
     private get getPlayerMaxCoordinates() {
         return {
             x: (circleSize / 2) * Math.cos(((this.pad.getStartPosition - 5 + (this.pad.getPadLength * 3)) * Math.PI / 180)) + (width / 2),
-            y: (circleSize / 2) * Math.sin(((this.pad.getStartPosition - 5+ (this.pad.getPadLength * 3)) * Math.PI / 180)) + (height / 2)
+            y: (circleSize / 2) * Math.sin(((this.pad.getStartPosition - 5 + (this.pad.getPadLength * 3)) * Math.PI / 180)) + (height / 2)
         }
     }
 
     // generate random color
     private get getPlayerColor(): p5.Color {
-        let r = random(0, 255);
-        let g = random(0, 255);
-        let b = random(0, 255);
-        let c = color(r, g, b);
-        return c;
+        switch (this.playerID) {
+            case 0:
+                return color('red');
+                break;
+            case 1:
+                return color('blue')
+                break;
+            case 2:
+                return color('yellow')
+                break;
+            case 3:
+                return color("#00ff00")
+                break;
+            case 4:
+                return color("#ff00ff")
+                break;
+            case 5:
+                return color("#ffa500")
+                break;
+            case 6:
+                return color("#00ffff")
+                break;
+            case 7:
+                return color("#008000")
+                break;
+        }
+
     }
 
     // handle user key press

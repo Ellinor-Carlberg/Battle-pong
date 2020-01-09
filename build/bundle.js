@@ -115,7 +115,7 @@ var Events = (function () {
             if (gameManager.balls.length < 10 && gameMode === 2) {
                 var ballSpawnInterval_1 = setInterval(function () {
                     _this.addBalls(ballSpawnInterval_1);
-                }, 35000);
+                }, 2000);
             }
         }
     };
@@ -624,11 +624,32 @@ var Player = (function () {
     });
     Object.defineProperty(Player.prototype, "getPlayerColor", {
         get: function () {
-            var r = random(0, 255);
-            var g = random(0, 255);
-            var b = random(0, 255);
-            var c = color(r, g, b);
-            return c;
+            switch (this.playerID) {
+                case 0:
+                    return color('red');
+                    break;
+                case 1:
+                    return color('blue');
+                    break;
+                case 2:
+                    return color('yellow');
+                    break;
+                case 3:
+                    return color("#00ff00");
+                    break;
+                case 4:
+                    return color("#ff00ff");
+                    break;
+                case 5:
+                    return color("#ffa500");
+                    break;
+                case 6:
+                    return color("#00ffff");
+                    break;
+                case 7:
+                    return color("#008000");
+                    break;
+            }
         },
         enumerable: true,
         configurable: true
