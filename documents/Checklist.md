@@ -10,7 +10,7 @@ Checklist of what to include:
 
 3. Klassdiagram (UML)
 
-4. Gantt
+4. Gantt -KLART
 
 5. Presentation
 
