@@ -115,7 +115,7 @@ var Events = (function () {
             if (gameManager.balls.length < 10 && gameMode === 2) {
                 var ballSpawnInterval_1 = setInterval(function () {
                     _this.addBalls(ballSpawnInterval_1);
-                }, 4250);
+                }, 6000);
             }
         }
     };
@@ -379,74 +379,74 @@ var GameMenu = (function () {
                 triangle((width * .5) + 265, 212, (width * .5) + 285, 212, (width * .5) + 275, 232);
                 break;
             case 1:
-                var p2LeftKey = 'a';
+                var p2LeftKey = '1';
                 textSize(30);
                 fill('#000000');
-                text(p2LeftKey, (width * .5) + 197, 290);
-                var p2RightKey = 'z';
+                text(p2LeftKey, (width * .5) + 197, 292);
+                var p2RightKey = 'Q';
                 textSize(30);
                 fill('#000000');
-                text(p2RightKey, (width * .5) + 267, 290);
+                text(p2RightKey, (width * .5) + 264, 292);
                 break;
             case 2:
-                var p3LeftKey = 'l';
+                var p3LeftKey = '5';
                 textSize(30);
                 fill('#000000');
-                text(p3LeftKey, (width * .5) + 202, 352);
-                var p3RightKey = 'p';
+                text(p3LeftKey, (width * .5) + 197, 353);
+                var p3RightKey = '6';
                 textSize(30);
                 fill('#000000');
-                text(p3RightKey, (width * .5) + 267, 350);
+                text(p3RightKey, (width * .5) + 267, 353);
                 break;
             case 3:
-                var p4LeftKey = '3';
+                var p4LeftKey = 'L';
                 textSize(30);
                 fill('#000000');
                 text(p4LeftKey, (width * .5) + 198, 412);
-                var p4RightKey = 'e';
+                var p4RightKey = 'P';
                 textSize(30);
                 fill('#000000');
-                text(p4RightKey, (width * .5) + 267, 410);
+                text(p4RightKey, (width * .5) + 267, 412);
                 break;
             case 4:
-                var p5LeftKey = '9';
+                var p5LeftKey = 'S';
                 textSize(30);
                 fill('#000000');
-                text(p5LeftKey, (width * .5) + 198, 472);
-                var p5RightKey = '0';
+                text(p5LeftKey, (width * .5) + 195, 473);
+                var p5RightKey = 'X';
                 textSize(30);
                 fill('#000000');
-                text(p5RightKey, (width * .5) + 267, 472);
+                text(p5RightKey, (width * .5) + 265, 473);
                 break;
             case 5:
-                var p6LeftKey = '5';
+                var p6LeftKey = 'U';
                 textSize(30);
                 fill('#000000');
-                text(p6LeftKey, (width * .5) + 198, 532);
-                var p6RightKey = '6';
+                text(p6LeftKey, (width * .5) + 195, 532);
+                var p6RightKey = 'I';
                 textSize(30);
                 fill('#000000');
-                text(p6RightKey, (width * .5) + 267, 532);
+                text(p6RightKey, (width * .5) + 271, 532);
                 break;
             case 6:
-                var p7LeftKey = 'c';
+                var p7LeftKey = 'F';
                 textSize(30);
                 fill('#000000');
-                text(p7LeftKey, (width * .5) + 198, 592);
-                var p7RightKey = 'v';
+                text(p7LeftKey, (width * .5) + 195, 592);
+                var p7RightKey = 'G';
                 textSize(30);
                 fill('#000000');
-                text(p7RightKey, (width * .5) + 267, 592);
+                text(p7RightKey, (width * .5) + 264, 592);
                 break;
             case 7:
-                var p8LeftKey = 'b';
+                var p8LeftKey = 'N';
                 textSize(30);
                 fill('#000000');
-                text(p8LeftKey, (width * .5) + 198, 652);
-                var p8RightKey = 'n';
+                text(p8LeftKey, (width * .5) + 195, 652);
+                var p8RightKey = 'M';
                 textSize(30);
                 fill('#000000');
-                text(p8RightKey, (width * .5) + 267, 652);
+                text(p8RightKey, (width * .5) + 264, 652);
                 break;
         }
     };
@@ -666,13 +666,13 @@ var Player = (function () {
         get: function () {
             return [
                 { left: DOWN_ARROW, right: UP_ARROW },
-                { left: 65, right: 90 },
-                { left: 76, right: 80 },
-                { left: 51, right: 69 },
-                { left: 57, right: 48 },
+                { left: 49, right: 81 },
                 { left: 53, right: 54 },
-                { left: 67, right: 86 },
-                { left: 66, right: 78 }
+                { left: 76, right: 80 },
+                { left: 83, right: 88 },
+                { left: 85, right: 73 },
+                { left: 70, right: 71 },
+                { left: 78, right: 77 }
             ];
         },
         enumerable: true,
