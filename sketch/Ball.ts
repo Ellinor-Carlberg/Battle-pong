@@ -9,7 +9,7 @@ class Ball {
     public ballSpeedY!: number;
 
     constructor() {
-        this.startDirection = [4, -4]; // Change the add start speed. Should be the same number
+        this.startDirection = [3, -3]; // Change the add start speed. Should be the same number
         this.setStartDirection();
         this.ballXPosition = width / 2;
         this.ballYPosition = height / 2;
