@@ -4,7 +4,7 @@ This folder contains all documents for planning the game.
 Checklist of what to include:
 (Markera det som är inlagt och färdigt)
 
-1. Gruppkontrakt
+1. Gruppkontrakt -KLART
 
 2. Spelidé - KLART
 
