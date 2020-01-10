@@ -1,7 +1,7 @@
 "use strict";
 var Ball = (function () {
     function Ball() {
-        this.startDirection = [3, -3];
+        this.startDirection = [3.3, -3.3];
         this.setStartDirection();
         this.ballXPosition = width / 2;
         this.ballYPosition = height / 2;
