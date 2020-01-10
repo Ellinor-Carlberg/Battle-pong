@@ -9,21 +9,31 @@ class Ball {
     public ballSpeedY!: number;
 
     constructor() {
-        this.startDirection = [3, -3]; // Change the add start speed. Should be the same number
+        this.startDirection = [3.25, -3.25]; // Change the add start speed. Should be the same number
         this.setStartDirection();
         this.ballXPosition = width / 2;
         this.ballYPosition = height / 2;
     }
 
+    /**
+     * Updates ball size if game area size has changed.
+     */
     public update(): void {
         this.setBallSize(circleSize);
     }
 
+    /**
+     * Draws and moves ball.
+     * TODO: move moveBall() to update()? It only works from here right now.
+     */
     public draw(): void {
         this.moveBall();
         this.drawBall();
     }
 
+    /**
+     * Draws the ball.
+     */
     public drawBall(): void {
         fill(255, 255, 255);
         stroke(0, 0, 0);
@@ -32,17 +42,26 @@ class Ball {
         this.handleBall();
     }
 
-    //Randomizes direction
+    /**
+     * Randomizes ball's start direction.
+     */
     public setStartDirection(): void { 
         this.ballSpeedX = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
         this.ballSpeedY = this.startDirection[Math.floor(Math.random() * this.startDirection.length)];
     }
 
+    /**
+     * Sets default ball size.
+     * @param {number} diameter the diameter of game area (circle).
+     */
     public setBallSize(diameter: number): void {
         this.ballRadius = diameter / 40;
     }
 
-    // move ball
+    /**
+     * Moves the ball by adding ball speed (velocity) to ball x, y-position.
+     * Updates variables used in method for ball-pad-collision.
+     */
     private moveBall(): void {
         this.ballXPosition += this.ballSpeedX;
         this.ballYPosition += this.ballSpeedY;
@@ -52,7 +71,9 @@ class Ball {
         this.dy = this.ballYPosition - height / 2;
     }
 
-    // check for ball collision
+    /**
+     * Checks for collision with game area border or player pads.
+     */
     private handleBall(): void {
         for (const player of gameManager.players) {
             for (let i = 0; i <= player.pad.getPadLength; i++) {
@@ -79,7 +100,10 @@ class Ball {
         }
     }
 
-    // create array of pad-to-ball distances
+    /**
+     * Creates array of pad-to-ball distances. 
+     * Fires method that checks which player lost.
+     */
     private createDistanceList(): void {
         let distances: number[] = [];
         for (let i = 0; i < gameManager.players.length; i++) {
@@ -89,7 +113,10 @@ class Ball {
         this.checkPlayerLoss(distances);
     }
 
-    // change status on player with min pad-to-ball distance
+    /**
+     * Change status on player with min pad-to-ball distance and reset ball.
+     * @param {Array<number>} distances uses information in array of pad-to-ball distances.
+     */
     private checkPlayerLoss(distances: number[]): void {
         for (const playerObj in gameManager.players) {
             if (gameManager.players.hasOwnProperty(playerObj)) {
@@ -101,14 +128,19 @@ class Ball {
         }
     }
 
-    // reset ball to middle of game area
+    /**
+     * Resets the main ball's position to center of game area.
+     */
     private resetBall(): void {
         this.ballXPosition = width / 2;
         this.ballYPosition = height / 2;
         gameMode = 1;
     }
 
-    // makes the ball bounce
+    /**
+     * Makes the ball bounce upon collision with pad.
+     * @param {number} ballAndPadCollisionPoint uses information on where on the pad the collision happens to change angle on bounce.
+     */
     private bounceBackFromPad(ballAndPadCollisionPoint: number): void {
         if (dist(this.ballXPosition, this.ballYPosition, width / 2, height / 2) >= circleSize / 2 - 5) {
             const velocity = Math.sqrt(this.ballSpeedX * this.ballSpeedX + this.ballSpeedY * this.ballSpeedY);

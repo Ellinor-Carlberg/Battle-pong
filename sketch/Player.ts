@@ -2,13 +2,13 @@ class Player {
     public playerID: number = gameManager.players.length;
     public activePlayer: boolean;
     public playerColor: p5.Color;
+    public pad: Pad;
     private playerButtonLeft!: number;
+    private playerButtonRight!: number;
     public playerXCoordinates: number[];
     public playerYCoordinates: number[];
     public playerXArea: number[];
     public playerYArea: number[];
-    public pad: Pad;
-    private playerButtonRight!: number;
 
     constructor() {
         this.activePlayer = true;
@@ -20,6 +20,10 @@ class Player {
         this.pad = new Pad;
     }
 
+    /**
+     * Sets player keys.
+     * If game has started, sets default positions, gets pad coordinates and handles player buttons.
+     */
     public update(): void {
         this.setKeys();
 
@@ -33,16 +37,23 @@ class Player {
         }
     }
 
+    /**
+     * Draws player.
+     */
     public draw(): void {
         this.pad.drawPlayer(this.playerColor);
     }
 
-    // make player inactive
+    /**
+     * Sets player activity status to false.
+     */
     public changeActivePlayer(): void {
         this.activePlayer = false;
     }
 
-    // calculate pad coordinates
+    /**
+     * Calculates pad coordinates.
+     */
     public getPadCoordinates(): void {
         for (let i = 0; i <= this.pad.getPadLength; i++) {
             this.playerXCoordinates[i] = (circleSize / 2) * Math.cos(((this.pad.getCurrentPosition + i) * Math.PI / 180)) + (width / 2);
@@ -50,18 +61,36 @@ class Player {
         }
     }
 
-    // calculate distance between ball and pad constrain values
+    /**
+     * Calculates distance between ball and pad's constrain values.
+     * @param {number} ballX x-position
+     * @param {number} ballY y-position
+     * @return {number} added distance values
+     */
     public getDistanceToBall(ballX: number, ballY: number): number {
         let distance = dist(ballX, ballY, this.getPlayerMinCoordinates.x, this.getPlayerMinCoordinates.y) + dist(ballX, ballY, this.getPlayerMaxCoordinates.x, this.getPlayerMaxCoordinates.y);
         return distance;
     }
 
+    /**
+     * Gets pads min constrain value coordinates, used in ball-pad distance calculation.
+     * @property {number} {x} the x-position of the pads min constrain value
+     * @property {number} {y} the y-position of the pads min constrain value
+     * @return {object} x and y coordinates of min constrain value
+     */
     private get getPlayerMinCoordinates() {
         return {
             x: (circleSize / 2) * Math.cos(((this.pad.minConstrain) * Math.PI / 180)) + (width / 2),
             y: (circleSize / 2) * Math.sin(((this.pad.minConstrain) * Math.PI / 180)) + (height / 2)
         }
     }
+
+    /**
+     * Gets pads max constrain value coordinates, used in ball-pad distance calculation.
+     * @property {number} {x} the x-position of the pads max constrain value
+     * @property {number} {y} the y-position of the pads max constrain value
+     * @return {object} x and y coordinates of max constrain value
+     */
     private get getPlayerMaxCoordinates() {
         return {
             x: (circleSize / 2) * Math.cos(((this.pad.getStartPosition - 5 + (this.pad.getPadLength * 3)) * Math.PI / 180)) + (width / 2),
@@ -69,38 +98,36 @@ class Player {
         }
     }
 
-    // generate random color
+    /**
+     * Gets player's assigned color.
+     * @return fires p5.js color function
+     */
     private get getPlayerColor(): p5.Color {
         switch (this.playerID) {
             case 0:
                 return color('red');
-                break;
             case 1:
-                return color('blue')
-                break;
+                return color('blue');
             case 2:
-                return color('yellow')
-                break;
+                return color('yellow');
             case 3:
-                return color("#00ff00")
-                break;
+                return color("#00ff00");
             case 4:
-                return color("#ff00ff")
-                break;
+                return color("#ff00ff");
             case 5:
-                return color("#ffa500")
-                break;
+                return color("#ffa500");
             case 6:
-                return color("#00ffff")
-                break;
+                return color("#00ffff");
             case 7:
-                return color("#008000")
-                break;
+                return color("#008000");
+            default:
+                return color(random(0, 255), random(0, 255), random(0, 255));
         }
-
     }
 
-    // handle user key press
+    /**
+     * Handles user key press and fires calculation of player velocity.
+     */
     public handlePlayerButtons(): void {
         if (keyIsDown(this.playerButtonLeft)) {
             this.pad.calculatePlayerVelocity('left');
@@ -110,13 +137,17 @@ class Player {
         }
     }
 
-    // set constrain values
+    /**
+     * Sets constrain values for player pad.
+     */
     public setConstrainValues(): void {
         this.pad.setMinConstrain = this.pad.getStartPosition;
         this.pad.setMaxConstrain = (this.pad.getStartPosition + (this.pad.getPadLength * 2)) - 1;
     }
 
-    // set player buttons
+    /**
+     * Sets player buttons.
+     */
     public setKeys(): void {
         if (!this.playerButtonRight) {
             const allKeyPairs = Object.entries(this.getKeys)[this.playerID];
@@ -135,7 +166,12 @@ class Player {
         }
     }
 
-    // list of keys
+    /**
+     * Gets list of keys.
+     * @property {number} {left} left key
+     * @property {number} {right} right key
+     * @return {Array<{}>} all player keys
+     */
     private get getKeys(): Array<{}> {
         return [
             { left: DOWN_ARROW, right: UP_ARROW },

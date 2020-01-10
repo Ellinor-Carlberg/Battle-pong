@@ -7,6 +7,7 @@ class GameSettings {
         this.gameMusic = gameMusic;
     }
 
+
     public update(): void {
         this.handleSoundButton();
         this.controlSound();
@@ -15,12 +16,17 @@ class GameSettings {
         this.drawSoundButton();
     }
 
-    // set volume on soundfile
+    /**
+     * Sets volume on background music.
+     * @param {number} value volume, where 0 is muted and 1 is max.
+     */
     private set setSoundVolume(value: number) {
         this.gameMusic.menuMusic.setVolume(value);
     }
 
-    // control volume property value
+    /**
+     * Controls music volume depending on whether music is muted or not.
+     */
     private controlSound(): void {
         if (this.mutedMusic === true) {
             this.setSoundVolume = 0;
@@ -30,7 +36,9 @@ class GameSettings {
         }
     }
 
-    // draw and handle sound button interaction
+    /**
+     * Draw sound button for muted and non-muted.
+     */
     private drawSoundButton(): void {
 
         /** the round button */
@@ -59,7 +67,10 @@ class GameSettings {
         }
     }
 
-    // toggles muted music property
+    /**
+     * Handles sound button.
+     * Toggles muted music property value.
+     */
     private handleSoundButton(): void {
         if (dist(mouseX, mouseY, 60, 60) < 40) {
             if (this.mutedMusic === false) {
@@ -71,7 +82,10 @@ class GameSettings {
         }
     }
 
-    // start game and then create ball
+    /**
+     * Set game mode to 'start' and create ball.
+     * TODO: move ball to game manager.
+     */
     public startGame(): void { 
         gameMode = 1;
         gameManager.createBall();

@@ -17,6 +17,9 @@ class GameManager {
         this.pads = [];
     }
 
+    /**
+     * Adds default players, updates game area, ball and pad movement, removes player who has lost.
+     */
     public update(): void {
         // adds 2 players if nr of players is undefined/0
         if (!nrOfPlayers) {
@@ -40,6 +43,10 @@ class GameManager {
         }
     }
 
+
+    /**
+     * Draws game menu, sound button, game area, player pad, text before game starts, winner announcement and ball.
+     */
     public draw(): void {
         // draw menu
         if (gameMode == 0) {
@@ -78,7 +85,11 @@ class GameManager {
         this.gameSettings.draw();
     }
 
-    // remove player with activePlayer = false
+    /**
+     * Checks if player has lost and updates properties.
+     * Removes player and pad instance, resets main ball and event interval.
+     * Also resets pad's default positions (and constrain values).
+     */
     public removeInactivePlayer(): void {
         for (let i = 0; i < this.players.length; i++) {
             const player = this.players[i];
@@ -100,7 +111,9 @@ class GameManager {
         }
     }
 
-    // set default pad position values
+    /**
+     * Sets pad's default values equally between players and sets constrain values.
+     */
     public setDefaultPositions(): void {
         for (let i = 0; i < this.players.length; i++) {
             const player = this.players[i];
@@ -116,6 +129,9 @@ class GameManager {
         }
     }
 
+    /**
+     * Draws winner announcement that pops up when there is only one player left.
+     */
     private drawWinnerAnnouncement(): void {
         /** Draw the yellow circle*/
         strokeWeight(2)
@@ -154,7 +170,9 @@ class GameManager {
         text(winnerText5, (width * .5), (height * .5) + 100)
     }
 
-    // draw each player
+    /**
+     * Draws each player if game has started.
+     */
     public drawPlayers(): void {
         if ((this.players && gameMode == 1) || (this.players && gameMode == 2)) {
             for (const player of this.players) {
@@ -163,7 +181,10 @@ class GameManager {
         }
     }
 
-    // add player and pad to each list
+    /**
+     * Creates player by creating a player instance, adding it to list of players. 
+     * After player has been created, it also adds player's pad to list of pads.
+     */
     public createPlayer(): void {
         let newPlayer = new Player;
         this.players.push(newPlayer);
@@ -174,13 +195,17 @@ class GameManager {
         }
     }
 
-    // create and add ball to list
+    /**
+     * Creates new ball instance and adds to list of balls.
+     */
     public createBall(): void {
         let newBall = new Ball;
         this.balls.push(newBall);
     }
 
-    // add event or reset events
+    /**
+     * Handles game events by either adding event or reset event.
+     */
     public handleEvents(): void {
         // add event if event doesn't exist or more than 1 player
         if (!this.events || this.events.length < 1 || this.players.length > 1) {
@@ -194,7 +219,9 @@ class GameManager {
         }
     }
 
-    // set and add default nr of players at game start
+    /**
+     * Set and create default number of players.
+     */
     private setDefaultNrOfPlayers() {
         nrOfPlayers = 2;
         for (let i = 0; i < nrOfPlayers; i++) {

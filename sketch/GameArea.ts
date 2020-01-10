@@ -1,13 +1,21 @@
 class GameArea {
+    /**
+     * Update global circleSize variable.
+     */
     public update(): void {
         circleSize = this.calculateCircleSize();
     }
 
+    /**
+     * Draws game area (circle).
+     */
     public draw(): void {
         this.drawDefaultArea();
     }
    
-    // calculate game area size
+    /**
+     * Calculates game area size from window size.
+     */
     public calculateCircleSize(): number {
         if (windowWidth >= windowHeight) {
             return windowHeight - 40;
@@ -16,7 +24,9 @@ class GameArea {
         }
     }
     
-    //Draw the gameArea(circle)
+    /**
+     * Draw default game area (circle).
+     */
     private drawDefaultArea(): void {
         background('#777b7e');
         noFill();
