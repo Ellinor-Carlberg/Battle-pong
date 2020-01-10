@@ -12,7 +12,10 @@ class Pad {
         this.velocity = 0;
     }
 
-    // draw pad
+    /**
+     * Draw player with p5.js functions.
+     * @param {p5.Color} color 
+     */
     public drawPlayer(color: p5.Color): void {
         noFill();
         stroke(0);
@@ -26,7 +29,10 @@ class Pad {
         arc(width / 2, height / 2, circleSize, circleSize, this.minConstrain, this.minConstrain + 0.01);
     }
 
-    // calculate velocity
+    /**
+     * Calculates player's velocity and move's pad.
+     * @param {string} direction retrieves direction as string
+     */
     public calculatePlayerVelocity(direction: string): void {
         // check which key is down
         if (direction === 'left') {
@@ -45,28 +51,44 @@ class Pad {
         this.currentPosition = constrain(this.currentPosition, this.minConstrain, this.maxConstrain);
     }
     
-    // set/get start position
+    /**
+     * Sets and gets start position on game start.
+     * @param {number} position retrieves position
+     */
     public set setStartPosition(position: number) {
         this.startPosition = position;
     }
     public get getStartPosition(): number {
         return this.startPosition;
     }
-    // set/get current position
+    
+    /**
+     * Sets and gets current position of the pad.
+     * @param {number} position retrieves pad's current position
+     */
     public set setCurrentPosition(position: number) {
         this.currentPosition = position;
     }
     public get getCurrentPosition(): number {
         return this.currentPosition;
     }
-    // set min/max constrain value
+
+    /**
+     * Sets pad's constrain values, how much pad can move horizontally.
+     * @param {number} minValue min value, left direction
+     * @param {number} maxValue max value, right direction
+     */
     public set setMinConstrain(minValue: number) {
         this.minConstrain = minValue;
     }
     public set setMaxConstrain(maxValue: number) {
         this.maxConstrain = maxValue;
     }
-    // calculate default pad length
+
+    /**
+     * Gets pad length.
+     * @return {number} calculation using full circle degrees, number of players and a third of each player's constrained area.
+     */
     public get getPadLength(): number {
         return (360 / nrOfPlayers) / 3;
     }
