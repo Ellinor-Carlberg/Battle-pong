@@ -6,7 +6,10 @@ class GameMenu {
         this.drawStartGameButton();
     }
 
-    // add new player
+    /**
+     * Handles add player button on game menu.
+     * If maximum of player is not reached, create a player.
+     */
     public handleAddPlayerButton(): void {
         if (mouseX > (width * .5) + 190 && mouseX < (width * .5) + 290 &&
             mouseY > height * .9 && mouseY < (height * .9) + 45) {
@@ -17,7 +20,9 @@ class GameMenu {
         }
     }
 
-    // draw button which helps to add a player
+    /**
+     * Draw add player button on game menu.
+     */
     private drawAddPlayerButton(): void {
 
         /**shadow box for add more players button */
@@ -38,7 +43,9 @@ class GameMenu {
         text(s, (width * .5) + 230, (height * .9) + 30);
     }
 
-    // draw new player on list
+    /**
+     * Draw new player: assigned color, text and keys.
+     */
     private drawNewPlayer(): void {
         for (const playerObj in gameManager.players) {
             const player = gameManager.players[playerObj];
@@ -66,7 +73,10 @@ class GameMenu {
         }
     }
 
-    // draw player keys
+    /**
+     * Draw player keys.
+     * @param {number} playerID the player to assign keys to.
+     */
     private drawKeys(playerID: number): void {
         switch (playerID) {
             case 0:
@@ -165,7 +175,9 @@ class GameMenu {
         }
     }
 
-    // draw start-button
+    /**
+     * Draw start button on game menu.
+     */
     private drawStartGameButton(): void {
 
         /** black shadow for start button */
@@ -188,7 +200,9 @@ class GameMenu {
         text(startButton, (width * .5) - 280, (height * .897) + 35);
     }
 
-    // draw menu elements
+    /** 
+     * Draw menu elements such as background, middle section and header.
+     */
     private drawMenu(): void {
         /** Background, (grey and brown) */
 

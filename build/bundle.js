@@ -1,7 +1,7 @@
 "use strict";
 var Ball = (function () {
     function Ball() {
-        this.startDirection = [3.3, -3.3];
+        this.startDirection = [3.25, -3.25];
         this.setStartDirection();
         this.ballXPosition = width / 2;
         this.ballYPosition = height / 2;
@@ -627,28 +627,22 @@ var Player = (function () {
             switch (this.playerID) {
                 case 0:
                     return color('red');
-                    break;
                 case 1:
                     return color('blue');
-                    break;
                 case 2:
                     return color('yellow');
-                    break;
                 case 3:
                     return color("#00ff00");
-                    break;
                 case 4:
                     return color("#ff00ff");
-                    break;
                 case 5:
                     return color("#ffa500");
-                    break;
                 case 6:
                     return color("#00ffff");
-                    break;
                 case 7:
                     return color("#008000");
-                    break;
+                default:
+                    return color(random(0, 255), random(0, 255), random(0, 255));
             }
         },
         enumerable: true,
